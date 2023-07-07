@@ -7,7 +7,7 @@ Nous ferons la création d'un objet connecté nommé le TrackSense. Cette objet 
 
 ## Android
 
-Il y a plusieurs solutions pour déboguer une application Android :
+Il y a plusieurs solutions pour déboguer une application Android. **Si vous voulez utiliser le bluetooth, vous devrez utiliser un appareil Android local**.
 
 ### Émulateur
 
