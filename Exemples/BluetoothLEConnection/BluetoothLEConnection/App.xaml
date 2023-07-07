@@ -1,0 +1,34 @@
+﻿<?xml version = "1.0" encoding = "UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:BluetoothLEConnection"
+             x:Class="BluetoothLEConnection.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Color x:Key="LabelText">#1F1F1F</Color>
+            <Style TargetType="Label" x:Key="BaseLabel">
+                <Setter Property="FontFamily" Value="OpenSansRegular" />
+                <Setter Property="TextColor" Value="{StaticResource LabelText}" />
+            </Style>
+            <Style x:Key="MicroLabel" BasedOn="{StaticResource BaseLabel}" TargetType="Label">
+                <Setter Property="FontSize" Value="10"/>
+            </Style>
+
+            <Style x:Key="SmallLabel" BasedOn="{StaticResource BaseLabel}" TargetType="Label">
+                <Setter Property="FontSize" Value="12"/>
+            </Style>
+
+            <Style x:Key="MediumLabel" BasedOn="{StaticResource BaseLabel}" TargetType="Label">
+                <Setter Property="FontSize" Value="16"/>
+            </Style>
+
+            <Style x:Key="LargeLabel" BasedOn="{StaticResource BaseLabel}" TargetType="Label">
+                <Setter Property="FontSize" Value="20"/>
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:model="clr-namespace:BluetoothLEConnection.Model"
+             xmlns:viewmodel="clr-namespace:BluetoothLEConnection.ViewModel"
+             xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+             x:DataType="viewmodel:BluetoothViewModel"
+             Title="{Binding Title}"
+             x:Class="BluetoothLEConnection.MainPage">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Vérifier Bluetooth"
+                     Command="{Binding BluetoothConnectivityTestCommand}"/>
+    </ContentPage.ToolbarItems>
+
+    <Grid ColumnDefinitions="*,*,*"
+          ColumnSpacing="5"
+          RowDefinitions="*, Auto"
+          RowSpacing="0">
+        
+        <RefreshView Grid.ColumnSpan="3"
+                     Command="{Binding ScanForBluetoothDevicesCommand}"
+                     IsRefreshing="{Binding IsRefreshing}">
+            <CollectionView BackgroundColor="Transparent"
+                            ItemsSource="{Binding Devices}"
+                            SelectionMode="None">
+                <!--SelectionChangedCommand={Binding GoToDetailsCommand} A AJOUTER POUR LA CONNEXION-->
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:Bluetooth">
+                        <Grid Padding="10">
+                            <Frame HeightRequest="80"
+                                   Padding="0"
+                                   Style="{StaticResource CardView}">
+                                <!--<Frame.GestureRecognizers> LANCER LA COMMANDE POUR CONNECTER L'APPAREIL
+                                    <TapGestureRecognizer CommandParameter="{Binding .}"
+                                                          Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:BluetoothViewModel}},
+                                                                            Path=GoToDetailsCommand}"/>
+                                </Frame.GestureRecognizers>-->
+                                <Grid Padding="0"
+                                      ColumnDefinitions="125, *">
+                                    <Image Aspect="AspectFill"
+                                           Source="tracking_device.png"
+                                           WidthRequest="60"
+                                           HeightRequest="60"/>
+
+                                    <VerticalStackLayout Grid.Column="1"
+                                                         Padding="10"
+                                                         VerticalOptions="Center">
+                                        <Label Text="{Binding Name}"
+                                               Style="{StaticResource LargeLabel}"/>
+                                        <Label Text="{Binding State}"
+                                               Style="{StaticResource SmallLabel}"/>
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Frame>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+        
+        <Button Text="Rechercher"
+                Command="{Binding ScanForBluetoothDevicesCommand}"
+                IsEnabled="{Binding IsNotBusy}"
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="2"/>
+    </Grid>
+
+
+</ContentPage>
