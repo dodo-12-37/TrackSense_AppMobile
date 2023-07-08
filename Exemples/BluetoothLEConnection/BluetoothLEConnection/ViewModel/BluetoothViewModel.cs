@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Authentication;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,9 +18,17 @@ namespace BluetoothLEConnection.ViewModel
     public partial class BluetoothViewModel: BaseViewModel
     {
         IBluetoothLE bluetoothLE;
+
         BluetoothService bluetoothService;
+
         [ObservableProperty]
         bool isRefreshing;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsConnected))]
+        Bluetooth connectedDevice;
+
+        public bool IsConnected => this.ConnectedDevice is not null;
 
         public ObservableCollection<Bluetooth> Devices { get; } = new();
 
@@ -120,6 +129,41 @@ namespace BluetoothLEConnection.ViewModel
                     this.Devices.Add(device);
                 }
 
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                await Shell.Current.DisplayAlert("Error!", $"Message: {ex.Message}", "Ok");
+            }
+            finally
+            {
+                IsBusy = false;
+                IsRefreshing = false;
+            }
+        }
+
+        [RelayCommand]
+        async Task ConnectToDeviceAsync(Guid p_id)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+            
+            try
+            {
+                IsBusy = true;
+                await bluetoothService.ConnectToBluetoothDevice(p_id);
+                IDevice device = bluetoothService.GetConnectedDevice();
+
+                if (device is not null)
+                {
+                    this.ConnectedDevice = this.Devices.SingleOrDefault(d => d.Id == device.Id);
+                    if (this.ConnectedDevice is not null)
+                    {
+                        this.ConnectedDevice.State = "Connecté";
+                    }
+                }
             }
             catch (Exception ex)
             {

@@ -15,29 +15,74 @@
 
     <Grid ColumnDefinitions="*,*,*"
           ColumnSpacing="5"
-          RowDefinitions="*, Auto"
+          RowDefinitions="Auto, *, Auto"
           RowSpacing="0">
-        
+        <Grid Grid.Row="0"
+              ColumnDefinitions="*,Auto"
+              Grid.ColumnSpan="3"
+              Margin="2"
+              IsVisible="{Binding IsConnected}">
+            <VerticalStackLayout>
+                <Label Text="Appareil connecté:"/>
+                <Label Text="{Binding ConnectedDevice.Name}"/>
+            </VerticalStackLayout>
+            <Button Text="Voir"
+                    Grid.Column="1"/>
+        </Grid>
+        <!--<CollectionView BackgroundColor="AliceBlue"
+                        Grid.ColumnSpan="3"
+                        Grid.Row="1"
+                        ItemsSource="{Binding ConnectedDevice}"
+                        IsVisible="{Binding IsConnected}"> --><!--IsVisible="{Binding IsConnected}"--><!--
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:Bluetooth">
+                    <Grid Padding="10">
+                        <Frame HeightRequest="80"
+                               Padding="0"
+                               Style="{StaticResource CardView}">
+                            <Grid Padding="0"
+                                  ColumnDefinitions="100, *">
+                                <Image Aspect="AspectFill"
+                                               Source="tracking_device.png"
+                                               WidthRequest="60"
+                                               HeightRequest="60"/>
+
+                                <VerticalStackLayout Grid.Column="1"
+                                                             Padding="10"
+                                                             VerticalOptions="Center">
+                                    <Label Text="{Binding Name}"
+                                                   Style="{StaticResource LargeLabel}"/>
+                                    <Label Text="{Binding State}"
+                                                   Style="{StaticResource SmallLabel}"/>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Frame>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>-->
+
         <RefreshView Grid.ColumnSpan="3"
                      Command="{Binding ScanForBluetoothDevicesCommand}"
-                     IsRefreshing="{Binding IsRefreshing}">
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Grid.Row="1">
             <CollectionView BackgroundColor="Transparent"
                             ItemsSource="{Binding Devices}"
-                            SelectionMode="None">
-                <!--SelectionChangedCommand={Binding GoToDetailsCommand} A AJOUTER POUR LA CONNEXION-->
+                            SelectionMode="None"
+                            SelectionChangedCommand="{Binding ConnectToDeviceCommand}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="model:Bluetooth">
                         <Grid Padding="10">
                             <Frame HeightRequest="80"
                                    Padding="0"
                                    Style="{StaticResource CardView}">
-                                <!--<Frame.GestureRecognizers> LANCER LA COMMANDE POUR CONNECTER L'APPAREIL
-                                    <TapGestureRecognizer CommandParameter="{Binding .}"
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer CommandParameter="{Binding Id}"
                                                           Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:BluetoothViewModel}},
-                                                                            Path=GoToDetailsCommand}"/>
-                                </Frame.GestureRecognizers>-->
+                                                                            Path=ConnectToDeviceCommand}"/>
+                                </Frame.GestureRecognizers>
                                 <Grid Padding="0"
-                                      ColumnDefinitions="125, *">
+                                      ColumnDefinitions="100, *">
                                     <Image Aspect="AspectFill"
                                            Source="tracking_device.png"
                                            WidthRequest="60"
@@ -62,8 +107,8 @@
         <Button Text="Rechercher"
                 Command="{Binding ScanForBluetoothDevicesCommand}"
                 IsEnabled="{Binding IsNotBusy}"
-                Grid.Row="1"
-                Grid.Column="1"
+                Grid.Row="2"
+                Grid.Column="0"
                 Margin="2"/>
     </Grid>
 

@@ -1,5 +1,7 @@
 ﻿using BluetoothLEConnection.Model;
+using Plugin.BLE.Abstractions;
 using Plugin.BLE.Abstractions.Contracts;
+using Plugin.BLE.Abstractions.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +13,7 @@ namespace BluetoothLEConnection.Services
     public class BluetoothService
     {
         IAdapter adapter;
-        List<Bluetooth> bluetoothDevices = new();
+        List<IDevice> bluetoothDevices = new();
 
         public BluetoothService(IAdapter p_adapter)
         {
@@ -20,26 +22,65 @@ namespace BluetoothLEConnection.Services
 
         public async Task<List<Bluetooth>> GetBluetoothDevices()
         {
+            if (this.bluetoothDevices.Count == 0)
+            {
+                this.adapter.DeviceDiscovered += (s, a) =>
+                {
+                    if (!this.bluetoothDevices.Contains(a.Device))
+                    {
+                        bluetoothDevices.Add(a.Device);
+                    }
+                };
+            }
+
             bluetoothDevices.Clear();
-            List<IDevice> devicesList = new List<IDevice>();
+
+            List<Bluetooth> devicesList = new List<Bluetooth>();
 
             this.adapter.ScanTimeout = 5000;
             this.adapter.ScanMode = ScanMode.Balanced;
-            
-            this.adapter.DeviceDiscovered += (s, a) => devicesList.Add(a.Device);
+
+            var scanFilterOptions = new ScanFilterOptions();
+
             await adapter.StartScanningForDevicesAsync();
 
-            foreach (IDevice device in devicesList)
+            foreach (IDevice device in this.bluetoothDevices)
             {
                 Bluetooth bleDevice = new Bluetooth()
                 {
                     Name = device.Name,
-                    State = device.State == Plugin.BLE.Abstractions.DeviceState.Connected ? "Connecté" : "Deconnecté"
+                    State = device.State == Plugin.BLE.Abstractions.DeviceState.Connected ? "Connecté" : "Deconnecté",
+                    Id = device.Id
                 };
-                bluetoothDevices.Add(bleDevice);
+                devicesList.Add(bleDevice);
             }
 
-            return bluetoothDevices;
+            return devicesList;
+        }
+
+        public async Task ConnectToBluetoothDevice(Guid p_id)
+        {
+            IDevice device = this.bluetoothDevices.SingleOrDefault(d => d.Id == p_id);
+
+            if (device is null)
+            {
+                return;
+            }
+
+            try
+            {
+                await this.adapter.ConnectToDeviceAsync(device);
+            }
+            catch (DeviceConnectionException e)
+            {
+                throw e;
+            }
+        }
+
+        public IDevice GetConnectedDevice()
+        {
+            //var device = adapter.GetSystemConnectedOrPairedDevices().FirstOrDefault();
+            return adapter.ConnectedDevices.SingleOrDefault();
         }
     }
 }
