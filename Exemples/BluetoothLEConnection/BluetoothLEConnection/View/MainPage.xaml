@@ -29,39 +29,6 @@
             <Button Text="Voir"
                     Grid.Column="1"/>
         </Grid>
-        <!--<CollectionView BackgroundColor="AliceBlue"
-                        Grid.ColumnSpan="3"
-                        Grid.Row="1"
-                        ItemsSource="{Binding ConnectedDevice}"
-                        IsVisible="{Binding IsConnected}"> --><!--IsVisible="{Binding IsConnected}"--><!--
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="model:Bluetooth">
-                    <Grid Padding="10">
-                        <Frame HeightRequest="80"
-                               Padding="0"
-                               Style="{StaticResource CardView}">
-                            <Grid Padding="0"
-                                  ColumnDefinitions="100, *">
-                                <Image Aspect="AspectFill"
-                                               Source="tracking_device.png"
-                                               WidthRequest="60"
-                                               HeightRequest="60"/>
-
-                                <VerticalStackLayout Grid.Column="1"
-                                                             Padding="10"
-                                                             VerticalOptions="Center">
-                                    <Label Text="{Binding Name}"
-                                                   Style="{StaticResource LargeLabel}"/>
-                                    <Label Text="{Binding State}"
-                                                   Style="{StaticResource SmallLabel}"/>
-                                </VerticalStackLayout>
-                            </Grid>
-                        </Frame>
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>-->
-
         <RefreshView Grid.ColumnSpan="3"
                      Command="{Binding ScanForBluetoothDevicesCommand}"
                      IsRefreshing="{Binding IsRefreshing}"
