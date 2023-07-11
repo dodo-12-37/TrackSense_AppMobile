@@ -27,7 +27,8 @@
                 <Label Text="{Binding ConnectedDevice.Name}"/>
             </VerticalStackLayout>
             <Button Text="Voir"
-                    Grid.Column="1"/>
+                    Grid.Column="1"
+                    Command="{Binding DisplayDeviceMessageCommand}"/>
         </Grid>
         <RefreshView Grid.ColumnSpan="3"
                      Command="{Binding ScanForBluetoothDevicesCommand}"
