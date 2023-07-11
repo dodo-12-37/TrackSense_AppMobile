@@ -15,11 +15,11 @@ using System.Threading.Tasks;
 
 namespace BluetoothLEConnection.ViewModel
 {
-    public partial class BluetoothViewModel: BaseViewModel
+    public partial class BluetoothDeviceViewModel: BaseViewModel
     {
         IBluetoothLE bluetoothLE;
 
-        BluetoothService bluetoothService;
+        BluetoothDeviceService bluetoothService;
 
         [ObservableProperty]
         bool isRefreshing;
@@ -33,7 +33,7 @@ namespace BluetoothLEConnection.ViewModel
         public ObservableCollection<Bluetooth> Devices { get; } = new();
 
 
-        public BluetoothViewModel(BluetoothService p_bluetoothService, IBluetoothLE p_bluetoothLE)
+        public BluetoothDeviceViewModel(BluetoothDeviceService p_bluetoothService, IBluetoothLE p_bluetoothLE)
         {
             this.Title = "Bluetooth";
             this.bluetoothService = p_bluetoothService;

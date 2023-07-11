@@ -10,12 +10,13 @@ using System.Threading.Tasks;
 
 namespace BluetoothLEConnection.Services
 {
-    public class BluetoothService
+    public class BluetoothDeviceService
     {
         IAdapter adapter;
         List<IDevice> bluetoothDevices = new();
 
-        public BluetoothService(IAdapter p_adapter)
+
+        public BluetoothDeviceService(IAdapter p_adapter)
         {
             this.adapter = p_adapter;
         }
