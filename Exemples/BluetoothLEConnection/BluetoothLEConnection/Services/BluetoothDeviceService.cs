@@ -21,7 +21,7 @@ namespace BluetoothLEConnection.Services
             this.adapter = p_adapter;
         }
 
-        public async Task<List<Bluetooth>> GetBluetoothDevices()
+        public async Task<List<BluetoothDevice>> GetBluetoothDevices()
         {
             if (this.bluetoothDevices.Count == 0)
             {
@@ -36,7 +36,7 @@ namespace BluetoothLEConnection.Services
 
             bluetoothDevices.Clear();
 
-            List<Bluetooth> devicesList = new List<Bluetooth>();
+            List<BluetoothDevice> devicesList = new List<BluetoothDevice>();
 
             this.adapter.ScanTimeout = 5000;
             this.adapter.ScanMode = ScanMode.Balanced;
@@ -47,7 +47,7 @@ namespace BluetoothLEConnection.Services
 
             foreach (IDevice device in this.bluetoothDevices)
             {
-                Bluetooth bleDevice = new Bluetooth()
+                BluetoothDevice bleDevice = new BluetoothDevice()
                 {
                     Name = device.Name,
                     State = device.State == Plugin.BLE.Abstractions.DeviceState.Connected ? "Connecté" : "Deconnecté",

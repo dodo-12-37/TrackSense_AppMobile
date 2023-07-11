@@ -26,11 +26,11 @@ namespace BluetoothLEConnection.ViewModel
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsConnected))]
-        Bluetooth connectedDevice;
+        BluetoothDevice connectedDevice;
 
         public bool IsConnected => this.ConnectedDevice is not null;
 
-        public ObservableCollection<Bluetooth> Devices { get; } = new();
+        public ObservableCollection<BluetoothDevice> Devices { get; } = new();
 
 
         public BluetoothDeviceViewModel(BluetoothDeviceService p_bluetoothService, IBluetoothLE p_bluetoothLE)
@@ -117,14 +117,14 @@ namespace BluetoothLEConnection.ViewModel
                     return;
                 }
 
-                List<Bluetooth> deviceList = await this.bluetoothService.GetBluetoothDevices();
+                List<BluetoothDevice> deviceList = await this.bluetoothService.GetBluetoothDevices();
 
                 if (this.Devices.Count > 0)
                 {
                     this.Devices.Clear();
                 }
 
-                foreach (Bluetooth device in deviceList)
+                foreach (BluetoothDevice device in deviceList)
                 {
                     this.Devices.Add(device);
                 }

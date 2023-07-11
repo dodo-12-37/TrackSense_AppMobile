@@ -45,7 +45,7 @@
                             SelectionMode="None"
                             SelectionChangedCommand="{Binding ConnectToDeviceCommand}">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="model:Bluetooth">
+                    <DataTemplate x:DataType="model:BluetoothDevice">
                         <Grid Padding="10">
                             <Frame HeightRequest="80"
                                    Padding="0"

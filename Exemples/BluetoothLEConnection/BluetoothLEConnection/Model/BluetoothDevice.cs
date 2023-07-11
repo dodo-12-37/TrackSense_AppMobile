@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BluetoothLEConnection.Model;
 
-public class Bluetooth
+public class BluetoothDevice
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
