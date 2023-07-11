@@ -3,6 +3,11 @@ Dépôt de l'Application Mobile du Projet Synthèse pour le cours de Programmati
 
 Nous ferons la création d'un objet connecté nommé le TrackSense. Cette objet sera principalement utilisé sur un vélo ou un piéton.
 
+# Biliotheque dotnet-bluetooth-le
+
+Documentation : https://github.com/dotnet-bluetooth-le/dotnet-bluetooth-le
+Nugget : https://www.nuget.org/packages/Plugin.BLE
+
 # Débogage
 
 ## Android
