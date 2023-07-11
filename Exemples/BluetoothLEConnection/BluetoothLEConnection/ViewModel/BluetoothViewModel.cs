@@ -181,7 +181,6 @@ namespace BluetoothLEConnection.ViewModel
         async Task DisplayDeviceMessageAsync()
         {
             IDevice connectedDevice = bluetoothService.GetConnectedDevice();
-
             Guid serviceTestUID = new Guid("4fafc201-1fb5-459e-8fcc-c5c9c331914b");
             Guid characteristicTestUID = new Guid("beb5483e-36e1-4688-b7f5-ea07361b26a8");
 
@@ -193,6 +192,26 @@ namespace BluetoothLEConnection.ViewModel
             string message =Encoding.UTF8.GetString(messageByte);
 
             await Shell.Current.DisplayAlert("Message", $"Affichage du message app embarquee : {message}", "Ok");
+        }
+
+        [RelayCommand]
+        async Task SendMessageToDeviceAsync()
+        {
+            IDevice connectedDevice = bluetoothService.GetConnectedDevice();
+            Guid serviceTestUID = new Guid("4fafc201-1fb5-459e-8fcc-c5c9c331914b");
+            Guid characteristicTestUID = new Guid("beb5483e-36e1-4688-b7f5-ea07361b26a8");
+
+            IService serviceTest = await connectedDevice.GetServiceAsync(serviceTestUID);
+            ICharacteristic characteristicTest = await serviceTest.GetCharacteristicAsync(characteristicTestUID);
+
+            string messageToSend = "TrackSense mobile app !";
+            byte[] messageToByte = Encoding.UTF8.GetBytes(messageToSend);
+
+            var result = await characteristicTest.WriteAsync(messageToByte);
+
+            string resultMessage = result ? "Envoi réussi" : "Problème avec l'envoi";
+
+            await Shell.Current.DisplayAlert("Résultat", resultMessage, "OK");
         }
     }
 }

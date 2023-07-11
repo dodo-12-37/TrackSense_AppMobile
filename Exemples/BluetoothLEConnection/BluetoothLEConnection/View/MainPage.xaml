@@ -18,17 +18,23 @@
           RowDefinitions="Auto, *, Auto"
           RowSpacing="0">
         <Grid Grid.Row="0"
-              ColumnDefinitions="*,Auto"
+              ColumnDefinitions="*,Auto,Auto"
+              BackgroundColor="LightGray"
               Grid.ColumnSpan="3"
-              Margin="2"
+              Padding="4"
               IsVisible="{Binding IsConnected}">
             <VerticalStackLayout>
                 <Label Text="Appareil connecté:"/>
                 <Label Text="{Binding ConnectedDevice.Name}"/>
             </VerticalStackLayout>
             <Button Text="Voir"
+                    Margin="2"
                     Grid.Column="1"
                     Command="{Binding DisplayDeviceMessageCommand}"/>
+            <Button Text="Envoyer"
+                    Grid.Column="2"
+                    Margin="2"
+                    Command="{Binding SendMessageToDeviceCommand}"/>
         </Grid>
         <RefreshView Grid.ColumnSpan="3"
                      Command="{Binding ScanForBluetoothDevicesCommand}"
