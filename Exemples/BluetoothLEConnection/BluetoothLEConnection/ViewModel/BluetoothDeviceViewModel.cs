@@ -1,9 +1,12 @@
 ﻿using BluetoothLEConnection.Model;
 using BluetoothLEConnection.Services;
 using BluetoothLEConnection.View;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+
 using Plugin.BLE.Abstractions.Contracts;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,10 +15,12 @@ using System.Linq;
 using System.Security.Authentication;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Maui.Networking;
+
 
 namespace BluetoothLEConnection.ViewModel
 {
-    public partial class BluetoothDeviceViewModel: BaseViewModel
+    public partial class BluetoothDeviceViewModel : BaseViewModel
     {
         IBluetoothLE bluetoothLE;
 
@@ -33,12 +38,25 @@ namespace BluetoothLEConnection.ViewModel
         public ObservableCollection<BluetoothDevice> Devices { get; } = new();
 
 
-        public BluetoothDeviceViewModel(BluetoothDeviceService p_bluetoothService, IBluetoothLE p_bluetoothLE)
+
+
+
+
+        public BluetoothDeviceViewModel(BluetoothDeviceService p_bluetoothService, IBluetoothLE p_bluetoothLE, UserService userService, IConnectivity connectivity)
         {
-            this.Title = "Bluetooth";
+            this.Title = "Finder";
             this.bluetoothService = p_bluetoothService;
             this.bluetoothLE = p_bluetoothLE;
+
+            this.userService = userService;
+            this.connectivity = connectivity;
         }
+        //public BluetoothDeviceViewModel(BluetoothDeviceService p_bluetoothService, IBluetoothLE p_bluetoothLE)
+        //{
+        //    this.Title = "Bluetooth";
+        //    this.bluetoothService = p_bluetoothService;
+        //    this.bluetoothLE = p_bluetoothLE;
+        //}
 
         [RelayCommand]
         async Task BluetoothConnectivityTestAsync()
@@ -117,12 +135,12 @@ namespace BluetoothLEConnection.ViewModel
                     return;
                 }
 
-                List<BluetoothDevice> deviceList = await this.bluetoothService.GetBluetoothDevices();
-
                 if (this.Devices.Count > 0)
                 {
                     this.Devices.Clear();
                 }
+
+                List<BluetoothDevice> deviceList = await this.bluetoothService.GetBluetoothDevices();
 
                 foreach (BluetoothDevice device in deviceList)
                 {
@@ -149,7 +167,7 @@ namespace BluetoothLEConnection.ViewModel
             {
                 return;
             }
-            
+
             try
             {
                 IsBusy = true;
@@ -189,7 +207,7 @@ namespace BluetoothLEConnection.ViewModel
 
             byte[] messageByte = await characteristicTest.ReadAsync();
 
-            string message =Encoding.UTF8.GetString(messageByte);
+            string message = Encoding.UTF8.GetString(messageByte);
 
             await Shell.Current.DisplayAlert("Message", $"Affichage du message app embarquee : {message}", "Ok");
         }
@@ -213,5 +231,69 @@ namespace BluetoothLEConnection.ViewModel
 
             await Shell.Current.DisplayAlert("Résultat", resultMessage, "OK");
         }
+
+
+
+
+
+
+
+        
+
+        public ObservableCollection<User> Users { get; } = new();
+        UserService userService;
+        IConnectivity connectivity;
+
+
+
+        [RelayCommand]
+        async Task GetUsersAsync()
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            try
+            {
+                //if (connectivity.NetworkAccess != NetworkAccess.Internet)
+                //{
+                //    await Shell.Current.DisplayAlert("No connectivity!",
+                //        $"Please check internet and try again.", "OK");
+                //    return;
+                //}
+
+                IsBusy = true;
+
+                if (Users.Count != 0)
+                {
+                    Users.Clear();
+                }
+
+                var users = await userService.GetUsers();
+                await Shell.Current.DisplayAlert("User infos", $"Test", "OK");
+
+                foreach (var user in users)
+                {
+                    Users.Add(user);
+
+                    await Shell.Current.DisplayAlert("User infos", $"The user number {Users.Count} in database is : {user}.", "OK");
+                }
+
+                await Shell.Current.DisplayAlert("Number of users", $"Number of users in database is {Users.Count}.", "OK");
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Unable to get users: {ex.Message}");
+                await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
+            }
+            finally
+            {
+                IsBusy = false;
+                IsRefreshing = false;
+            }
+        }
+
     }
 }

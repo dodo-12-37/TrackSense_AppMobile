@@ -1,7 +1,9 @@
 ﻿using BluetoothLEConnection.Model;
+
 using Plugin.BLE.Abstractions;
 using Plugin.BLE.Abstractions.Contracts;
 using Plugin.BLE.Abstractions.Exceptions;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
