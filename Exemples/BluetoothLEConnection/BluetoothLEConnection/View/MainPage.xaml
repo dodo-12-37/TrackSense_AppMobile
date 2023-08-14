@@ -87,10 +87,15 @@
                 Margin="2"/>
 
         <Button Text="Find Users"
-                
                 Command="{Binding GetUsersCommand}"
-                
-                
+                IsEnabled="{Binding IsNotBusy}"
+                Grid.Row="2"
+                Grid.Column="1"
+                Margin="2"
+                />
+
+        <Button Text="Create Users"
+                Command="{Binding CreateUsersCommand}"
                 IsEnabled="{Binding IsNotBusy}"
                 Grid.Row="2"
                 Grid.Column="2"

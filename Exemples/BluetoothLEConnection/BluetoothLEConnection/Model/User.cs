@@ -35,12 +35,16 @@ public class User
 
     public override string ToString()
     {
-        return $"{this.UserId} - {this.UserName} - {this.UserAddress} - {this.UserCodePostal} - {this.UserEmail}";
+        return $"Id : {this.UserId}" +
+            $"\nNom : {this.UserName}" +
+            $"\nAdresse : {this.UserAddress}" +
+            $"\nCode Postal : {this.UserCodePostal}" +
+            $"\nEmail : {this.UserEmail}";
     }
 }
 
 
-[JsonSerializable(typeof(List<User>))]
+[JsonSerializable(typeof(List<Model.User>))]
 internal sealed partial class UserContext : JsonSerializerContext
 {
 
