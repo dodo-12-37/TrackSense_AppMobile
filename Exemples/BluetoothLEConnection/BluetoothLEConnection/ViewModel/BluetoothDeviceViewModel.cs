@@ -86,7 +86,7 @@ namespace BluetoothLEConnection.ViewModel
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                await Shell.Current.DisplayAlert("Error!", $"Message: {ex.Message}", "Ok");
+                await Shell.Current.DisplayAlert("Erreur!", $"Message: {ex.Message}", "Ok");
             }
             finally
             {
@@ -107,7 +107,7 @@ namespace BluetoothLEConnection.ViewModel
 
             if (Permissions.ShouldShowRationale<Permissions.LocationWhenInUse>())
             {
-                await Shell.Current.DisplayAlert("Needs permissions", "Needed for scan", "Ok");
+                await Shell.Current.DisplayAlert("Besoin d'autorisation", "Autoriser le scan.", "Ok");
             }
 
             status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
@@ -151,7 +151,7 @@ namespace BluetoothLEConnection.ViewModel
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                await Shell.Current.DisplayAlert("Error!", $"Message: {ex.Message}", "Ok");
+                await Shell.Current.DisplayAlert("Erreur!", $"Message: {ex.Message}", "Ok");
             }
             finally
             {
@@ -186,7 +186,7 @@ namespace BluetoothLEConnection.ViewModel
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                await Shell.Current.DisplayAlert("Error!", $"Message: {ex.Message}", "Ok");
+                await Shell.Current.DisplayAlert("Erreur!", $"Message: {ex.Message}", "Ok");
             }
             finally
             {
@@ -234,6 +234,72 @@ namespace BluetoothLEConnection.ViewModel
 
 
 
+
+
+
+
+
+        [RelayCommand]
+        async Task CommunicationCompleteAsync()
+        {
+            IDevice connectedDevice = bluetoothService.GetConnectedDevice();
+            Guid serviceTestUID = new Guid("4fafc201-1fb5-459e-8fcc-c5c9c331914b");
+            Guid characteristicTestUID = new Guid("beb5483e-36e1-4688-b7f5-ea07361b26a8");
+
+            IService serviceTest = await connectedDevice.GetServiceAsync(serviceTestUID);
+            ICharacteristic characteristicTest = await serviceTest.GetCharacteristicAsync(characteristicTestUID);
+
+            try
+            {
+                IsBusy = true;
+
+                // Recevoir de AppEmbarqué
+                byte[] messageByte = await characteristicTest.ReadAsync();
+                string message = Encoding.UTF8.GetString(messageByte);
+                await Shell.Current.DisplayAlert("Message", $"Affichage du message app embarquee : {message}", "Ok");
+
+
+                // Envoyé à Serveur et recevoir du Serveur
+                if (connectivity.NetworkAccess != NetworkAccess.Internet)
+                {
+                    await Shell.Current.DisplayAlert("Aucune connexion!",
+                        $"SVP, vérifier votre connexion internet et recommencer.", "OK");
+                    return;
+                }
+
+                User newUser = await userService.PostUser(message);
+
+                if (newUser.UserId == 0)
+                {
+                    await Shell.Current.DisplayAlert("Création d'un User", $"L'utilisateur n'a pas été créer...", "OK");
+                }
+                else
+                {
+                    await Shell.Current.DisplayAlert("Création d'un User", $"L'utilisateur à bien été créer!\n{newUser}", "OK");
+                }
+
+
+                // Envoyer à AppEmbarqué
+                string messageToSend = newUser.UserName.ToString();
+                byte[] messageToByte = Encoding.UTF8.GetBytes(messageToSend);
+
+                var result = await characteristicTest.WriteAsync(messageToByte);
+
+                string resultMessage = result ? "Envoi réussi" : "Problème avec l'envoi";
+
+                await Shell.Current.DisplayAlert("Résultat", resultMessage, "OK");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Une erreur est survenue : {ex.Message}");
+                await Shell.Current.DisplayAlert("Erreur!", ex.Message, "OK");
+            }
+            finally
+            {
+                IsBusy = false;
+                IsRefreshing = false;
+            }
+        }
 
 
 
@@ -312,16 +378,15 @@ namespace BluetoothLEConnection.ViewModel
                 }
 
                 IsBusy = true;
+                User newUser = await userService.PostUser("test");
 
-                bool isCreated = await userService.PostUser();
-
-                if (isCreated)
+                if (newUser.UserId != 0)
                 {
-                    await Shell.Current.DisplayAlert("Création d'un User", $"L'utilisateur à bien été créer!", "OK");
+                    await Shell.Current.DisplayAlert("Création d'un User", $"L'utilisateur n'a pas été créer...", "OK");
                 }
                 else
                 {
-                    await Shell.Current.DisplayAlert("Création d'un User", $"L'utilisateur n'a pas été créer...", "OK");
+                    await Shell.Current.DisplayAlert("Création d'un User", $"L'utilisateur à bien été créer!", "OK");
                 }
 
             }

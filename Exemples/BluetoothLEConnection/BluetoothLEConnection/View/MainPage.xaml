@@ -16,14 +16,15 @@
     <Grid ColumnDefinitions="*,*,*"
           ColumnSpacing="5"
           Margin="5"
-          RowDefinitions="Auto, *, Auto"
+          RowDefinitions="Auto, *, Auto, Auto"
           RowSpacing="0">
         <Grid Grid.Row="3"
               ColumnDefinitions="*,Auto,Auto"
               BackgroundColor="LightGray"
               Grid.ColumnSpan="3"
               Padding="4"
-              IsVisible="{Binding IsConnected}">
+              IsVisible="{Binding IsConnected}"
+              IsEnabled="{Binding IsNotBusy}">
             <VerticalStackLayout>
                 <Label Text="Appareil connecté:"/>
                 <Label Text="{Binding ConnectedDevice.Name}"/>
@@ -31,15 +32,19 @@
             <Button Text="Voir"
                     Margin="2"
                     Grid.Column="1"
+                    IsEnabled="{Binding IsNotBusy}"
                     Command="{Binding DisplayDeviceMessageCommand}"/>
             <Button Text="Envoyer"
                     Grid.Column="2"
                     Margin="2"
-                    Command="{Binding SendMessageToDeviceCommand}"/>
+                    IsEnabled="{Binding IsNotBusy}"
+                    Command="{Binding CommunicationCompleteCommand}"/>
         </Grid>
+
         <RefreshView Grid.ColumnSpan="3"
                      Command="{Binding ScanForBluetoothDevicesCommand}"
                      IsRefreshing="{Binding IsRefreshing}"
+                     IsEnabled="{Binding IsNotBusy}"
                      Grid.Row="1">
             <CollectionView BackgroundColor="Transparent"
                             ItemsSource="{Binding Devices}"
@@ -84,22 +89,24 @@
                 IsEnabled="{Binding IsNotBusy}"
                 Grid.Row="2"
                 Grid.Column="0"
-                Margin="2"/>
+                Margin="2"
+                />
 
         <Button Text="Find Users"
                 Command="{Binding GetUsersCommand}"
                 IsEnabled="{Binding IsNotBusy}"
                 Grid.Row="2"
-                Grid.Column="1"
+                Grid.Column="2"
                 Margin="2"
                 />
 
-        <Button Text="Create Users"
+        <Button Text="Create User"
                 Command="{Binding CreateUsersCommand}"
                 IsEnabled="{Binding IsNotBusy}"
                 Grid.Row="2"
-                Grid.Column="2"
+                Grid.Column="1"
                 Margin="2"
+                IsVisible="false"
                 />
 
         <ActivityIndicator

@@ -48,8 +48,8 @@
 //            {
 //                if (connectivity.NetworkAccess != NetworkAccess.Internet)
 //                {
-//                    await Shell.Current.DisplayAlert("No connectivity!",
-//                        $"Please check internet and try again.", "OK");
+//                    await Shell.Current.DisplayAlert("Aucune connexion!",
+//                        $"SVP, vérifier votre connexion internet et recommencer.", "OK");
 //                    return;
 //                }
 
@@ -61,21 +61,64 @@
 //                }
 
 //                var users = await userService.GetUsers();
-//                await Shell.Current.DisplayAlert("User infos", $"Test", "OK");
 
 //                foreach (var user in users)
 //                {
 //                    Users.Add(user);
-//                    await Shell.Current.DisplayAlert("User infos", $"The user number {Users.Count} in database is : {user}.", "OK");
+
+//                    await Shell.Current.DisplayAlert("Infos des Users", $"L'Id numéro {Users.Count} dans la database est : \n{user}.", "OK");
 //                }
 
-//                await Shell.Current.DisplayAlert("Number of users", $"Number of users in database is {Users.Count}.", "OK");
+//                await Shell.Current.DisplayAlert("Nombre de Users", $"Le nombre total de Users dans la database est : {Users.Count}.", "OK");
 
 //            }
 //            catch (Exception ex)
 //            {
-//                Debug.WriteLine($"Unable to get users: {ex.Message}");
-//                await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
+//                Debug.WriteLine($"Impossible d'avoir les users : {ex.Message}");
+//                await Shell.Current.DisplayAlert("Erreur!", ex.Message, "OK");
+//            }
+//            finally
+//            {
+//                IsBusy = false;
+//                IsRefreshing = false;
+//            }
+//        }
+
+//        [RelayCommand]
+//        async Task CreateUsersAsync()
+//        {
+//            if (IsBusy)
+//            {
+//                return;
+//            }
+
+//            try
+//            {
+//                if (connectivity.NetworkAccess != NetworkAccess.Internet)
+//                {
+//                    await Shell.Current.DisplayAlert("Aucune connexion!",
+//                        $"SVP, vérifier votre connexion internet et recommencer.", "OK");
+//                    return;
+//                }
+
+//                IsBusy = true;
+
+//                bool isCreated = await userService.PostUser();
+
+//                if (isCreated)
+//                {
+//                    await Shell.Current.DisplayAlert("Création d'un User", $"L'utilisateur à bien été créer!", "OK");
+//                }
+//                else
+//                {
+//                    await Shell.Current.DisplayAlert("Création d'un User", $"L'utilisateur n'a pas été créer...", "OK");
+//                }
+
+//            }
+//            catch (Exception ex)
+//            {
+//                Debug.WriteLine($"Impossible d'avoir les users : {ex.Message}");
+//                await Shell.Current.DisplayAlert("Erreur!", ex.Message, "OK");
 //            }
 //            finally
 //            {
@@ -87,9 +130,3 @@
 
 //    }
 //}
-
-
-/*
-//    x:DataType="viewmodel:BluetoothDeviceViewModel"
-
-//*/

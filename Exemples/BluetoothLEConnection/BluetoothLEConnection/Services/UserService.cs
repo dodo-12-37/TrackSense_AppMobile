@@ -16,7 +16,9 @@ namespace BluetoothLEConnection.Services
         HttpClient httpClient;
         public List<User> UsersList;
         public User User;
-        public string IP = "192.168.1.57";  // IP de mon PC. À changer selon votre IP.
+        public string Protocole = "http";  // À changer selon communication HTTP(5267) ou HTTPS(7188)
+        public string IP = "192.168.2.76";  // IP de mon PC. À changer selon votre IP.
+        public string Port = "5267";  // Port de mon PC. À changer selon communication HTTP(5267) ou HTTPS(7188)
 
         public UserService()
         {
@@ -37,15 +39,22 @@ namespace BluetoothLEConnection.Services
 
         public async Task<User> GetUser(int p_userId)
         {
-            if (p_userId <= 0 || p_userId > 3)
+            await this.GetUsers();
+
+            if (p_userId <= 0 || p_userId > this.UsersList.Count)
             {
                 throw new ArgumentException("Invalid user id");
             }
 
-            var response = await httpClient.GetAsync($"https://{this.IP}:7188/api/users/" + p_userId);
+            var response = await httpClient.GetAsync($"{this.Protocole}://{this.IP}:{this.Port}/api/users/" + p_userId);
             if (response.IsSuccessStatusCode)
             {
-                this.User = await response.Content.ReadFromJsonAsync(UserContext.Default.User);
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
+                this.User = await response.Content.ReadFromJsonAsync<User>(options);
             }
 
             return this.User;
@@ -53,7 +62,7 @@ namespace BluetoothLEConnection.Services
 
         public async Task<List<User>> GetUsers()
         {
-            var response = await httpClient.GetAsync($"http://{this.IP}:5267/api/users");
+            var response = await httpClient.GetAsync($"{this.Protocole}://{this.IP}:{this.Port}/api/users");
             if (response.IsSuccessStatusCode)
             {
                 var options = new JsonSerializerOptions
@@ -68,18 +77,18 @@ namespace BluetoothLEConnection.Services
         }
 
 
-        public async Task<bool> PostUser()
+        public async Task<User> PostUser(string p_userName)
         {
             Random rnd = new Random();
-            int num = rnd.Next();
+            int randomNumber = rnd.Next();
 
             this.User = new User()
             {
                 UserId = 0,
-                UserName = "Jean",
+                UserName = $"{p_userName}_{randomNumber}",
                 UserAddress = "1, rue de la paix, Chicago, Il, É-U",
                 UserCodePostal = "60304",
-                UserEmail = $"Jean{num}@email.com"
+                UserEmail = $"PFL_{randomNumber}@email.com"
             };
 
             var options = new JsonSerializerOptions
@@ -87,13 +96,11 @@ namespace BluetoothLEConnection.Services
                 PropertyNameCaseInsensitive = true
             };
      
-            var response = await httpClient.PostAsJsonAsync($"http://{this.IP}:5267/api/users", this.User, options);
-            if (response.IsSuccessStatusCode)
-            {
-                return true;
-            }
+            var response = await httpClient.PostAsJsonAsync($"{this.Protocole}://{this.IP}:{this.Port}/api/users", this.User, options);
 
-            return false;
+            var newUser = response.Content.ReadFromJsonAsync<User>(options).Result;
+
+            return newUser;
         }
     }
 }
