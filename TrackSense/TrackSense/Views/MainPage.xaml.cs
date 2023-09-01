@@ -1,4 +1,4 @@
-﻿namespace TrackSense
+﻿namespace TrackSense.Views
 {
     public partial class MainPage : ContentPage
     {
