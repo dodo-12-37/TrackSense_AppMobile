@@ -1,6 +1,6 @@
 ﻿namespace TrackSense.Models;
 
-internal class TrackSenseDevice
+public class TrackSenseDevice
 {
     public Guid Id { get; set; }
     public string Name { get; set; }

@@ -2,11 +2,75 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TrackSense.Views.TrackSenseDevicesPage"
-             Title="TrackSenseDevicesPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to TrackSense devices !"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             xmlns:model="clr-namespace:TrackSense.Models"
+             xmlns:viewmodel="clr-namespace:TrackSense.ViewModels"
+             x:DataType="viewmodel:TrackSenseDevicesViewModel"
+             Title="{Binding Title}">
+
+    <Grid ColumnDefinitions="*,*,*"
+          ColumnSpacing="5"
+          RowDefinitions="Auto, *, Auto"
+          RowSpacing="0">
+        <Grid Grid.Row="0"
+              ColumnDefinitions="*,Auto,Auto"
+              BackgroundColor="LightGray"
+              Grid.ColumnSpan="3"
+              Padding="4"
+              IsVisible="{Binding IsConnected}">
+            <VerticalStackLayout>
+                <Label Text="Appareil connecté:"/>
+                <Label Text="{Binding ConnectedDevice.Name}"/>
+            </VerticalStackLayout>
+            <Button Text="Voir"
+                    Margin="2"
+                    Grid.Column="1"
+                    Command="{Binding DisplayDeviceMessageCommand}"/>
+            <Button Text="Envoyer"
+                    Grid.Column="2"
+                    Margin="2"
+                    Command="{Binding SendMessageToDeviceCommand}"/>
+        </Grid>
+        <RefreshView Grid.ColumnSpan="3"
+                     Command="{Binding ScanForBluetoothDevicesCommand}"
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Grid.Row="1">
+            <CollectionView BackgroundColor="Transparent"
+                            ItemsSource="{Binding Devices}"
+                            SelectionMode="None"
+                            SelectionChangedCommand="{Binding ConnectToDeviceCommand}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:TrackSenseDevice">
+                        <Grid Padding="10">
+                            <Frame HeightRequest="80"
+                                   Padding="0" >
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer CommandParameter="{Binding Id}"
+                                                          Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:TrackSenseDevicesViewModel}},
+                                                                            Path=ConnectToDeviceCommand}"/>
+                                </Frame.GestureRecognizers>
+                                <Grid Padding="0"
+                                      ColumnDefinitions="100, *">
+                                    <Image Aspect="AspectFill"
+                                           Source="tracking_device.png"
+                                           WidthRequest="60"
+                                           HeightRequest="60"/>
+
+                                    <VerticalStackLayout Grid.Column="1"
+                                                         Padding="10"
+                                                         VerticalOptions="Center">
+                                        <Label Text="{Binding Name}"
+                                               Style="{StaticResource LargeLabel}"/>
+                                        <Label Text="{Binding State}"
+                                               Style="{StaticResource SmallLabel}"/>
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Frame>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+
+
 </ContentPage>
