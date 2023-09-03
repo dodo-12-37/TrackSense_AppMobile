@@ -35,7 +35,7 @@
                      IsRefreshing="{Binding IsRefreshing}"
                      Grid.Row="1">
             <CollectionView BackgroundColor="Transparent"
-                            ItemsSource="{Binding Devices}"
+                            ItemsSource="{Binding NearbyDevices}"
                             SelectionMode="None"
                             SelectionChangedCommand="{Binding ConnectToDeviceCommand}">
                 <CollectionView.ItemTemplate>
@@ -60,8 +60,6 @@
                                                          VerticalOptions="Center">
                                         <Label Text="{Binding Name}"
                                                Style="{StaticResource LargeLabel}"/>
-                                        <Label Text="{Binding State}"
-                                               Style="{StaticResource SmallLabel}"/>
                                     </VerticalStackLayout>
                                 </Grid>
                             </Frame>

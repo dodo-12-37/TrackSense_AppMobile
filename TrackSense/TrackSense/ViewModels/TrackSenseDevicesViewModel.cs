@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Plugin.BLE.Abstractions;
 using Plugin.BLE.Abstractions.Contracts;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -23,47 +24,13 @@ namespace TrackSense.ViewModels
 
         public bool IsConnected => this.ConnectedDevice is not null;
 
-        public ObservableCollection<TrackSenseDevice> Devices { get; } = new();
+        public ObservableCollection<TrackSenseDevice> NearbyDevices { get; } = new();
 
         public TrackSenseDevicesViewModel(BluetoothService p_bluetoothService)
         {
             this.Title = "Ajout TrackSense";
             this._bluetoothService = p_bluetoothService;
             this.ScanForBluetoothDevicesAsync();
-        }
-
-        [RelayCommand]
-        async Task BluetoothConnectivityTestAsync()
-        {
-            await this.RequestBluetooth();
-
-            if (IsBusy)
-            {
-                return;
-            }
-
-            try
-            {
-                if (!_bluetoothService.BluetoothIsOn())
-                {
-                    await Shell.Current.DisplayAlert("Erreur connexion bluetooth", "Veuillez vérifier votre connexion bluetooth", "Ok");
-                }
-                else
-                {
-                    await Shell.Current.DisplayAlert("Connexion bluetooth active", "Le bluetooth du téléphone est bien activé", "Ok");
-                }
-
-                IsBusy = true;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-                await Shell.Current.DisplayAlert("Erreur!", $"Message: {ex.Message}", "Ok");
-            }
-            finally
-            {
-                IsBusy = false;
-            }
         }
 
         async Task RequestBluetooth()
@@ -106,16 +73,16 @@ namespace TrackSense.ViewModels
                     return;
                 }
 
-                if (this.Devices.Count > 0)
+                if (this.NearbyDevices.Count > 0)
                 {
-                    this.Devices.Clear();
+                    this.NearbyDevices.Clear();
                 }
 
                 List<TrackSenseDevice> deviceList = await this._bluetoothService.GetBluetoothDevices();
 
                 foreach (TrackSenseDevice device in deviceList)
                 {
-                    this.Devices.Add(device);
+                    this.NearbyDevices.Add(device);
                 }
 
             }
@@ -147,10 +114,10 @@ namespace TrackSense.ViewModels
 
                 if (device is not null)
                 {
-                    this.ConnectedDevice = this.Devices.SingleOrDefault(d => d.Id == device.Id);
+                    this.ConnectedDevice = this.NearbyDevices.SingleOrDefault(d => d.Id == device.Id);
                     if (this.ConnectedDevice is not null)
                     {
-                        this.ConnectedDevice.State = "Connecté";
+                        this.ConnectedDevice.isConnected = true;
                     }
                 }
             }

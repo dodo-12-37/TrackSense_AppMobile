@@ -4,5 +4,5 @@ public class TrackSenseDevice
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
-    public string State { get; set; }
+    public bool isConnected { get; set; }
 }
