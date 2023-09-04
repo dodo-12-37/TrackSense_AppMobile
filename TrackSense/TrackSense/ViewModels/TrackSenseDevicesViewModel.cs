@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Text;
 using TrackSense.Models;
 using TrackSense.Services;
+using TrackSense.Views;
 
 namespace TrackSense.ViewModels
 {
@@ -120,6 +121,7 @@ namespace TrackSense.ViewModels
                         this.ConnectedDevice.isConnected = true;
                     }
                 }
+                await Shell.Current.Navigation.PopAsync();
             }
             catch (Exception ex)
             {

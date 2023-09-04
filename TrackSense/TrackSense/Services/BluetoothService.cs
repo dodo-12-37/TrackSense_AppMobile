@@ -1,14 +1,17 @@
 ﻿using Plugin.BLE.Abstractions;
 using Plugin.BLE.Abstractions.Contracts;
+using Plugin.BLE.Abstractions.EventArgs;
 using Plugin.BLE.Abstractions.Exceptions;
+using System.Text;
 using TrackSense.Models;
 
 namespace TrackSense.Services
 {
-    public class BluetoothService
+    public class BluetoothService : IObservable<BluetoothEvent>
     {
         IBluetoothLE bluetoothLE;
         List<IDevice> bluetoothDevices = new();
+        private List<IObserver<BluetoothEvent>> observers = new();
 
         public BluetoothService(IBluetoothLE bluetoothLE)
         {
@@ -72,13 +75,20 @@ namespace TrackSense.Services
 
                 characteristicTest.ValueUpdated += (sender, args) =>
                 {
-                    var bytes = args.Characteristic.Value.ToString();
-                    string message = BitConverter.ToString(bytes);
-                    // Action à effectuer à chaque notification (envoyer le trajet vers l'API) - voir pattern Strategy
+                    var bytes = args.Characteristic.Value;
+                    string message = Encoding.UTF8.GetString(bytes);
+                    BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_DATA, true, message);
+                    observers.ForEach(o => o.OnNext(BTEventSendData));
+                    // Action à effectuer à chaque notification
+                    //   - Notifier observateur (CompletedRidesViewModel)
+                    //     - Vérifier intégrité trajet
+                    //     - Enregistrer trajet dans receivedData
                     Console.WriteLine(message);
                 };
 
                 await characteristicTest.StartUpdatesAsync();
+                BluetoothEvent BTEventConnection = new BluetoothEvent(BluetoothEventType.CONNECTION, true);
+                this.observers.ForEach(o => o.OnNext(BTEventConnection));
 
             }
             catch (DeviceConnectionException e)
@@ -96,6 +106,17 @@ namespace TrackSense.Services
         public bool BluetoothIsOn()
         {
             return this.bluetoothLE.State == BluetoothState.On;
+        }
+
+        public IDisposable Subscribe(IObserver<BluetoothEvent> observer)
+        {
+            if (observer is null)
+            {
+                throw new ArgumentNullException(nameof(observer));
+            }
+
+            this.observers.Add(observer);
+            return new UnsubscriberBluetooth(this.observers, observer);
         }
     }
 }
