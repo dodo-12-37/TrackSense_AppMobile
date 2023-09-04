@@ -3995,7 +3995,7 @@
 											"top": 575,
 											"width": 175.56982421875,
 											"height": 13,
-											"text": "Cesse envoie données trajet"
+											"text": "Cesse envoi données trajet"
 										},
 										{
 											"_type": "LabelView",
@@ -4658,7 +4658,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGKIvDOxyBkqOk="
 							},
-							"name": "Cesse envoie données trajet"
+							"name": "Cesse envoi données trajet"
 						}
 					]
 				},
