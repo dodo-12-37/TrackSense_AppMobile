@@ -25,13 +25,19 @@ public partial class MainPageViewModel : BaseViewModel
         BluetoothObserver bluetoothObserver = new BluetoothObserver(this._bluetoothService,
             (value) =>
             {
-                if (value.Type != BluetoothEventType.SENDING_RIDE_DATA)
+                switch (value.Type)
                 {
-                    isConnected = value.Type == BluetoothEventType.CONNECTION;
-                }
-                else
-                {
-                    _rideService.ReceiveRideData(value.rideData);
+                    case BluetoothEventType.CONNECTION:
+                        isConnected = true;
+                        break;
+                    case BluetoothEventType.DECONNECTION:
+                        isConnected = false;
+                        break;
+                    case BluetoothEventType.SENDING_RIDE_DATA:
+                        this._rideService.ReceiveRideData(value.rideData);
+                        break;
+                    default:
+                        break;
                 }
             });
     }
