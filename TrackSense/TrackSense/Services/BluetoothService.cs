@@ -67,13 +67,14 @@ namespace TrackSense.Services
             {
                 await this.bluetoothLE.Adapter.ConnectToDeviceAsync(device);
                 IDevice connectedDevice = this.bluetoothLE.Adapter.ConnectedDevices.SingleOrDefault();
-                Guid serviceTestUID = new Guid("4fafc201-1fb5-459e-8fcc-c5c9c331914b");
-                Guid characteristicTestUID = new Guid("beb5483e-36e1-4688-b7f5-ea07361b26a8");
+                Guid completedRideServiceUID = new Guid("62ffab64-3646-4fb9-88d8-541deb961192");
+                Guid characteristicNotificationUID = new Guid("9456444a-4b5f-11ee-be56-0242ac120002");
 
-                IService serviceTest = await connectedDevice.GetServiceAsync(serviceTestUID);
-                ICharacteristic characteristicTest = await serviceTest.GetCharacteristicAsync(characteristicTestUID);
+                IService completedRideService = await connectedDevice.GetServiceAsync(completedRideServiceUID);
+                ICharacteristic characteristicNotification = await completedRideService.GetCharacteristicAsync(characteristicNotificationUID);
 
-                characteristicTest.ValueUpdated += (sender, args) =>
+
+                characteristicNotification.ValueUpdated += (sender, args) =>
                 {
                     var bytes = args.Characteristic.Value;
                     string message = Encoding.UTF8.GetString(bytes);
@@ -86,7 +87,7 @@ namespace TrackSense.Services
                     Console.WriteLine(message);
                 };
 
-                await characteristicTest.StartUpdatesAsync();
+                await characteristicNotification.StartUpdatesAsync();
                 BluetoothEvent BTEventConnection = new BluetoothEvent(BluetoothEventType.CONNECTION, true);
                 this.observers.ForEach(o => o.OnNext(BTEventConnection));
 
