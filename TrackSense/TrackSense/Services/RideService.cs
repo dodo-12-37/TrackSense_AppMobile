@@ -11,9 +11,23 @@ namespace TrackSense.Services
     {
         private RideData _rideData;
 
+
         public RideService(RideData rideData)
         {
             _rideData = rideData;
+
+            BluetoothObserver bluetoothObserver = new BluetoothObserver(this._bluetoothService,
+                (value) =>
+                {
+                    if (value.Type != BluetoothEventType.SENDING_RIDE_DATA)
+                    {
+                        isConnected = value.Type == BluetoothEventType.CONNECTION;
+                    }
+                    else
+                    {
+                        _rideService.ReceiveRideData(value.rideData);
+                    }
+                });
         }
 
         internal void ReceiveRideData(string rideData)
