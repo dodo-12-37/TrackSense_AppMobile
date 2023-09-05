@@ -969,7 +969,7 @@
 											"visible": false,
 											"font": "Arial;13;0",
 											"left": -144,
-											"top": -184,
+											"top": -168,
 											"height": 13
 										},
 										{
@@ -980,7 +980,7 @@
 											},
 											"font": "Arial;13;1",
 											"left": 701,
-											"top": 311,
+											"top": 319,
 											"width": 201.95068359375,
 											"height": 13,
 											"text": "TrackSenseDevicesViewModel"
@@ -994,7 +994,7 @@
 											"visible": false,
 											"font": "Arial;13;0",
 											"left": -144,
-											"top": -184,
+											"top": -168,
 											"width": 108.11962890625,
 											"height": 13,
 											"text": "(from ViewModels)"
@@ -1008,14 +1008,14 @@
 											"visible": false,
 											"font": "Arial;13;0",
 											"left": -144,
-											"top": -184,
+											"top": -168,
 											"height": 13,
 											"horizontalAlignment": 1
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 696,
-									"top": 304,
+									"top": 312,
 									"width": 211.95068359375,
 									"height": 25,
 									"stereotypeLabel": {
@@ -1052,10 +1052,10 @@
 											},
 											"font": "Arial;13;0",
 											"left": 701,
-											"top": 334,
+											"top": 342,
 											"width": 201.95068359375,
 											"height": 13,
-											"text": "+BluetoothService",
+											"text": "+_bluetoothService",
 											"horizontalAlignment": 0
 										},
 										{
@@ -1069,10 +1069,10 @@
 											},
 											"font": "Arial;13;0",
 											"left": 701,
-											"top": 349,
+											"top": 357,
 											"width": 201.95068359375,
 											"height": 13,
-											"text": "+connectedDevice",
+											"text": "+_connectedDevice",
 											"horizontalAlignment": 0
 										},
 										{
@@ -1086,18 +1086,52 @@
 											},
 											"font": "Arial;13;0",
 											"left": 701,
-											"top": 364,
+											"top": 372,
 											"width": 201.95068359375,
 											"height": 13,
 											"text": "+NearbyDevices",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAGKZi7DglkVv0M=",
+											"_parent": {
+												"$ref": "AAAAAAGKUgm1ytaEcm0="
+											},
+											"model": {
+												"$ref": "AAAAAAGKZi7DeFkS/XE="
+											},
+											"font": "Arial;13;0",
+											"left": 701,
+											"top": 387,
+											"width": 201.95068359375,
+											"height": 13,
+											"text": "+IsRefreshing",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAGKZi7ftFnZqJ0=",
+											"_parent": {
+												"$ref": "AAAAAAGKUgm1ytaEcm0="
+											},
+											"model": {
+												"$ref": "AAAAAAGKZi7frVnWByI="
+											},
+											"font": "Arial;13;0",
+											"left": 701,
+											"top": 402,
+											"width": 201.95068359375,
+											"height": 13,
+											"text": "+IsConnected",
 											"horizontalAlignment": 0
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 696,
-									"top": 329,
+									"top": 337,
 									"width": 211.95068359375,
-									"height": 53
+									"height": 83
 								},
 								{
 									"_type": "UMLOperationCompartmentView",
@@ -1120,7 +1154,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 701,
-											"top": 387,
+											"top": 425,
 											"width": 201.95068359375,
 											"height": 13,
 											"text": "+ScanForBluetoothDevicesAsync()",
@@ -1129,7 +1163,7 @@
 									],
 									"font": "Arial;13;0",
 									"left": 696,
-									"top": 382,
+									"top": 420,
 									"width": 211.95068359375,
 									"height": 23
 								},
@@ -1145,7 +1179,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": -232,
-									"top": -32,
+									"top": -24,
 									"width": 10,
 									"height": 10
 								},
@@ -1161,7 +1195,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": -232,
-									"top": -32,
+									"top": -24,
 									"width": 10,
 									"height": 10
 								}
@@ -1172,9 +1206,9 @@
 							"font": "Arial;13;0",
 							"containerChangeable": true,
 							"left": 696,
-							"top": 304,
+							"top": 312,
 							"width": 211.95068359375,
-							"height": 113,
+							"height": 131,
 							"nameCompartment": {
 								"$ref": "AAAAAAGKUgm1ytZ/pr4="
 							},
@@ -2235,7 +2269,7 @@
 											"top": 542,
 											"width": 279.98876953125,
 											"height": 13,
-											"text": "+BLE: IBluetoothLE",
+											"text": "+_bluetoothLE: IBluetoothLE",
 											"horizontalAlignment": 0
 										},
 										{
@@ -2252,7 +2286,7 @@
 											"top": 557,
 											"width": 279.98876953125,
 											"height": 13,
-											"text": "+BluetoothDevices",
+											"text": "+bluetoothDevices",
 											"horizontalAlignment": 0
 										},
 										{
@@ -2271,30 +2305,13 @@
 											"height": 13,
 											"text": "+_observers: List<IObserver>",
 											"horizontalAlignment": 0
-										},
-										{
-											"_type": "UMLAttributeView",
-											"_id": "AAAAAAGKYJjdz76MYwg=",
-											"_parent": {
-												"$ref": "AAAAAAGKUmnTtD5ntM8="
-											},
-											"model": {
-												"$ref": "AAAAAAGKYJjdyL6Ad78="
-											},
-											"font": "Arial;13;0",
-											"left": 677,
-											"top": 587,
-											"width": 279.98876953125,
-											"height": 13,
-											"text": "+dataReceived: List<string>",
-											"horizontalAlignment": 0
 										}
 									],
 									"font": "Arial;13;0",
 									"left": 672,
 									"top": 537,
 									"width": 289.98876953125,
-									"height": 68
+									"height": 53
 								},
 								{
 									"_type": "UMLOperationCompartmentView",
@@ -2317,7 +2334,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 677,
-											"top": 610,
+											"top": 595,
 											"width": 279.98876953125,
 											"height": 13,
 											"text": "+RequestBluetooth()",
@@ -2334,7 +2351,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 677,
-											"top": 625,
+											"top": 610,
 											"width": 279.98876953125,
 											"height": 13,
 											"text": "+ScanForBluetoothDevicesAsync()",
@@ -2351,7 +2368,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 677,
-											"top": 640,
+											"top": 625,
 											"width": 279.98876953125,
 											"height": 13,
 											"text": "+ConnectToDevice(id: Guid)",
@@ -2368,7 +2385,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 677,
-											"top": 655,
+											"top": 640,
 											"width": 279.98876953125,
 											"height": 13,
 											"text": "+SendMessageToDevice(message: string)",
@@ -2385,7 +2402,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 677,
-											"top": 670,
+											"top": 655,
 											"width": 279.98876953125,
 											"height": 13,
 											"text": "+GetDeviceMessage(): string",
@@ -2402,7 +2419,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 677,
-											"top": 685,
+											"top": 670,
 											"width": 279.98876953125,
 											"height": 13,
 											"text": "+BluetoothIsOn(): bool",
@@ -2419,7 +2436,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 677,
-											"top": 700,
+											"top": 685,
 											"width": 279.98876953125,
 											"height": 13,
 											"text": "+GetBluetoothDevices()",
@@ -2428,7 +2445,7 @@
 									],
 									"font": "Arial;13;0",
 									"left": 672,
-									"top": 605,
+									"top": 590,
 									"width": 289.98876953125,
 									"height": 113
 								},
@@ -2512,7 +2529,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 838,
-									"top": 457,
+									"top": 470,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 15,
@@ -2533,7 +2550,7 @@
 									"visible": null,
 									"font": "Arial;13;0",
 									"left": 853,
-									"top": 457,
+									"top": 470,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 30,
@@ -2554,7 +2571,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 809,
-									"top": 458,
+									"top": 471,
 									"height": 13,
 									"alpha": -1.5707963267948966,
 									"distance": 15,
@@ -2575,7 +2592,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 839,
-									"top": 435,
+									"top": 461,
 									"height": 13,
 									"alpha": 0.5235987755982988,
 									"distance": 30,
@@ -2596,7 +2613,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 852,
-									"top": 438,
+									"top": 464,
 									"height": 13,
 									"alpha": 0.7853981633974483,
 									"distance": 40,
@@ -2617,7 +2634,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 811,
-									"top": 431,
+									"top": 457,
 									"height": 13,
 									"alpha": -0.5235987755982988,
 									"distance": 25,
@@ -2726,7 +2743,7 @@
 							"tail": {
 								"$ref": "AAAAAAGKUgm1ytZ+OO8="
 							},
-							"points": "824:416;824:512",
+							"points": "824:442;824:512",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAGKUnD1GlNgSo4="
@@ -3665,7 +3682,41 @@
 											"top": 230,
 											"width": 228.1982421875,
 											"height": 13,
-											"text": "+TrackSenseDevicesViewModel",
+											"text": "+_bluetoothService",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAGKZilmT08QjG0=",
+											"_parent": {
+												"$ref": "AAAAAAGKUgRIb9BTBWU="
+											},
+											"model": {
+												"$ref": "AAAAAAGKZilmQU77IgQ="
+											},
+											"font": "Arial;13;0",
+											"left": 709,
+											"top": 245,
+											"width": 228.1982421875,
+											"height": 13,
+											"text": "+_rideService",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAGKZi3t4lDHaxU=",
+											"_parent": {
+												"$ref": "AAAAAAGKUgRIb9BTBWU="
+											},
+											"model": {
+												"$ref": "AAAAAAGKZi3t2VCyjRY="
+											},
+											"font": "Arial;13;0",
+											"left": 709,
+											"top": 260,
+											"width": 228.1982421875,
+											"height": 13,
+											"text": "+IsConnected",
 											"horizontalAlignment": 0
 										}
 									],
@@ -3673,7 +3724,7 @@
 									"left": 704,
 									"top": 225,
 									"width": 238.1982421875,
-									"height": 23
+									"height": 53
 								},
 								{
 									"_type": "UMLOperationCompartmentView",
@@ -3696,7 +3747,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 709,
-											"top": 253,
+											"top": 283,
 											"width": 228.1982421875,
 											"height": 13,
 											"text": "+GoToTrackSenseDevices()",
@@ -3705,7 +3756,7 @@
 									],
 									"font": "Arial;13;0",
 									"left": 704,
-									"top": 248,
+									"top": 278,
 									"width": 238.1982421875,
 									"height": 23
 								},
@@ -3750,7 +3801,7 @@
 							"left": 704,
 							"top": 200,
 							"width": 238.1982421875,
-							"height": 86,
+							"height": 101,
 							"nameCompartment": {
 								"$ref": "AAAAAAGKUgRIbtBOO7Y="
 							},
@@ -5522,7 +5573,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 800,
+									"left": 799,
 									"top": 141,
 									"height": 13,
 									"alpha": 1.5707963267948966,
@@ -5543,7 +5594,7 @@
 									},
 									"visible": null,
 									"font": "Arial;13;0",
-									"left": 785,
+									"left": 784,
 									"top": 142,
 									"height": 13,
 									"alpha": 1.5707963267948966,
@@ -5564,7 +5615,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 829,
+									"left": 828,
 									"top": 140,
 									"height": 13,
 									"alpha": -1.5707963267948966,
@@ -5583,7 +5634,7 @@
 								"$ref": "AAAAAAGKUgRIbtBNhZw="
 							},
 							"lineStyle": 1,
-							"points": "819:199;811.6315789473684:95",
+							"points": "818:199;811.6315789473684:95",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAGKYJEqFy882QQ="
@@ -6390,8 +6441,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGKUgm1ytZ891s="
 									},
-									"name": "BluetoothService",
-									"type": ""
+									"name": "_bluetoothService"
 								},
 								{
 									"_type": "UMLAttribute",
@@ -6399,8 +6449,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGKUgm1ytZ891s="
 									},
-									"name": "connectedDevice",
-									"type": ""
+									"name": "_connectedDevice"
 								},
 								{
 									"_type": "UMLAttribute",
@@ -6410,6 +6459,22 @@
 									},
 									"name": "NearbyDevices",
 									"type": ""
+								},
+								{
+									"_type": "UMLAttribute",
+									"_id": "AAAAAAGKZi7DeFkS/XE=",
+									"_parent": {
+										"$ref": "AAAAAAGKUgm1ytZ891s="
+									},
+									"name": "IsRefreshing"
+								},
+								{
+									"_type": "UMLAttribute",
+									"_id": "AAAAAAGKZi7frVnWByI=",
+									"_parent": {
+										"$ref": "AAAAAAGKUgm1ytZ891s="
+									},
+									"name": "IsConnected"
 								}
 							],
 							"operations": [
@@ -6480,8 +6545,23 @@
 									"_parent": {
 										"$ref": "AAAAAAGKUgRIbdBLR/4="
 									},
-									"name": "TrackSenseDevicesViewModel",
-									"type": ""
+									"name": "_bluetoothService"
+								},
+								{
+									"_type": "UMLAttribute",
+									"_id": "AAAAAAGKZilmQU77IgQ=",
+									"_parent": {
+										"$ref": "AAAAAAGKUgRIbdBLR/4="
+									},
+									"name": "_rideService"
+								},
+								{
+									"_type": "UMLAttribute",
+									"_id": "AAAAAAGKZi3t2VCyjRY=",
+									"_parent": {
+										"$ref": "AAAAAAGKUgRIbdBLR/4="
+									},
+									"name": "IsConnected"
 								}
 							],
 							"operations": [
@@ -6562,7 +6642,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGKUmnTsz5fFHw="
 									},
-									"name": "BLE",
+									"name": "_bluetoothLE",
 									"type": {
 										"$ref": "AAAAAAGKUnIdZmNa1e4="
 									}
@@ -6573,8 +6653,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGKUmnTsz5fFHw="
 									},
-									"name": "BluetoothDevices",
-									"type": ""
+									"name": "bluetoothDevices"
 								},
 								{
 									"_type": "UMLAttribute",
@@ -6584,15 +6663,6 @@
 									},
 									"name": "_observers",
 									"type": "List<IObserver>"
-								},
-								{
-									"_type": "UMLAttribute",
-									"_id": "AAAAAAGKYJjdyL6Ad78=",
-									"_parent": {
-										"$ref": "AAAAAAGKUmnTsz5fFHw="
-									},
-									"name": "dataReceived",
-									"type": "List<string>"
 								}
 							],
 							"operations": [
