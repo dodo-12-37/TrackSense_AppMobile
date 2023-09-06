@@ -71,6 +71,7 @@ namespace TrackSense.Services
                 Guid characteristicNotificationUID = new Guid("9456444a-4b5f-11ee-be56-0242ac120002");
 
                 IService completedRideService = await connectedDevice.GetServiceAsync(completedRideServiceUID);
+                IReadOnlyList<ICharacteristic> chars = await completedRideService.GetCharacteristicsAsync();
                 ICharacteristic characteristicNotification = await completedRideService.GetCharacteristicAsync(characteristicNotificationUID);
 
 
@@ -80,11 +81,6 @@ namespace TrackSense.Services
                     string message = Encoding.UTF8.GetString(bytes);
                     BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_DATA, true, message);
                     observers.ForEach(o => o.OnNext(BTEventSendData));
-                    // Action à effectuer à chaque notification
-                    //   - Notifier observateur (CompletedRidesViewModel)
-                    //     - Vérifier intégrité trajet
-                    //     - Enregistrer trajet dans receivedData
-                    Console.WriteLine(message);
                 };
 
                 await characteristicNotification.StartUpdatesAsync();
@@ -100,7 +96,6 @@ namespace TrackSense.Services
 
         public IDevice GetConnectedDevice()
         {
-            //var device = adapter.GetSystemConnectedOrPairedDevices().FirstOrDefault();
             return bluetoothLE.Adapter.ConnectedDevices.SingleOrDefault();
         }
 
