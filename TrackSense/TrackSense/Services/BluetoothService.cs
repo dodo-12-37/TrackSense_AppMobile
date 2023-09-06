@@ -12,6 +12,13 @@ namespace TrackSense.Services
         IBluetoothLE bluetoothLE;
         List<IDevice> bluetoothDevices = new();
         private List<IObserver<BluetoothEvent>> observers = new();
+        public bool IsConnected
+        {
+            get
+            {
+                return this.GetBluetoothDevices() is not null;
+            }
+        }
 
         public BluetoothService(IBluetoothLE bluetoothLE)
         {
@@ -69,15 +76,18 @@ namespace TrackSense.Services
                 IDevice connectedDevice = this.bluetoothLE.Adapter.ConnectedDevices.SingleOrDefault();
                 Guid completedRideServiceUID = new Guid("62ffab64-3646-4fb9-88d8-541deb961192");
                 Guid characteristicNotificationUID = new Guid("9456444a-4b5f-11ee-be56-0242ac120002");
+                Guid rideDataUID = new Guid("51656aa8-b795-427f-a96c-c4b6c57430dd");
 
                 IService completedRideService = await connectedDevice.GetServiceAsync(completedRideServiceUID);
                 IReadOnlyList<ICharacteristic> chars = await completedRideService.GetCharacteristicsAsync();
                 ICharacteristic characteristicNotification = await completedRideService.GetCharacteristicAsync(characteristicNotificationUID);
+                ICharacteristic rideDataCharacteristic = await completedRideService.GetCharacteristicAsync(rideDataUID);
 
 
-                characteristicNotification.ValueUpdated += (sender, args) =>
+                characteristicNotification.ValueUpdated += async (sender, args) =>
                 {
-                    var bytes = args.Characteristic.Value;
+                    //var bytes = args.Characteristic.Value;
+                    byte[] bytes = await rideDataCharacteristic.ReadAsync();
                     string message = Encoding.UTF8.GetString(bytes);
                     BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_DATA, true, message);
                     observers.ForEach(o => o.OnNext(BTEventSendData));
