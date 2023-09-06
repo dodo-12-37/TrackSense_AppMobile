@@ -10,17 +10,18 @@ public partial class MainPageViewModel : BaseViewModel
 {
     BluetoothService _bluetoothService;
     RideService _rideService;
+
     [ObservableProperty]
     bool isConnected;
+
+    [ObservableProperty]
+    bool isReceivingData;
 
     public MainPageViewModel(BluetoothService btService, RideService rideService)
     {
         Title = "Accueil";
         _bluetoothService = btService;
         _rideService = rideService;
-
-        //BluetoothObserver bluetoothObserver = new BluetoothObserver(this._bluetoothService,
-        //    (value) => IsConnected = value.Type != BluetoothEventType.DECONNECTION);
 
         BluetoothObserver bluetoothObserver = new BluetoothObserver(this._bluetoothService,
             (value) =>
@@ -34,7 +35,9 @@ public partial class MainPageViewModel : BaseViewModel
                         isConnected = false;
                         break;
                     case BluetoothEventType.SENDING_RIDE_DATA:
+                        isReceivingData = true;
                         this._rideService.ReceiveRideData(value.rideData);
+                        isReceivingData = false;
                         break;
                     default:
                         break;
