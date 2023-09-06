@@ -1,14 +1,31 @@
-﻿namespace TrackSense.Services
+﻿using TrackSense.Entities;
+
+namespace TrackSense.Services
 {
     public class BluetoothEvent
     {
         public BluetoothEventType Type { get; set;}
-        public string rideData { get; set;}
-        public bool isConnected { get; set;}
-        public BluetoothEvent(BluetoothEventType eventType, bool isConnected, string rideData = null)
+        public CompletedRide RideData { get; set;}
+        public List<CompletedRidePoint> RidePoints { get; set;}
+        public bool IsConnected { get; set;}
+
+        public BluetoothEvent(BluetoothEventType eventType, bool isConnected)
         {
-            this.rideData = rideData;
-            this.isConnected = isConnected;
+            this.Type = eventType;
+            this.IsConnected = isConnected;
+        }
+        public BluetoothEvent(BluetoothEventType eventType, bool isConnected, CompletedRide completedRide)
+        {
+            this.Type = eventType;
+            this.RideData = completedRide;
+            this.IsConnected = isConnected;
+        }
+
+        public BluetoothEvent(BluetoothEventType eventType, bool isConnected, List<CompletedRidePoint> completedRidePoints)
+        {
+            this.Type = eventType;
+            this.RidePoints = completedRidePoints;
+            this.IsConnected = isConnected;
         }
 
     }

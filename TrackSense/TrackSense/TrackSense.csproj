@@ -64,7 +64,6 @@
 	<ItemGroup>
 	  <Folder Include="Services\API\APIDTO\" />
 	  <Folder Include="Services\API\" />
-	  <Folder Include="Services\Bluetooth\BluetoothDTO\" />
 	</ItemGroup>
 
 </Project>

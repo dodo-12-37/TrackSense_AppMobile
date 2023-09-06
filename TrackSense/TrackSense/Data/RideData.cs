@@ -31,13 +31,13 @@ namespace TrackSense.Data
                 throw new ArgumentNullException(nameof(completedRide));
             }
 
-            if (GetCompletedRideById(completedRide.Id) is not null)
+            if (GetCompletedRideById(completedRide.CompletedRideId) is not null)
             {
                 throw new InvalidOperationException();
             }
 
             List<CompletedRideDTO> listeRidesDTO = ListRidesDTO();
-            listeRidesDTO.Add(new CompletedRideDTO(completedRide));
+            listeRidesDTO.Add(new CompletedRideDTO(completedRide)); //liste nulle
 
             SaveListInFile(listeRidesDTO);
         }
@@ -63,22 +63,28 @@ namespace TrackSense.Data
         {
             string chaineJson = File.ReadAllText(this._fileName);
 
-            return JsonConvert.DeserializeObject<List<CompletedRideDTO>>(chaineJson);
+            List<CompletedRideDTO> listCompletedRides = new List<CompletedRideDTO>();
+            listCompletedRides = JsonConvert.DeserializeObject<List<CompletedRideDTO>>(chaineJson);
+
+            return listCompletedRides;
         }
 
         public List<CompletedRide> ListCompletedRides()
         {
             List<CompletedRideDTO> completedRideDTOs = ListRidesDTO();
+            List<CompletedRide> ridesList = new List<CompletedRide>();
 
-            List<CompletedRide> ridesList = completedRideDTOs.Select(rideDTO => new CompletedRide(
-                rideDTO.Id)).ToList();
+            if (completedRideDTOs is not null)
+            {
+                ridesList = completedRideDTOs.Select(rideDTO => rideDTO.ToEntity()).ToList();
+            }
 
             return ridesList;
         }
 
-        private object GetCompletedRideById(Guid id)
+        private CompletedRide GetCompletedRideById(Guid id)
         {
-            return this.ListCompletedRides().SingleOrDefault(ride => ride.Id == id);
+            return this.ListCompletedRides().SingleOrDefault(ride => ride.CompletedRideId == id);
         }
     }
 }

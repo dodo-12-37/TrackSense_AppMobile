@@ -34,9 +34,14 @@ public partial class MainPageViewModel : BaseViewModel
                     case BluetoothEventType.DECONNECTION:
                         isConnected = false;
                         break;
-                    case BluetoothEventType.SENDING_RIDE_DATA:
+                    case BluetoothEventType.SENDING_RIDE_STATS:
                         isReceivingData = true;
-                        this._rideService.ReceiveRideData(value.rideData);
+                        this._rideService.ReceiveRideData(value.RideData);
+                        isReceivingData = false;
+                        break;
+                    case BluetoothEventType.SENDING_RIDE_POINT:
+                        isReceivingData = true;
+                        this._rideService.ReceivePoints(value.RideData);
                         isReceivingData = false;
                         break;
                     default:

@@ -4,7 +4,10 @@ namespace TrackSense.Data.DTO;
 
 public class CompletedRideDTO
 {
-    public Guid Id { get; set; }
+    public Guid CompletedRideId { get; set; }
+    public Guid? PlannedRideId { get; set; }
+    public List<CompletedRidePointDTO>? CompletedRidePoints { get; set; }
+    public CompletedRideStatisticsDTO Statistics { get; set; }
 
     public CompletedRideDTO()
     {
@@ -18,12 +21,21 @@ public class CompletedRideDTO
             throw new ArgumentNullException(nameof(entite));
         }
 
-        this.Id = entite.Id;
+        this.CompletedRideId = entite.CompletedRideId;
     }
 
     public CompletedRide ToEntity()
     {
-        return new CompletedRide(this.Id);
+        List<CompletedRidePoint> listPoints = this.CompletedRidePoints.Select(pointDTO
+            => pointDTO.ToEntity()).ToList();
+
+        return new CompletedRide()
+        {
+            CompletedRideId = this.CompletedRideId,
+            PlannedRideId = this.PlannedRideId,
+            CompletedRidePoints = listPoints,
+            Statistics = this.Statistics.ToEntity()
+        };
     }
 
 }

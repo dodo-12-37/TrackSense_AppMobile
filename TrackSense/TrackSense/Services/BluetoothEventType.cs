@@ -10,6 +10,7 @@ namespace TrackSense.Services
     {
         CONNECTION,
         DECONNECTION,
-        SENDING_RIDE_DATA
+        SENDING_RIDE_STATS,
+        SENDING_RIDE_POINT
     }
 }

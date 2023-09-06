@@ -2,8 +2,11 @@
 using Plugin.BLE.Abstractions.Contracts;
 using Plugin.BLE.Abstractions.EventArgs;
 using Plugin.BLE.Abstractions.Exceptions;
+using System.Diagnostics;
 using System.Text;
+using TrackSense.Entities;
 using TrackSense.Models;
+using TrackSense.Services.Bluetooth.BluetoothDTO;
 
 namespace TrackSense.Services
 {
@@ -75,28 +78,42 @@ namespace TrackSense.Services
                 await this.bluetoothLE.Adapter.ConnectToDeviceAsync(device);
                 IDevice connectedDevice = this.bluetoothLE.Adapter.ConnectedDevices.SingleOrDefault();
                 Guid completedRideServiceUID = new Guid("62ffab64-3646-4fb9-88d8-541deb961192");
-                Guid characteristicNotificationUID = new Guid("9456444a-4b5f-11ee-be56-0242ac120002");
-                Guid rideDataUID = new Guid("51656aa8-b795-427f-a96c-c4b6c57430dd");
+                Guid isReadyCharacUID = new Guid("9456444a-4b5f-11ee-be56-0242ac120002");
+                Guid rideStatsUID = new Guid("51656aa8-b795-427f-a96c-c4b6c57430dd");
+                Guid pointsDataUID = new Guid("42154deb-5828-4876-8d4f-eaec38fa1ea7");
 
                 IService completedRideService = await connectedDevice.GetServiceAsync(completedRideServiceUID);
-                IReadOnlyList<ICharacteristic> chars = await completedRideService.GetCharacteristicsAsync();
-                ICharacteristic characteristicNotification = await completedRideService.GetCharacteristicAsync(characteristicNotificationUID);
-                ICharacteristic rideDataCharacteristic = await completedRideService.GetCharacteristicAsync(rideDataUID);
 
+                ICharacteristic isReadyCharac = await completedRideService.GetCharacteristicAsync(isReadyCharacUID);
+                ICharacteristic rideStatsCharac = await completedRideService.GetCharacteristicAsync(rideStatsUID);
+                ICharacteristic pointCharac = await completedRideService.GetCharacteristicAsync(pointsDataUID);
 
-                characteristicNotification.ValueUpdated += async (sender, args) =>
+                isReadyCharac.ValueUpdated += async (sender, args) =>
                 {
-                    //var bytes = args.Characteristic.Value;
-                    byte[] bytes = await rideDataCharacteristic.ReadAsync();
-                    string message = Encoding.UTF8.GetString(bytes);
-                    BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_DATA, true, message);
+                    var bytes = args.Characteristic.Value;
+                    byte[] rideBytes = await rideStatsCharac.ReadAsync();
+                    string rideMessage = Encoding.UTF8.GetString(rideBytes);
+                    CompletedRideDTO completedRideDTO = new CompletedRideDTO(rideMessage);
+
+                    BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_STATS, true, completedRideDTO.ToEntity());
                     observers.ForEach(o => o.OnNext(BTEventSendData));
                 };
+                await isReadyCharac.StartUpdatesAsync();
 
-                await characteristicNotification.StartUpdatesAsync();
+                pointCharac.ValueUpdated += async (sender, args) =>
+                {
+                    byte[] pointsBytes = await pointCharac.ReadAsync();
+                    string ridePoints = Encoding.UTF8.GetString(pointsBytes);
+                    List<CompletedRidePointDTO> pointsDTOList = new List<CompletedRidePointDTO>();
+                    List<CompletedRidePoint> pointsList = pointsDTOList.Select(p => p.ToEntity()).ToList();
+
+                    BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_STATS, true, pointsList);
+                    observers.ForEach(o => o.OnNext(BTEventSendData));
+                };
+                await pointCharac.StartUpdatesAsync();
+
                 BluetoothEvent BTEventConnection = new BluetoothEvent(BluetoothEventType.CONNECTION, true);
                 this.observers.ForEach(o => o.OnNext(BTEventConnection));
-
             }
             catch (DeviceConnectionException e)
             {
