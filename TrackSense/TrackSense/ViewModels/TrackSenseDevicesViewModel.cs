@@ -126,9 +126,12 @@ namespace TrackSense.ViewModels
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                await Shell.Current.DisplayAlert("Erreur!", $"Message: {ex.Message}", "Ok");
+                await Shell.Current.DisplayAlert("Oups!",
+                    $"Un problème est survenu pendant la connexion. Veuilez vérifier votre appareil.",
+                    "Ok");
+                Console.WriteLine("Erreur : " + ex.Message);
             }
-            finally
+            finally 
             {
                 IsBusy = false;
                 IsRefreshing = false;
