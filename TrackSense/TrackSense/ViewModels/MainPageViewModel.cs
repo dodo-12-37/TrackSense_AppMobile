@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using TrackSense.Entities.Exceptions;
 using TrackSense.Models;
 using TrackSense.Services;
 using TrackSense.Views;
@@ -24,7 +25,7 @@ public partial class MainPageViewModel : BaseViewModel
         _rideService = rideService;
 
         BluetoothObserver bluetoothObserver = new BluetoothObserver(this._bluetoothService,
-            (value) =>
+            async (value) =>
             {
                 switch (value.Type)
                 {
@@ -37,7 +38,10 @@ public partial class MainPageViewModel : BaseViewModel
                     case BluetoothEventType.SENDING_RIDE_STATS:
                         isReceivingData = true;
                         this._rideService.ReceiveRideData(value.RideData);
-                        isReceivingData = false;
+                        if (value.RideData is Entities.CompletedRide ride)
+                        {
+                            await Shell.Current.DisplayPromptAsync("Ajout", $"Le trajet {ride.CompletedRideId} est reçu!");
+                        }
                         break;
                     case BluetoothEventType.SENDING_RIDE_POINT:
                         isReceivingData = true;
@@ -57,5 +61,17 @@ public partial class MainPageViewModel : BaseViewModel
         {
             await Shell.Current.GoToAsync(nameof(TrackSenseDevicesPage));
         }
+    }
+
+    [RelayCommand]
+    async Task SimulateRideReceptionAsync()
+    {
+        this._bluetoothService.SimulateRideReception();
+    }
+
+    [RelayCommand]
+    async Task SimulatePointsReceptionAsync()
+    {
+        this._bluetoothService.SimulatePointsReception();
     }
 }

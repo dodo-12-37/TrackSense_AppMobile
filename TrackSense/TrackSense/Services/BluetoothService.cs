@@ -144,5 +144,30 @@ namespace TrackSense.Services
             this.observers.Add(observer);
             return new UnsubscriberBluetooth(this.observers, observer);
         }
+
+        #region DEBUG
+
+        public void SimulateRideReception()
+        {
+            Guid randomGuid = Guid.NewGuid();
+            string rideMessage = $"{randomGuid};N;20.12;30;200;90;2023-09-03T14:30:00;2023-09-03T16:30:00;1;0";
+            CompletedRideDTO completedRideDTO = new CompletedRideDTO(rideMessage);
+
+            BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_STATS, true, completedRideDTO.ToEntity());
+            observers.ForEach(o => o.OnNext(BTEventSendData));
+        }
+
+        public void SimulatePointsReception()
+        {
+            Shell.Current.DisplayAlert("Heu...", "Ce bouton n'est pas encore prêt", "Ok");
+            //string ridePoint = "";
+            //List<CompletedRidePointDTO> pointsDTOList = new List<CompletedRidePointDTO>();
+            //List<CompletedRidePoint> pointsList = pointsDTOList.Select(p => p.ToEntity()).ToList();
+
+            //BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_STATS, true, pointsList);
+            //observers.ForEach(o => o.OnNext(BTEventSendData));
+        }
+
+        #endregion
     }
 }

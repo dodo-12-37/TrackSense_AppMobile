@@ -7,15 +7,16 @@ using System.Text;
 using System.Threading.Tasks;
 using TrackSense.Data;
 using TrackSense.Entities;
+using TrackSense.Entities.Exceptions;
 
 namespace TrackSense.Services
 {
     public class RideService
     {
-        private RideData _rideData;
+        private ICompletedRideLocalData _rideData;
         BluetoothService _bluetoothService;
 
-        public RideService(RideData rideData, BluetoothService bluetoothService)
+        public RideService(ICompletedRideLocalData rideData, BluetoothService bluetoothService)
         {
             _rideData = rideData;
             _bluetoothService = bluetoothService;
@@ -46,13 +47,22 @@ namespace TrackSense.Services
             throw new NotImplementedException();
         }
 
-        internal async void ReceiveRideData(CompletedRide rideData)
+        internal void ReceiveRideData(CompletedRide rideData)
         {
             if (rideData is null)
             {
                 throw new ArgumentNullException(nameof(rideData));
             }
 
+            _rideData.AddCompletedRide(rideData);
+
+            //this.ConfirmReception();
+            
+            //Vérifier connection à internet et envoyer à API.
+        }
+
+        private async void ConfirmReception()
+        {
             IDevice connectedDevice = this._bluetoothService.GetConnectedDevice();
             Guid completedRideServiceUID = new Guid("62ffab64-3646-4fb9-88d8-541deb961192");
             IService completedRideService = await connectedDevice.GetServiceAsync(completedRideServiceUID);
@@ -60,10 +70,6 @@ namespace TrackSense.Services
             ICharacteristic characteristicIsReceived = await completedRideService.GetCharacteristicAsync(characteristicIsReadyUID);
             byte[] dataFalse = Encoding.UTF8.GetBytes("false");
             await characteristicIsReceived.WriteAsync(dataFalse);
-
-            _rideData.AddRide(rideData);
-            
-            //Vérifier connection à internet et envoyer à API.
         }
     }
 }

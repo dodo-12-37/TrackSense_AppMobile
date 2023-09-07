@@ -15,5 +15,16 @@
                      Order="Primary"
                      IconImageSource="settings.svg"/>
     </ContentPage.ToolbarItems>
+    <Grid RowDefinitions="*,Auto">
+        <Grid Grid.Row="1"
+              ColumnDefinitions="*,*">
+            <Button Text="Simuler trajet"
+                    Command="{Binding SimulateRideReceptionCommand}"/>
+            <Button Grid.Column="1"
+                    Text="Simuler points"
+                    Command="{Binding SimulatePointsReceptionCommand}"
+                    BackgroundColor="Green"/>
+        </Grid>
+    </Grid>
 
 </ContentPage>
