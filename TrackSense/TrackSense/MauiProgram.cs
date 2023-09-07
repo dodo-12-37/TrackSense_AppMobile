@@ -5,6 +5,7 @@ using TrackSense.ViewModels;
 using TrackSense.Views;
 using TrackSense.Services;
 using TrackSense.Data;
+using TrackSense.Entities;
 
 namespace TrackSense
 {
@@ -27,7 +28,7 @@ namespace TrackSense
             builder.Services.AddSingleton<IBluetoothLE>(CrossBluetoothLE.Current);
             builder.Services.AddSingleton<IAdapter>(CrossBluetoothLE.Current.Adapter);
 
-            builder.Services.AddSingleton<RideData>();
+            builder.Services.AddSingleton<ICompletedRideLocalData, RideData>();
 
             builder.Services.AddSingleton<BluetoothService>();
             builder.Services.AddSingleton<RideService>();

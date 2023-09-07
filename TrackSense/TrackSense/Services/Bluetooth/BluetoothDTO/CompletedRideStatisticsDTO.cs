@@ -36,6 +36,7 @@ namespace TrackSense.Services.Bluetooth.BluetoothDTO
                 AverageSpeed = this.AverageSpeed,
                 Distance = this.Distance,
                 Duration = this.Duration,
+                NumberOfPoints = this.NumberOfPoints,
                 Calories = this.Calories,
                 Falls = this.Falls
             };

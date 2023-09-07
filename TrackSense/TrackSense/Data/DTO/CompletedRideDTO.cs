@@ -6,7 +6,7 @@ public class CompletedRideDTO
 {
     public Guid CompletedRideId { get; set; }
     public Guid? PlannedRideId { get; set; }
-    public List<CompletedRidePointDTO>? CompletedRidePoints { get; set; }
+    public List<CompletedRidePointDTO> CompletedRidePoints { get; set; }
     public CompletedRideStatisticsDTO Statistics { get; set; }
 
     public CompletedRideDTO()
@@ -22,6 +22,9 @@ public class CompletedRideDTO
         }
 
         this.CompletedRideId = entite.CompletedRideId;
+        this.PlannedRideId = entite.PlannedRideId;
+        this.CompletedRidePoints = entite.CompletedRidePoints.Select(entite => new CompletedRidePointDTO(entite)).ToList();
+        this.Statistics = new CompletedRideStatisticsDTO(entite.Statistics);
     }
 
     public CompletedRide ToEntity()

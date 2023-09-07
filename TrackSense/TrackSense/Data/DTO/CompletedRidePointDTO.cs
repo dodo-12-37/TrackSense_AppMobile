@@ -9,9 +9,27 @@ namespace TrackSense.Data.DTO
 {
     public class CompletedRidePointDTO
     {
-        internal CompletedRidePoint ToEntity()
+        public Location Location { get; set; }
+        public int RideStep { get; set; }
+        public double Temperature { get; set; }
+        public DateTime DateTime { get; set; }
+
+        public CompletedRidePointDTO(CompletedRidePoint entite)
         {
-            throw new NotImplementedException();
+            Location = entite.Location;
+            RideStep = entite.RideStep;
+            Temperature = entite.Temperature;
+            DateTime = entite.DateTime;
+        }
+
+        public CompletedRidePointDTO()
+        {
+            ;
+        }
+
+        public CompletedRidePoint ToEntity()
+        {
+            return new CompletedRidePoint(Location, RideStep, Temperature, DateTime);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http.Json;
 using System.Text;
@@ -9,22 +10,31 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using TrackSense.Data.DTO;
 using TrackSense.Entities;
+using TrackSense.Entities.Exceptions;
 
 namespace TrackSense.Data
 {
-    public class RideData
+    public class RideData : ICompletedRideLocalData
     {
         private string _fileName = Path.Combine(FileSystem.AppDataDirectory, "rides.json");
 
         public RideData()
         {
-            if (!File.Exists(_fileName))
+            try
             {
-                File.Create(_fileName);
+                string jsonString = File.ReadAllText(this._fileName);
+            }
+            catch (FileNotFoundException)
+            {
+                SaveListInFile(new List<CompletedRideDTO>());
+            }
+            catch (PathTooLongException)
+            {
+                Debug.WriteLine("The path of the file is too long");
             }
         }
 
-        public void AddRide(CompletedRide completedRide)
+        public void AddCompletedRide(CompletedRide completedRide)
         {
             if (completedRide is null)
             {
@@ -33,11 +43,11 @@ namespace TrackSense.Data
 
             if (GetCompletedRideById(completedRide.CompletedRideId) is not null)
             {
-                throw new InvalidOperationException();
+                throw new CompletedRideAlreadySavedException("A completed ride with the same id already exists");
             }
 
             List<CompletedRideDTO> listeRidesDTO = ListRidesDTO();
-            listeRidesDTO.Add(new CompletedRideDTO(completedRide)); //liste nulle
+            listeRidesDTO.Add(new CompletedRideDTO(completedRide));
 
             SaveListInFile(listeRidesDTO);
         }
@@ -55,16 +65,19 @@ namespace TrackSense.Data
                 Formatting = Formatting.Indented
             };
 
-            string chaineJson = JsonConvert.SerializeObject(listeRidesDTO, settings);
-            File.WriteAllText(this._fileName, chaineJson);
+            string jsonString = JsonConvert.SerializeObject(listeRidesDTO, settings);
+            File.WriteAllText(this._fileName, jsonString);
         }
 
         private List<CompletedRideDTO> ListRidesDTO()
         {
-            string chaineJson = File.ReadAllText(this._fileName);
+            string jsonString = File.ReadAllText(this._fileName);
 
             List<CompletedRideDTO> listCompletedRides = new List<CompletedRideDTO>();
-            listCompletedRides = JsonConvert.DeserializeObject<List<CompletedRideDTO>>(chaineJson);
+            if (!string.IsNullOrEmpty(jsonString))
+            {
+                listCompletedRides = JsonConvert.DeserializeObject<List<CompletedRideDTO>>(jsonString);
+            }
 
             return listCompletedRides;
         }
@@ -82,9 +95,30 @@ namespace TrackSense.Data
             return ridesList;
         }
 
-        private CompletedRide GetCompletedRideById(Guid id)
+        public CompletedRide GetCompletedRideById(Guid id)
         {
             return this.ListCompletedRides().SingleOrDefault(ride => ride.CompletedRideId == id);
+        }
+
+        public void DeleteCompletedRideById(Guid id)
+        {
+            List<CompletedRideDTO> completedRideDTOs = ListRidesDTO();
+            CompletedRideDTO rideToDelete = completedRideDTOs.SingleOrDefault(ride => ride.CompletedRideId == id);
+            if (rideToDelete is null)
+            {
+                throw new Exception("Ride not found");
+            }
+            else
+            {
+                completedRideDTOs.Remove(rideToDelete);
+            }
+
+            SaveListInFile(completedRideDTOs);
+        }
+
+        public void DeleteAllCompletedRides()
+        {
+            SaveListInFile(new List<CompletedRideDTO>());   
         }
     }
 }
