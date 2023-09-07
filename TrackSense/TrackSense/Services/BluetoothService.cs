@@ -80,13 +80,16 @@ namespace TrackSense.Services
                 Guid completedRideServiceUID = new Guid("62ffab64-3646-4fb9-88d8-541deb961192");
                 Guid isReadyCharacUID = new Guid("9456444a-4b5f-11ee-be56-0242ac120002");
                 Guid rideStatsUID = new Guid("51656aa8-b795-427f-a96c-c4b6c57430dd");
-                Guid pointsDataUID = new Guid("42154deb-5828-4876-8d4f-eaec38fa1ea7");
+                Guid pointNumberDataUID = new Guid("c5799499-9053-4a9e-a2d5-b8814c5ff12b");
+                Guid pointDataUID = new Guid("42154deb-5828-4876-8d4f-eaec38fa1ea7");
 
                 IService completedRideService = await connectedDevice.GetServiceAsync(completedRideServiceUID);
 
                 ICharacteristic isReadyCharac = await completedRideService.GetCharacteristicAsync(isReadyCharacUID);
                 ICharacteristic rideStatsCharac = await completedRideService.GetCharacteristicAsync(rideStatsUID);
-                ICharacteristic pointCharac = await completedRideService.GetCharacteristicAsync(pointsDataUID);
+                ICharacteristic pointNumberCharac = await completedRideService.GetCharacteristicAsync(pointNumberDataUID);
+                ICharacteristic pointDataCharac = await completedRideService.GetCharacteristicAsync(pointDataUID);
+
 
                 isReadyCharac.ValueUpdated += async (sender, args) =>
                 {
@@ -100,9 +103,9 @@ namespace TrackSense.Services
                 };
                 await isReadyCharac.StartUpdatesAsync();
 
-                pointCharac.ValueUpdated += async (sender, args) =>
+                pointNumberCharac.ValueUpdated += async (sender, args) =>
                 {
-                    byte[] pointsBytes = await pointCharac.ReadAsync();
+                    byte[] pointsBytes = await pointDataCharac.ReadAsync();
                     string ridePoints = Encoding.UTF8.GetString(pointsBytes);
                     List<CompletedRidePointDTO> pointsDTOList = new List<CompletedRidePointDTO>();
                     List<CompletedRidePoint> pointsList = pointsDTOList.Select(p => p.ToEntity()).ToList();
@@ -110,7 +113,7 @@ namespace TrackSense.Services
                     BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_STATS, true, pointsList);
                     observers.ForEach(o => o.OnNext(BTEventSendData));
                 };
-                await pointCharac.StartUpdatesAsync();
+                await pointNumberCharac.StartUpdatesAsync();
 
                 BluetoothEvent BTEventConnection = new BluetoothEvent(BluetoothEventType.CONNECTION, true);
                 this.observers.ForEach(o => o.OnNext(BTEventConnection));
