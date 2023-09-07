@@ -105,8 +105,8 @@ namespace TrackSense.Services
 
                 pointNumberCharac.ValueUpdated += async (sender, args) =>
                 {
-                    byte[] pointsBytes = await pointDataCharac.ReadAsync();
-                    string ridePoints = Encoding.UTF8.GetString(pointsBytes);
+                    byte[] pointBytes = await pointDataCharac.ReadAsync();
+                    string ridePoint = Encoding.UTF8.GetString(pointBytes);
                     List<CompletedRidePointDTO> pointsDTOList = new List<CompletedRidePointDTO>();
                     List<CompletedRidePoint> pointsList = pointsDTOList.Select(p => p.ToEntity()).ToList();
 
