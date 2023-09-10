@@ -1,4 +1,4 @@
-﻿namespace TrackSense.Services
+﻿namespace TrackSense.Services.Bluetooth
 {
     internal class UnsubscriberBluetooth : IDisposable
     {
@@ -12,7 +12,7 @@
         }
         public void Dispose()
         {
-            this.observers.Remove(this.observer);
+            observers.Remove(observer);
         }
     }
 }

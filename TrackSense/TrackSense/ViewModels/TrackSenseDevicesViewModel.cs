@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text;
 using TrackSense.Models;
-using TrackSense.Services;
+using TrackSense.Services.Bluetooth;
 using TrackSense.Views;
 
 namespace TrackSense.ViewModels

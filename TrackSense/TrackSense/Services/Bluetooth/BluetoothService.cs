@@ -8,7 +8,7 @@ using TrackSense.Entities;
 using TrackSense.Models;
 using TrackSense.Services.Bluetooth.BluetoothDTO;
 
-namespace TrackSense.Services
+namespace TrackSense.Services.Bluetooth
 {
     public class BluetoothService : IObservable<BluetoothEvent>
     {
@@ -19,7 +19,7 @@ namespace TrackSense.Services
         {
             get
             {
-                return this.GetBluetoothDevices() is not null;
+                return GetBluetoothDevices() is not null;
             }
         }
 
@@ -30,11 +30,11 @@ namespace TrackSense.Services
 
         public async Task<List<TrackSenseDevice>> GetBluetoothDevices()
         {
-            if (this.bluetoothDevices.Count == 0)
+            if (bluetoothDevices.Count == 0)
             {
-                this.bluetoothLE.Adapter.DeviceDiscovered += (s, a) =>
+                bluetoothLE.Adapter.DeviceDiscovered += (s, a) =>
                 {
-                    if (!this.bluetoothDevices.Contains(a.Device))
+                    if (!bluetoothDevices.Contains(a.Device))
                     {
                         bluetoothDevices.Add(a.Device);
                     }
@@ -45,12 +45,12 @@ namespace TrackSense.Services
 
             List<TrackSenseDevice> devicesList = new List<TrackSenseDevice>();
 
-            this.bluetoothLE.Adapter.ScanTimeout = 3000;
-            this.bluetoothLE.Adapter.ScanMode = ScanMode.Balanced;
+            bluetoothLE.Adapter.ScanTimeout = 3000;
+            bluetoothLE.Adapter.ScanMode = ScanMode.Balanced;
 
             await bluetoothLE.Adapter.StartScanningForDevicesAsync();
 
-            foreach (IDevice device in this.bluetoothDevices)
+            foreach (IDevice device in bluetoothDevices)
             {
                 TrackSenseDevice bleDevice = new TrackSenseDevice()
                 {
@@ -66,7 +66,7 @@ namespace TrackSense.Services
 
         public async Task ConnectToBluetoothDevice(Guid p_id)
         {
-            IDevice device = this.bluetoothDevices.SingleOrDefault(d => d.Id == p_id);
+            IDevice device = bluetoothDevices.SingleOrDefault(d => d.Id == p_id);
 
             if (device is null)
             {
@@ -75,8 +75,8 @@ namespace TrackSense.Services
 
             try
             {
-                await this.bluetoothLE.Adapter.ConnectToDeviceAsync(device);
-                IDevice connectedDevice = this.bluetoothLE.Adapter.ConnectedDevices.SingleOrDefault();
+                await bluetoothLE.Adapter.ConnectToDeviceAsync(device);
+                IDevice connectedDevice = bluetoothLE.Adapter.ConnectedDevices.SingleOrDefault();
                 Guid completedRideServiceUID = new Guid("62ffab64-3646-4fb9-88d8-541deb961192");
                 Guid isReadyCharacUID = new Guid("9456444a-4b5f-11ee-be56-0242ac120002");
                 Guid rideStatsUID = new Guid("51656aa8-b795-427f-a96c-c4b6c57430dd");
@@ -116,7 +116,7 @@ namespace TrackSense.Services
                 await pointNumberCharac.StartUpdatesAsync();
 
                 BluetoothEvent BTEventConnection = new BluetoothEvent(BluetoothEventType.CONNECTION, true);
-                this.observers.ForEach(o => o.OnNext(BTEventConnection));
+                observers.ForEach(o => o.OnNext(BTEventConnection));
             }
             catch (DeviceConnectionException e)
             {
@@ -131,7 +131,7 @@ namespace TrackSense.Services
 
         public bool BluetoothIsOn()
         {
-            return this.bluetoothLE.State == BluetoothState.On;
+            return bluetoothLE.State == BluetoothState.On;
         }
 
         public IDisposable Subscribe(IObserver<BluetoothEvent> observer)
@@ -141,8 +141,8 @@ namespace TrackSense.Services
                 throw new ArgumentNullException(nameof(observer));
             }
 
-            this.observers.Add(observer);
-            return new UnsubscriberBluetooth(this.observers, observer);
+            observers.Add(observer);
+            return new UnsubscriberBluetooth(observers, observer);
         }
 
         #region DEBUG

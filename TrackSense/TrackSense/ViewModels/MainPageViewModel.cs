@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using TrackSense.Entities.Exceptions;
 using TrackSense.Models;
 using TrackSense.Services;
+using TrackSense.Services.Bluetooth;
 using TrackSense.Views;
 
 namespace TrackSense.ViewModels;

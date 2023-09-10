@@ -6,6 +6,7 @@ using TrackSense.Views;
 using TrackSense.Services;
 using TrackSense.Data;
 using TrackSense.Entities;
+using TrackSense.Services.Bluetooth;
 
 namespace TrackSense
 {

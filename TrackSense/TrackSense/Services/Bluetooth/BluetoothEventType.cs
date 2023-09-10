@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TrackSense.Services
+namespace TrackSense.Services.Bluetooth
 {
     public enum BluetoothEventType
     {

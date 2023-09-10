@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using TrackSense.Data;
 using TrackSense.Entities;
 using TrackSense.Entities.Exceptions;
+using TrackSense.Services.Bluetooth;
 
 namespace TrackSense.Services
 {

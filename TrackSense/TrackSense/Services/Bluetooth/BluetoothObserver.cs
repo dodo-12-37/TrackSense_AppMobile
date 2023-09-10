@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TrackSense.Services
+namespace TrackSense.Services.Bluetooth
 {
     public class BluetoothObserver : IObserver<BluetoothEvent>
     {
@@ -23,18 +23,18 @@ namespace TrackSense.Services
                 throw new ArgumentNullException(nameof(action));
             }
 
-            this._action = action;
-            this._unsubscribe = bluetoothService.Subscribe(this);
+            _action = action;
+            _unsubscribe = bluetoothService.Subscribe(this);
         }
         public void OnCompleted()
         {
-            this.Unsubscribe();
+            Unsubscribe();
         }
 
         public void Unsubscribe()
         {
-            this._unsubscribe?.Dispose();
-            this._unsubscribe = null;
+            _unsubscribe?.Dispose();
+            _unsubscribe = null;
         }
 
         public void OnError(Exception error)
@@ -44,7 +44,7 @@ namespace TrackSense.Services
 
         public void OnNext(BluetoothEvent value)
         {
-            this._action(value);
+            _action(value);
         }
     }
 }
