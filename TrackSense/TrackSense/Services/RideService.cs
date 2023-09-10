@@ -2,75 +2,81 @@
 using Plugin.BLE.Abstractions.Contracts;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using TrackSense.Data;
 using TrackSense.Entities;
-using TrackSense.Entities.Exceptions;
 using TrackSense.Services.Bluetooth;
 
-namespace TrackSense.Services
+namespace TrackSense.Services;
+
+public class RideService
 {
-    public class RideService
+    private ICompletedRideLocalData _rideData;
+    BluetoothService _bluetoothService;
+    CompletedRide _currentRide;
+
+    public RideService(ICompletedRideLocalData rideData, BluetoothService bluetoothService)
     {
-        private ICompletedRideLocalData _rideData;
-        BluetoothService _bluetoothService;
+        _rideData = rideData;
+        _bluetoothService = bluetoothService;
+    }
 
-        public RideService(ICompletedRideLocalData rideData, BluetoothService bluetoothService)
+    internal void ReceiveRideData(CompletedRide rideData)
+    {
+        if (rideData is null)
         {
-            _rideData = rideData;
-            _bluetoothService = bluetoothService;
-
-            //BluetoothObserver bluetoothObserver = new BluetoothObserver(this._bluetoothService,
-            //    async (value) =>
-            //    {
-            //        if (value.Type == BluetoothEventType.SENDING_RIDE_STATS)
-            //        {
-            //            this.ReceiveRideData(value.RideData);
-            //            IDevice connectedDevice = this._bluetoothService.GetConnectedDevice();
-            //            Guid completedRideServiceUID = new Guid("62ffab64-3646-4fb9-88d8-541deb961192");
-            //            IService completedRideService = await connectedDevice.GetServiceAsync(completedRideServiceUID);
-            //            Guid characteristicIsReadyUID = new Guid("9456444a-4b5f-11ee-be56-0242ac120002");
-            //            ICharacteristic characteristicIsReceived = await completedRideService.GetCharacteristicAsync(characteristicIsReadyUID);
-            //            byte[] dataFalse = Encoding.UTF8.GetBytes("false");
-            //            await characteristicIsReceived.WriteAsync(dataFalse);
-            //        }
-            //        else if (value.Type == BluetoothEventType.SENDING_RIDE_POINT)
-            //        {
-            //            this.ReceivePoints(value.RideData);
-            //        }
-            //    });
+            throw new ArgumentNullException(nameof(rideData));
         }
 
-        public async void ReceivePoints(CompletedRide rideData)
+        List<CompletedRide> storedRide = this._rideData.ListCompletedRides();
+        if (storedRide.Count > 0)
         {
-            throw new NotImplementedException();
+            this._rideData.DeleteAllCompletedRides();
         }
 
-        internal void ReceiveRideData(CompletedRide rideData)
+        this._currentRide = rideData;
+
+        bool isConfirmed = false;
+
+        while (!isConfirmed)
         {
-            if (rideData is null)
+            isConfirmed = this._bluetoothService.ConfirmRideStatsReception().Result;
+        }
+    }
+
+    internal void ReceivePoint(CompletedRidePoint ridePoint)
+    {
+        if (this._currentRide is null)
+        {
+            throw new InvalidOperationException();
+        }
+        
+        int numberOfPointsReceived = this._currentRide.CompletedRidePoints.Count;
+        int totalNumberOfPoints = this._currentRide.Statistics.NumberOfPoints;
+
+        if (ridePoint.RideStep == numberOfPointsReceived + 1)
+        {
+            this._currentRide.CompletedRidePoints.Add(ridePoint);
+            bool isConfirmed = false;
+
+            while (!isConfirmed)
             {
-                throw new ArgumentNullException(nameof(rideData));
+                isConfirmed = this._bluetoothService.ConfirmPointReception().Result;
             }
-
-            _rideData.AddCompletedRide(rideData);
-
-            //this.ConfirmReception();
-            
-            //Vérifier connection à internet et envoyer à API.
         }
 
-        private async void ConfirmReception()
+        if (ridePoint.RideStep == totalNumberOfPoints)
         {
-            IDevice connectedDevice = this._bluetoothService.GetConnectedDevice();
-            Guid completedRideServiceUID = new Guid("62ffab64-3646-4fb9-88d8-541deb961192");
-            IService completedRideService = await connectedDevice.GetServiceAsync(completedRideServiceUID);
-            Guid characteristicIsReadyUID = new Guid("9456444a-4b5f-11ee-be56-0242ac120002");
-            ICharacteristic characteristicIsReceived = await completedRideService.GetCharacteristicAsync(characteristicIsReadyUID);
-            byte[] dataFalse = Encoding.UTF8.GetBytes("false");
-            await characteristicIsReceived.WriteAsync(dataFalse);
+            _rideData.AddCompletedRide(this._currentRide);
+            this.PostCurrentRide();
+            _currentRide = null;
         }
+    }
+
+    private void PostCurrentRide()
+    {
+        //Vérifier la connectivité du cellulaire
+
+        //Envoyer les données au serveur
+
     }
 }

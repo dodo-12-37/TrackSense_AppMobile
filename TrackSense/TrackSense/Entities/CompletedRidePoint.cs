@@ -2,17 +2,17 @@
 {
     public class CompletedRidePoint
     {
-        public Location Location { get; set; }
         public int RideStep { get; set; }
+        public Location Location { get; set; }
         public double Temperature { get; set; }
-        public DateTime DateTime { get; set; }
+        public TimeSpan EffectiveTime { get; set; }
 
-        public CompletedRidePoint(Location location, int rideStep, double temperature, DateTime dateTime)
+        public CompletedRidePoint(int rideStep, Location location, double temperature, TimeSpan effectiveTime)
         {
-            Location = location;
             RideStep = rideStep;
+            Location = location;
             Temperature = temperature;
-            DateTime = dateTime;
+            EffectiveTime = effectiveTime;
         }
     }
 }

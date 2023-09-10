@@ -9,17 +9,17 @@ namespace TrackSense.Data.DTO
 {
     public class CompletedRidePointDTO
     {
-        public Location Location { get; set; }
         public int RideStep { get; set; }
+        public Location Location { get; set; }
         public double Temperature { get; set; }
-        public DateTime DateTime { get; set; }
+        public TimeSpan EffectiveTime { get; set; }
 
         public CompletedRidePointDTO(CompletedRidePoint entite)
         {
-            Location = entite.Location;
             RideStep = entite.RideStep;
+            Location = entite.Location;
             Temperature = entite.Temperature;
-            DateTime = entite.DateTime;
+            EffectiveTime = entite.EffectiveTime;
         }
 
         public CompletedRidePointDTO()
@@ -29,7 +29,7 @@ namespace TrackSense.Data.DTO
 
         public CompletedRidePoint ToEntity()
         {
-            return new CompletedRidePoint(Location, RideStep, Temperature, DateTime);
+            return new CompletedRidePoint(RideStep, Location, Temperature, EffectiveTime);
         }
     }
 }

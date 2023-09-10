@@ -6,7 +6,7 @@ namespace TrackSense.Services.Bluetooth
     {
         public BluetoothEventType Type { get; set; }
         public CompletedRide RideData { get; set; }
-        public List<CompletedRidePoint> RidePoints { get; set; }
+        public CompletedRidePoint RidePoint { get; set; }
         public bool IsConnected { get; set; }
 
         public BluetoothEvent(BluetoothEventType eventType, bool isConnected)
@@ -21,10 +21,10 @@ namespace TrackSense.Services.Bluetooth
             IsConnected = isConnected;
         }
 
-        public BluetoothEvent(BluetoothEventType eventType, bool isConnected, List<CompletedRidePoint> completedRidePoints)
+        public BluetoothEvent(BluetoothEventType eventType, bool isConnected, CompletedRidePoint completedRidePoint)
         {
             Type = eventType;
-            RidePoints = completedRidePoints;
+            RidePoint = completedRidePoint;
             IsConnected = isConnected;
         }
 

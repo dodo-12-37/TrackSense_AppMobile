@@ -10,17 +10,30 @@ namespace TrackSense.Services.Bluetooth.BluetoothDTO
     public class CompletedRidePointDTO
     {
 
-        public Location Location { get; set; }
         public int RideStep { get; set; }
+        public Location Location { get; set; }
         public double Temperature { get; set; }
-        public DateTime DateTime { get; set; }
+        public TimeSpan EffectiveTime { get; set; }
 
         public CompletedRidePointDTO(CompletedRidePoint entite)
         {
-            Location = entite.Location;
             RideStep = entite.RideStep;
+            Location = entite.Location;
             Temperature = entite.Temperature;
-            DateTime = entite.DateTime;
+            EffectiveTime = entite.EffectiveTime;
+        }
+
+        public CompletedRidePointDTO(string csvPoint)
+        {
+            csvPoint = csvPoint.Replace('.', ',');
+            string[] point = csvPoint.Split(';');
+
+            RideStep = int.Parse(point[0]);
+            Location = new Location(double.Parse(point[1]), double.Parse(point[2]), double.Parse(point[3]));
+            Temperature = double.Parse(point[4]);
+            Location.Speed = double.Parse(point[5]);
+            Location.Timestamp = DateTimeOffset.Parse(point[6]);
+            EffectiveTime = TimeSpan.Parse(point[7]);
         }
 
         public CompletedRidePointDTO()
@@ -30,7 +43,7 @@ namespace TrackSense.Services.Bluetooth.BluetoothDTO
 
         public CompletedRidePoint ToEntity()
         {
-            return new CompletedRidePoint(Location, RideStep, Temperature, DateTime);
+            return new CompletedRidePoint(RideStep, Location, Temperature, EffectiveTime);
         }
     }
 }

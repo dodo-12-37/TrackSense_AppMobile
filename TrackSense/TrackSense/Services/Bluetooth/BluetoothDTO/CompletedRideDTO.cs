@@ -10,7 +10,7 @@ namespace TrackSense.Services.Bluetooth.BluetoothDTO
     public class CompletedRideDTO
     {
         public Guid CompletedRideId { get; set; }
-        public Guid? PlannedRideId { get; set; }
+        public Guid PlannedRideId { get; set; }
         public List<CompletedRidePointDTO> CompletedRidePoints { get; set; } = new();
         public CompletedRideStatisticsDTO Statistics { get; set; }
 
@@ -26,14 +26,13 @@ namespace TrackSense.Services.Bluetooth.BluetoothDTO
             string[] values = message.Split(';');
 
             this.CompletedRideId = Guid.Parse(values[0]);
-            string plannedRideId = values[1];
-            this.PlannedRideId = plannedRideId == "N" ? null : Guid.Parse(values[1]);
+            this.PlannedRideId = Guid.Parse(values[1]);
             double maxSpeed = double.Parse(values[2]);
             double avgSpeed = double.Parse(values[3]);
-            double distance = double.Parse(values[4]);
-            TimeSpan duration = TimeSpan.FromMinutes(double.Parse(values[5]));
-            DateTime dateBegin = DateTime.Parse(values[6]);
-            DateTime dateEnd = DateTime.Parse(values[7]);
+            DateTime dateBegin = DateTime.Parse(values[4]);
+            DateTime dateEnd = DateTime.Parse(values[5]);
+            TimeSpan duration = TimeSpan.Parse(values[6]);
+            double distance = double.Parse(values[7]);
             int nbOfPoints = int.Parse(values[8]);
             int nbOfFalls = int.Parse(values[9]);
             int calories = 0;
