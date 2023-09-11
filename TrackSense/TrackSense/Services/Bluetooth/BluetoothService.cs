@@ -120,7 +120,7 @@ namespace TrackSense.Services.Bluetooth
                 byte[] pointBytes = await pointDataCharac.ReadAsync();
                 string ridePointMessage = Encoding.UTF8.GetString(pointBytes);
                 CompletedRidePointDTO pointDTO = new CompletedRidePointDTO(ridePointMessage);
-                CompletedRidePoint completedRidePoint = pointDTO.ToEntity();
+                Entities.CompletedRidePoint completedRidePoint = pointDTO.ToEntity();
 
                 BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_STATS, true, completedRidePoint);
                 observers.ForEach(o => o.OnNext(BTEventSendData));
