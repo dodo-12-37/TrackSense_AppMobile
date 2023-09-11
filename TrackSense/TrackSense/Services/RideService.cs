@@ -2,6 +2,7 @@
 using Plugin.BLE.Abstractions.Contracts;
 using System;
 using System.Collections.Generic;
+using System.Net.Http.Json;
 using System.Text;
 using TrackSense.Entities;
 using TrackSense.Services.Bluetooth;
@@ -13,11 +14,14 @@ public class RideService
     private ICompletedRideLocalData _rideData;
     BluetoothService _bluetoothService;
     CompletedRide _currentRide;
+    List<CompletedRideSummary> _completedRides = new();
+    HttpClient httpClient;
 
     public RideService(ICompletedRideLocalData rideData, BluetoothService bluetoothService)
     {
         _rideData = rideData;
         _bluetoothService = bluetoothService;
+        httpClient = new HttpClient();
     }
 
     internal void ReceiveRideData(CompletedRide rideData)
@@ -72,11 +76,55 @@ public class RideService
         }
     }
 
+    public async Task<List<CompletedRideSummary>> GetUserCompletedRides()
+    {
+        if (_completedRides?.Count > 0)
+        {
+            return _completedRides;
+        }
+
+        string userLogin = "test";
+
+        string url = $"https://localhost:7044/api/users/{userLogin}/completedRides";
+
+        var response = await httpClient.GetAsync(url);
+
+        if (response.IsSuccessStatusCode)
+        {
+            List<API.APIDTO.CompletedRideSummaryDTO> completedRides = await response.Content.ReadFromJsonAsync<List<API.APIDTO.CompletedRideSummaryDTO>>();
+            _completedRides.AddRange(completedRides.Select(ride => ride.ToEntity()));
+        }
+
+        return _completedRides;
+    }
+
     private void PostCurrentRide()
     {
         //Vérifier la connectivité du cellulaire
 
         //Envoyer les données au serveur
 
+    }
+
+    internal async Task<Entities.CompletedRide> GetCompletedRide(Guid completedRideId)
+    {
+        if (completedRideId == Guid.Empty)
+        {
+            throw new ArgumentNullException(nameof(completedRideId));
+        }
+
+        string url = $"https://localhost:7044/api/completedRides/{completedRideId}";
+
+        var response = httpClient.GetAsync(url).Result;
+
+        CompletedRide completedRide = null;
+
+        if (response.IsSuccessStatusCode)
+        {
+            API.APIDTO.CompletedRideDTO completedRideSummaryDTO = await response.Content.ReadFromJsonAsync<API.APIDTO.CompletedRideDTO>();
+            completedRide = completedRideSummaryDTO.ToEntity();
+        }
+
+        return completedRide;
     }
 }

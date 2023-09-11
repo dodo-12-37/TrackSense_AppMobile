@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TrackSense.Views.CompletedRidePage"
+             xmlns:model="clr-namespace:TrackSense.Models"
+             xmlns:viewmodel="clr-namespace:TrackSense.ViewModels"
+             x:DataType="viewmodel:CompletedRideViewModel"
+             Title="{Binding CompletedRide.CompletedRideId}">
+    <VerticalStackLayout>
+        <Label 
+            Text="Les détails du trajet s'afficheront sur cette page!"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+    </VerticalStackLayout>
+</ContentPage>
