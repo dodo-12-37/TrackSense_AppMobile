@@ -106,24 +106,41 @@ namespace TrackSense.Services.Bluetooth
 
             isStatsReadyCharac.ValueUpdated += async (sender, args) =>
             {
-                byte[] rideBytes = await rideStatsCharac.ReadAsync();
-                string rideMessage = Encoding.UTF8.GetString(rideBytes);
-                CompletedRideDTO completedRideDTO = new CompletedRideDTO(rideMessage);
+                try
+                {
+                    byte[] rideBytes = await rideStatsCharac.ReadAsync();
+                    string rideMessage = Encoding.UTF8.GetString(rideBytes);
+                    CompletedRideDTO completedRideDTO = new CompletedRideDTO(rideMessage);
 
-                BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_STATS, true, completedRideDTO.ToEntity());
-                observers.ForEach(o => o.OnNext(BTEventSendData));
+                    BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_STATS, true, completedRideDTO.ToEntity());
+                    observers.ForEach(o => o.OnNext(BTEventSendData));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Erreur : " + ex.Message);
+                    throw;
+                }
             };
             await isStatsReadyCharac.StartUpdatesAsync();
 
             pointNumberCharac.ValueUpdated += async (sender, args) =>
             {
-                byte[] pointBytes = await pointDataCharac.ReadAsync();
-                string ridePointMessage = Encoding.UTF8.GetString(pointBytes);
-                CompletedRidePointDTO pointDTO = new CompletedRidePointDTO(ridePointMessage);
-                Entities.CompletedRidePoint completedRidePoint = pointDTO.ToEntity();
+                try
+                {
+                    byte[] pointBytes = await pointDataCharac.ReadAsync();
+                    string ridePointMessage = Encoding.UTF8.GetString(pointBytes);
+                    CompletedRidePointDTO pointDTO = new CompletedRidePointDTO(ridePointMessage);
+                    Entities.CompletedRidePoint completedRidePoint = pointDTO.ToEntity();
 
-                BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_STATS, true, completedRidePoint);
-                observers.ForEach(o => o.OnNext(BTEventSendData));
+                    BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_STATS, true, completedRidePoint);
+                    observers.ForEach(o => o.OnNext(BTEventSendData));
+
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Erreur : " + ex.Message);
+                    throw;
+                }
             };
             await pointNumberCharac.StartUpdatesAsync();
         }
