@@ -14,5 +14,10 @@
             Temperature = temperature;
             EffectiveTime = effectiveTime;
         }
+
+        public CompletedRidePoint()
+        {
+            ;
+        }
     }
 }

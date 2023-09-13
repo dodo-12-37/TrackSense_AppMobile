@@ -6,10 +6,24 @@
              xmlns:viewmodel="clr-namespace:TrackSense.ViewModels"
              x:DataType="viewmodel:CompletedRideViewModel"
              Title="{Binding CompletedRide.CompletedRideId}">
-    <VerticalStackLayout>
-        <Label 
-            Text="Les détails du trajet s'afficheront sur cette page!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+    <Grid RowDefinitions="Auto,*,*,Auto"
+          Margin="4">
+            <Label Text="Itinéraire"
+                   FontSize="Title"/>
+            <!--<maps:Map x:Name="itineraryMap"
+                      MapType="Street"
+                      IsShowingUser="true"
+                      Grid.Row="1"
+                      Margin="10"
+                      --><!--ItemsSource="{Binding Ride.Itinerary}"--><!--
+                >
+            </maps:Map>-->
+        <!--<Label Text="Informations"
+                   FontSize="Title"
+                   Grid.Row="2"/>-->
+        <Label Text="{Binding CompletedRide.Statistics.Distance}"/>
+        <Button x:Name="TrajetBtn"
+                    Text="Favoris"
+                    Grid.Row="3"/>
+        </Grid>
 </ContentPage>

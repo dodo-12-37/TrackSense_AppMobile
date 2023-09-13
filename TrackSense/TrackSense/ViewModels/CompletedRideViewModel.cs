@@ -8,6 +8,7 @@ using TrackSense.Models;
 
 namespace TrackSense.ViewModels
 {
+    [QueryProperty("CompletedRide", "CompletedRide")]
     public partial class CompletedRideViewModel : BaseViewModel
     {
         [ObservableProperty]

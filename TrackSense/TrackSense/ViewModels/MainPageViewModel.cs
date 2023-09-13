@@ -59,6 +59,32 @@ public partial class MainPageViewModel : BaseViewModel
                         break;
                 }
             });
+
+        SimulateGetRideFromAPI();
+    }
+
+    private void SimulateGetRideFromAPI()
+    {
+        TrackSense.Entities.CompletedRideSummary ride = new TrackSense.Entities.CompletedRideSummary()
+        {
+            CompletedRideId = Guid.NewGuid(),
+            PlannedRideName = "Ride1",
+            StartedAt = DateTime.Now,
+            Distance = 10,
+            Duration = TimeSpan.FromMinutes(10),
+        };
+
+        TrackSense.Entities.CompletedRideSummary ride2 = new TrackSense.Entities.CompletedRideSummary()
+        {
+            CompletedRideId = Guid.NewGuid(),
+            PlannedRideName = "Ride2",
+            StartedAt = DateTime.Now,
+            Distance = 10,
+            Duration = TimeSpan.FromMinutes(10),
+        };
+
+        CompletedRideSummaries.Add(new CompletedRideSummary(ride));
+        CompletedRideSummaries.Add(new CompletedRideSummary(ride2));
     }
 
     [RelayCommand]
@@ -78,7 +104,45 @@ public partial class MainPageViewModel : BaseViewModel
             return;
         }
 
-        Entities.CompletedRide completedRide = await _rideService.GetCompletedRide(rideSummary.CompletedRideId);
+        //Entities.CompletedRide completedRide = await _rideService.GetCompletedRide(rideSummary.CompletedRideId);
+        Entities.CompletedRide completedRide = new Entities.CompletedRide()
+        {
+            CompletedRideId = rideSummary.CompletedRideId,
+            PlannedRideId = Guid.NewGuid(),
+            CompletedRidePoints = new List<Entities.CompletedRidePoint>()
+            {
+                new Entities.CompletedRidePoint()
+                {
+                    RideStep = 1,
+                    Location = new Location()
+                    {
+                        Latitude = 30.12,
+                        Longitude = 18.65,
+                        Altitude = 0,
+                        Speed = 0,
+                        Accuracy = 0,
+                        Timestamp = DateTime.Now
+                    },
+                    Temperature = 23.4,
+                    EffectiveTime = TimeSpan.FromMinutes(1)
+                },
+                new Entities.CompletedRidePoint()
+                {
+                    RideStep = 2,
+                    Location = new Location()
+                    {
+                        Latitude = 30.14,
+                        Longitude = 18.60,
+                        Altitude = 12,
+                        Speed = 0,
+                        Accuracy = 0,
+                        Timestamp = DateTime.Now
+                    },
+                    Temperature = 23.5,
+                    EffectiveTime = TimeSpan.FromMinutes(1)
+                }
+            }
+        };
 
         //Référence le shell, donc pas bonne pratique, il faudrait une interface.
         await Shell.Current.GoToAsync($"{nameof(CompletedRidePage)}", true,
