@@ -24,7 +24,7 @@ public class RideService
         httpClient = new HttpClient();
     }
 
-    internal void ReceiveRideData(CompletedRide rideData)
+    internal void ReceiveRideDataFromDevice(CompletedRide rideData)
     {
         if (rideData is null)
         {
@@ -47,7 +47,7 @@ public class RideService
         }
     }
 
-    internal void ReceivePoint(CompletedRidePoint ridePoint)
+    internal void ReceivePointDataFromDevice(CompletedRidePoint ridePoint)
     {
         if (this._currentRide is null)
         {
