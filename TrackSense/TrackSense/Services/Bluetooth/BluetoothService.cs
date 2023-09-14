@@ -69,11 +69,21 @@ namespace TrackSense.Services.Bluetooth
         {
             try
             {
-                SetNotifications(p_id);
-                BluetoothEvent BTEventConnection = new BluetoothEvent(BluetoothEventType.CONNECTION, true);
-                observers.ForEach(o => o.OnNext(BTEventConnection));
+                IDevice device = bluetoothDevices.SingleOrDefault(d => d.Id == p_id);
+                if (device is not null)
+                {
+                    await bluetoothLE.Adapter.ConnectToDeviceAsync(device);
+
+                    SetNotifications(p_id);
+                    BluetoothEvent BTEventConnection = new BluetoothEvent(BluetoothEventType.CONNECTION, true);
+                    observers.ForEach(o => o.OnNext(BTEventConnection));
+                }
             }
             catch (DeviceConnectionException e)
+            {
+                throw e;
+            }
+            catch(Exception e)
             {
                 throw e;
             }
@@ -81,14 +91,7 @@ namespace TrackSense.Services.Bluetooth
 
         private async void SetNotifications(Guid p_id)
         {
-            IDevice device = bluetoothDevices.SingleOrDefault(d => d.Id == p_id);
 
-            if (device is null)
-            {
-                return;
-            }
-
-            await bluetoothLE.Adapter.ConnectToDeviceAsync(device);
             IDevice connectedDevice = bluetoothLE.Adapter.ConnectedDevices.SingleOrDefault();
             Guid completedRideServiceUID = new Guid("62ffab64-3646-4fb9-88d8-541deb961192");
             Guid isStatsReadyCharacUID = new Guid("9456444a-4b5f-11ee-be56-0242ac120002");
@@ -114,6 +117,7 @@ namespace TrackSense.Services.Bluetooth
 
                     BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_STATS, true, completedRideDTO.ToEntity());
                     observers.ForEach(o => o.OnNext(BTEventSendData));
+                    //await isStatsReadyCharac.StopUpdatesAsync();
                 }
                 catch (Exception ex)
                 {

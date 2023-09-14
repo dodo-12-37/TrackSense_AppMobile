@@ -33,7 +33,7 @@ namespace TrackSense.Services.Bluetooth.BluetoothDTO
             Temperature = double.Parse(point[4]);
             Location.Speed = double.Parse(point[5]);
             Location.Timestamp = DateTimeOffset.Parse(point[6]);
-            EffectiveTime = TimeSpan.Parse(point[7]);
+            EffectiveTime = TimeSpan.FromSeconds(double.Parse(point[7]));
         }
 
         public CompletedRidePointDTO()

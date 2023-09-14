@@ -98,6 +98,18 @@ public class RideService
         return _completedRides;
     }
 
+    //public List<CompletedRideSummary> GetCompletedRideSummariesFromLocalStorage()
+    //{
+    //    List<CompletedRide> rides = this._rideData.ListCompletedRides();
+    //    List<CompletedRideSummary> summaries = new();
+
+    //    foreach (CompletedRide ride in rides)
+    //    {
+
+    //    }
+
+    //}
+
     private void PostCurrentRide()
     {
         //Vérifier la connectivité du cellulaire
