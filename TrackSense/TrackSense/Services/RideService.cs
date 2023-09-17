@@ -2,6 +2,7 @@
 using Plugin.BLE.Abstractions.Contracts;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http.Json;
 using System.Text;
 using TrackSense.Entities;
@@ -39,12 +40,7 @@ public class RideService
 
         this._currentRide = rideData;
 
-        bool isConfirmed = false;
-
-        while (!isConfirmed)
-        {
-            isConfirmed = this._bluetoothService.ConfirmRideStatsReception().Result;
-        }
+        this._bluetoothService.ConfirmRideStatsReception();
     }
 
     internal void ReceivePointDataFromDevice(CompletedRidePoint ridePoint)
@@ -60,12 +56,7 @@ public class RideService
         if (ridePoint.RideStep == numberOfPointsReceived + 1)
         {
             this._currentRide.CompletedRidePoints.Add(ridePoint);
-            bool isConfirmed = false;
-
-            while (!isConfirmed)
-            {
-                isConfirmed = this._bluetoothService.ConfirmPointReception().Result;
-            }
+            this._bluetoothService.ConfirmRideStatsReception();
         }
 
         if (ridePoint.RideStep == totalNumberOfPoints)

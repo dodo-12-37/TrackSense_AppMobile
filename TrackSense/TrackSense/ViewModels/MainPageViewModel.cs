@@ -45,10 +45,6 @@ public partial class MainPageViewModel : BaseViewModel
                     case BluetoothEventType.SENDING_RIDE_STATS:
                         isReceivingData = true;
                         this._rideService.ReceiveRideDataFromDevice(value.RideData);
-                        if (value.RideData is Entities.CompletedRide ride)
-                        {
-                            await Shell.Current.DisplayAlert("Ajout", $"Le trajet {ride.CompletedRideId} est reçu!", "Ok");
-                        }
                         break;
                     case BluetoothEventType.SENDING_RIDE_POINT:
                         isReceivingData = true;
