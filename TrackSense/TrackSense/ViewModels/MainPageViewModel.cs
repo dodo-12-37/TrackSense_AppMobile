@@ -141,6 +141,16 @@ public partial class MainPageViewModel : BaseViewModel
                     Temperature = 23.5,
                     EffectiveTime = TimeSpan.FromMinutes(1)
                 }
+            },
+            Statistics = new Entities.CompletedRideStatistics()
+            {
+                AverageSpeed = 10,
+                MaximumSpeed = 12,
+                Distance = 10,
+                Duration = TimeSpan.FromMinutes(10),
+                NumberOfPoints = 2,
+                Calories = 100,
+                Falls = 0
             }
         };
 
@@ -148,7 +158,7 @@ public partial class MainPageViewModel : BaseViewModel
         await Shell.Current.GoToAsync($"{nameof(CompletedRidePage)}", true,
             new Dictionary<string, object>
             {
-                    {"Ride", completedRide }
+                    {"CompletedRide", new Models.CompletedRide(completedRide) }
             });
     }
 

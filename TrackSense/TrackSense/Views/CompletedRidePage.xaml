@@ -21,7 +21,8 @@
         <!--<Label Text="Informations"
                    FontSize="Title"
                    Grid.Row="2"/>-->
-        <Label Text="{Binding CompletedRide.Statistics.Distance}"/>
+        <Label Text="{Binding CompletedRide.Statistics.Distance}"
+               Grid.Row="1"/>
         <Button x:Name="TrajetBtn"
                     Text="Favoris"
                     Grid.Row="3"/>
