@@ -176,20 +176,20 @@ namespace TrackSense.Services.Bluetooth
             observers.Add(observer);
             return new UnsubscriberBluetooth(observers, observer);
         }
-        internal async Task<bool> ConfirmRideStatsReception()
+        internal async Task<bool> ConfirmRideStatsReception(int number)
         {
             //IDevice connectedDevice = this.GetConnectedDevice();
             Guid completedRideServiceUID = new Guid("62ffab64-3646-4fb9-88d8-541deb961192");
             //Guid characteristicIsReadyUID = new Guid("9456444a-4b5f-11ee-be56-0242ac120002");
             Guid rideNotificationUID = new Guid("61656aa8-b795-427f-a96c-c4b6c57430dd");
-            byte[] confirmationString = Encoding.UTF8.GetBytes("ok");
+            byte[] confirmationString = Encoding.UTF8.GetBytes(number.ToString());
 
             //IService completedRideService = await connectedDevice.GetServiceAsync(completedRideServiceUID);
             try
             {
                 //ICharacteristic notificationCharacteristic = await completedRideService.GetCharacteristicAsync(rideNotificationUID);
                 //await notificationCharacteristic.WriteAsync(confirmationString);
-                Debug.WriteLine("Confirmation réception point #");
+                Debug.WriteLine("Confirmation réception point #" + number);
                 bool result = await _notificationCharacteristic.WriteAsync(confirmationString);
                 return result;
 

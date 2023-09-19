@@ -40,7 +40,7 @@ public class RideService
 
         this._currentRide = rideData;
 
-        return await this._bluetoothService.ConfirmRideStatsReception();
+        return await this._bluetoothService.ConfirmRideStatsReception(0);
     }
 
     internal async Task ReceivePointDataFromDevice(CompletedRidePoint ridePoint)
@@ -57,7 +57,7 @@ public class RideService
         {
             try
             {
-                bool isConfirmed = await this._bluetoothService.ConfirmRideStatsReception();
+                bool isConfirmed = await this._bluetoothService.ConfirmRideStatsReception(ridePoint.RideStep);
                 Debug.Write(ridePoint.RideStep);
                 if (isConfirmed)
                 {
@@ -75,7 +75,7 @@ public class RideService
         {
             try
             {
-                bool isConfirmed = await this._bluetoothService.ConfirmRideStatsReception();
+                bool isConfirmed = await this._bluetoothService.ConfirmRideStatsReception(ridePoint.RideStep);
                 Debug.Write("Deuxieme confirmation : point #" + ridePoint.RideStep);
             }
             catch (Exception e)
