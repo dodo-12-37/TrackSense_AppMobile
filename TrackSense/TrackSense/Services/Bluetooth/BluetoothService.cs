@@ -135,7 +135,7 @@ namespace TrackSense.Services.Bluetooth
 
                                 BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_POINT, true, completedRidePoint);
                                 observers.ForEach(o => o.OnNext(BTEventSendData));
-                                this._completedRideDTO.CompletedRidePoints.Add(pointDTO);
+                                //this._completedRideDTO.CompletedRidePoints.Add(pointDTO);
                                 Debug.WriteLine("Point ajouté : " + pointDTO.RideStep);
                             }
                         }
@@ -173,7 +173,7 @@ namespace TrackSense.Services.Bluetooth
             observers.Add(observer);
             return new UnsubscriberBluetooth(observers, observer);
         }
-        internal async void ConfirmRideStatsReception()
+        internal async Task ConfirmRideStatsReception()
         {
             IDevice connectedDevice = this.GetConnectedDevice();
             Guid completedRideServiceUID = new Guid("62ffab64-3646-4fb9-88d8-541deb961192");
@@ -202,16 +202,16 @@ namespace TrackSense.Services.Bluetooth
                 }
 
             }
-            catch (TargetInvocationException ex)
-            {
-                Exception innerException = ex.InnerException;
-                Debug.WriteLine("Erreur : " + innerException.Message);
-                //throw ex;
-            }
+            //catch (TargetInvocationException ex)
+            //{
+            //    Exception innerException = ex.InnerException;
+            //    Debug.WriteLine("Erreur : " + innerException.Message);
+            //    //throw ex;
+            //}
             catch (Exception e)
             {
                 Debug.WriteLine("Erreur : " + e.Message);
-                //throw e;
+                throw e;
             }
         }
 

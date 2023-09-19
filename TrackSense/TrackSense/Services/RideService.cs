@@ -43,7 +43,7 @@ public class RideService
         this._bluetoothService.ConfirmRideStatsReception();
     }
 
-    internal void ReceivePointDataFromDevice(CompletedRidePoint ridePoint)
+    internal async Task ReceivePointDataFromDevice(CompletedRidePoint ridePoint)
     {
         if (this._currentRide is null)
         {
@@ -55,8 +55,15 @@ public class RideService
 
         if (ridePoint.RideStep == numberOfPointsReceived + 1)
         {
-            this._currentRide.CompletedRidePoints.Add(ridePoint);
-            this._bluetoothService.ConfirmRideStatsReception();
+            try
+            {
+                await this._bluetoothService.ConfirmRideStatsReception();
+                this._currentRide.CompletedRidePoints.Add(ridePoint);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Erreur confirmation : " + e.Message);
+            }
         }
 
         if (ridePoint.RideStep == totalNumberOfPoints)
