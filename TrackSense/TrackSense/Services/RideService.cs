@@ -84,7 +84,7 @@ public class RideService
             }
 
         }
-
+            
         if (ridePoint.RideStep == totalNumberOfPoints)
         {
             _rideData.AddCompletedRide(this._currentRide);
