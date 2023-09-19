@@ -139,7 +139,6 @@ namespace TrackSense.Services.Bluetooth
 
                                 BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_POINT, true, completedRidePoint);
                                 observers.ForEach(o => o.OnNext(BTEventSendData));
-                                //this._completedRideDTO.CompletedRidePoints.Add(pointDTO);
                                 Debug.WriteLine("Point ajouté : " + pointDTO.RideStep);
                             }
                         }
@@ -190,8 +189,9 @@ namespace TrackSense.Services.Bluetooth
             {
                 //ICharacteristic notificationCharacteristic = await completedRideService.GetCharacteristicAsync(rideNotificationUID);
                 //await notificationCharacteristic.WriteAsync(confirmationString);
-                return await _notificationCharacteristic.WriteAsync(confirmationString);
                 Debug.WriteLine("Confirmation réception point #");
+                bool result = await _notificationCharacteristic.WriteAsync(confirmationString);
+                return result;
 
             }
             //catch (TargetInvocationException ex)
@@ -202,7 +202,7 @@ namespace TrackSense.Services.Bluetooth
             //}
             catch (Exception e)
             {
-                Debug.WriteLine("Erreur : " + e.Message);
+                Debug.WriteLine("Erreur ConfirmRideStatsReception : " + e.Message);
                 throw e;
             }
         }

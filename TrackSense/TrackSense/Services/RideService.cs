@@ -61,13 +61,28 @@ public class RideService
                 Debug.Write(ridePoint.RideStep);
                 if (isConfirmed)
                 {
+                    Debug.Write("Conrimation : point #" + ridePoint.RideStep);
                     this._currentRide.CompletedRidePoints.Add(ridePoint);
+                    Debug.Write("Ajout point #" + ridePoint.RideStep);
                 }
             }
             catch (Exception e)
             {
                 Debug.WriteLine("Erreur confirmation : " + e.Message);
             }
+        }
+        else if (ridePoint.RideStep == numberOfPointsReceived)
+        {
+            try
+            {
+                bool isConfirmed = await this._bluetoothService.ConfirmRideStatsReception();
+                Debug.Write("Deuxieme confirmation : point #" + ridePoint.RideStep);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Erreur confirmation : " + e.Message);
+            }
+
         }
 
         if (ridePoint.RideStep == totalNumberOfPoints)
