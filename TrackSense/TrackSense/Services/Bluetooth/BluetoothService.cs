@@ -144,9 +144,9 @@ namespace TrackSense.Services.Bluetooth
                             }
                         }
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
-                        ;
+                        Debug.WriteLine("Erreur callback : " + e.Message);
                     }
                     finally
                     {
@@ -177,7 +177,7 @@ namespace TrackSense.Services.Bluetooth
             observers.Add(observer);
             return new UnsubscriberBluetooth(observers, observer);
         }
-        internal async Task ConfirmRideStatsReception()
+        internal async Task<bool> ConfirmRideStatsReception()
         {
             //IDevice connectedDevice = this.GetConnectedDevice();
             Guid completedRideServiceUID = new Guid("62ffab64-3646-4fb9-88d8-541deb961192");
@@ -189,23 +189,9 @@ namespace TrackSense.Services.Bluetooth
             try
             {
                 //ICharacteristic notificationCharacteristic = await completedRideService.GetCharacteristicAsync(rideNotificationUID);
-
-                if (MainThread.IsMainThread)
-                {
-                    // You are on the main thread, so it's safe to perform your operation here
-                    //await notificationCharacteristic.WriteAsync(confirmationString);
-                    await _notificationCharacteristic.WriteAsync(confirmationString);
-                }
-                else
-                {
-                    // You are not on the main thread, so use BeginInvokeOnMainThread to marshal the operation to the main thread
-                    MainThread.BeginInvokeOnMainThread(async () =>
-                    {
-                        // Perform your operation here, it will run on the main thread
-                        //await notificationCharacteristic.WriteAsync(confirmationString);
-                        await _notificationCharacteristic.WriteAsync(confirmationString);
-                    });
-                }
+                //await notificationCharacteristic.WriteAsync(confirmationString);
+                return await _notificationCharacteristic.WriteAsync(confirmationString);
+                Debug.WriteLine("Confirmation réception point #");
 
             }
             //catch (TargetInvocationException ex)

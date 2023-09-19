@@ -25,7 +25,7 @@ public class RideService
         httpClient = new HttpClient();
     }
 
-    internal void ReceiveRideDataFromDevice(CompletedRide rideData)
+    internal async Task<bool> ReceiveRideDataFromDevice(CompletedRide rideData)
     {
         if (rideData is null)
         {
@@ -40,7 +40,7 @@ public class RideService
 
         this._currentRide = rideData;
 
-        this._bluetoothService.ConfirmRideStatsReception();
+        return await this._bluetoothService.ConfirmRideStatsReception();
     }
 
     internal async Task ReceivePointDataFromDevice(CompletedRidePoint ridePoint)
@@ -57,8 +57,12 @@ public class RideService
         {
             try
             {
-                await this._bluetoothService.ConfirmRideStatsReception();
-                this._currentRide.CompletedRidePoints.Add(ridePoint);
+                bool isConfirmed = await this._bluetoothService.ConfirmRideStatsReception();
+                Debug.Write(ridePoint.RideStep);
+                if (isConfirmed)
+                {
+                    this._currentRide.CompletedRidePoints.Add(ridePoint);
+                }
             }
             catch (Exception e)
             {

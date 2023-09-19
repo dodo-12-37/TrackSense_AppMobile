@@ -44,7 +44,7 @@ public partial class MainPageViewModel : BaseViewModel
                         break;
                     case BluetoothEventType.SENDING_RIDE_STATS:
                         isReceivingData = true;
-                        this._rideService.ReceiveRideDataFromDevice(value.RideData);
+                        await this._rideService.ReceiveRideDataFromDevice(value.RideData);
                         break;
                     case BluetoothEventType.SENDING_RIDE_POINT:
                         isReceivingData = true;
