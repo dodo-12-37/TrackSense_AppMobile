@@ -10,9 +10,11 @@ namespace TrackSense.Models
     {
         public Guid CompletedRideId { get; set; }
         public string PlannedRideName { get; set; }
-        public string StartedAt { get; set; }
+        public string StartedAtTime { get; set; }
+        public string StartedAtDate { get; set; }
+
         public TimeSpan Duration { get; set; }
-        public int Distance { get; set; }
+        public double Distance { get; set; }
 
         public CompletedRideSummary(Entities.CompletedRideSummary entite)
         {
@@ -23,7 +25,8 @@ namespace TrackSense.Models
 
             this.CompletedRideId = entite.CompletedRideId;
             this.PlannedRideName = entite.PlannedRideName;
-            this.StartedAt = entite.StartedAt.ToString();
+            this.StartedAtDate = $"{entite.StartedAt.ToLongDateString()}";
+            this.StartedAtTime = $"{entite.StartedAt.ToShortTimeString()}";
             this.Duration = entite.Duration;
             this.Distance = entite.Distance;
         }
