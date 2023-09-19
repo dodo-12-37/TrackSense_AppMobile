@@ -79,7 +79,7 @@ namespace TrackSense.Services.Bluetooth
             {
                 throw e;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw e;
             }
@@ -107,35 +107,48 @@ namespace TrackSense.Services.Bluetooth
 
             rideNotificationCharac.ValueUpdated += async (sender, args) =>
             {
-                byte[] status = args.Characteristic.Value;
-                string statusString = Encoding.UTF8.GetString(status);
-                if (statusString == "sending" && !isBusy)
+                MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    isBusy = true;
-                    byte[] rideBytes = await rideStatsCharac.ReadAsync();
-                    string rideMessage = Encoding.UTF8.GetString(rideBytes);
-
-                    if (_completedRideDTO is null)
+                    try
                     {
-                        CompletedRideDTO completedRideDTO = new CompletedRideDTO(rideMessage);
+                        byte[] status = args.Characteristic.Value;
+                        string statusString = Encoding.UTF8.GetString(status);
+                        if (statusString == "sending" && !isBusy)
+                        {
+                            isBusy = true;
+                            byte[] rideBytes = await rideStatsCharac.ReadAsync();
+                            string rideMessage = Encoding.UTF8.GetString(rideBytes);
 
-                        BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_STATS, true, completedRideDTO.ToEntity());
-                        observers.ForEach(o => o.OnNext(BTEventSendData));
-                        this._completedRideDTO = completedRideDTO;
-                        Debug.WriteLine("Ride ajouté : " + completedRideDTO.CompletedRideId);
+                            if (_completedRideDTO is null)
+                            {
+                                CompletedRideDTO completedRideDTO = new CompletedRideDTO(rideMessage);
+
+                                BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_STATS, true, completedRideDTO.ToEntity());
+                                observers.ForEach(o => o.OnNext(BTEventSendData));
+                                this._completedRideDTO = completedRideDTO;
+                                Debug.WriteLine("Ride ajouté : " + completedRideDTO.CompletedRideId);
+                            }
+                            else
+                            {
+                                CompletedRidePointDTO pointDTO = new CompletedRidePointDTO(rideMessage);
+                                Entities.CompletedRidePoint completedRidePoint = pointDTO.ToEntity();
+
+                                BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_POINT, true, completedRidePoint);
+                                observers.ForEach(o => o.OnNext(BTEventSendData));
+                                this._completedRideDTO.CompletedRidePoints.Add(pointDTO);
+                                Debug.WriteLine("Point ajouté : " + pointDTO.RideStep);
+                            }
+                        }
                     }
-                    else
+                    catch (Exception)
                     {
-                        CompletedRidePointDTO pointDTO = new CompletedRidePointDTO(rideMessage);
-                        Entities.CompletedRidePoint completedRidePoint = pointDTO.ToEntity();
-
-                        BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_POINT, true, completedRidePoint);
-                        observers.ForEach(o => o.OnNext(BTEventSendData));
-                        this._completedRideDTO.CompletedRidePoints.Add(pointDTO);
-                        Debug.WriteLine("Point ajouté : " + pointDTO.RideStep);
+                        ;
                     }
-                    isBusy = false;
-                }
+                    finally
+                    {
+                        isBusy = false;
+                    }
+                });
             };
             await rideNotificationCharac.StartUpdatesAsync();
         }
@@ -189,16 +202,16 @@ namespace TrackSense.Services.Bluetooth
                 }
 
             }
-            catch(TargetInvocationException ex)
+            catch (TargetInvocationException ex)
             {
                 Exception innerException = ex.InnerException;
                 Debug.WriteLine("Erreur : " + innerException.Message);
-                throw ex;
+                //throw ex;
             }
             catch (Exception e)
             {
                 Debug.WriteLine("Erreur : " + e.Message);
-                throw e;
+                //throw e;
             }
         }
 
