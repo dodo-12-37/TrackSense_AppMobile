@@ -70,17 +70,17 @@ public partial class MainPageViewModel : BaseViewModel
             CompletedRideId = Guid.NewGuid(),
             PlannedRideName = "Ride1",
             StartedAt = DateTime.Now,
-            Distance = 10,
-            Duration = TimeSpan.FromMinutes(10),
+            Distance = 13,
+            Duration = TimeSpan.FromMinutes(48),
         };
 
         TrackSense.Entities.CompletedRideSummary ride2 = new TrackSense.Entities.CompletedRideSummary()
         {
             CompletedRideId = Guid.NewGuid(),
-            PlannedRideName = "Ride2",
+            PlannedRideName = null,
             StartedAt = DateTime.Now,
-            Distance = 10,
-            Duration = TimeSpan.FromMinutes(10),
+            Distance = 23,
+            Duration = TimeSpan.FromMinutes(63),
         };
 
         CompletedRideSummaries.Add(new CompletedRideSummary(ride));

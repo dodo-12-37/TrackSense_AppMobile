@@ -15,8 +15,14 @@
                      Order="Primary"
                      IconImageSource="settings.svg"/>
     </ContentPage.ToolbarItems>
-    <Grid RowDefinitions="*,Auto">
-        <RefreshView Grid.ColumnSpan="2"
+    <Grid RowDefinitions="Auto,*"
+          Padding="10">
+        <Label Grid.Row="0"
+               Text="Trajets effectués"
+               FontSize="Title"
+               FontAttributes="Bold"/>
+        <RefreshView Grid.Row="1"
+                     Grid.ColumnSpan="2"
                      Command="{Binding GetCompletedRidesCommand}"
                      IsRefreshing="{Binding IsRefreshing}">
             <CollectionView ItemsSource="{Binding CompletedRideSummaries}">
@@ -34,31 +40,23 @@
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="model:CompletedRideSummary">
-                        <Grid Padding="10">
+                        <Grid Padding="5">
                             <Frame HeightRequest="100"
-                                   Padding="0">
+                                   BackgroundColor="LightGray">
                                 <Frame.GestureRecognizers>
                                     <TapGestureRecognizer CommandParameter="{Binding .}"
                                                           Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainPageViewModel}}, Path=GoToDetailsCommand}" />
                                 </Frame.GestureRecognizers>
-                                <VerticalStackLayout>
+                                <Grid ColumnDefinitions="*,*"
+                                      RowDefinitions="*,*">
                                     <Label Text="{Binding StartedAt}" />
-                                </VerticalStackLayout>
+                                </Grid>
                             </Frame>
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </RefreshView>
-        <Grid Grid.Row="1"
-              ColumnDefinitions="*,*">
-            <Button Text="Simuler trajet"
-                    Command="{Binding SimulateRideReceptionCommand}"/>
-            <Button Grid.Column="1"
-                    Text="Simuler points"
-                    Command="{Binding SimulatePointsReceptionCommand}"
-                    BackgroundColor="Green"/>
-        </Grid>
     </Grid>
 
 </ContentPage>
