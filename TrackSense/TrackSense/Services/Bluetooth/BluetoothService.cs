@@ -19,6 +19,8 @@ namespace TrackSense.Services.Bluetooth
         private List<IObserver<BluetoothEvent>> observers = new();
         CompletedRideDTO _completedRideDTO;
         bool isBusy = false;
+        ICharacteristic _notificationCharacteristic;
+        ICharacteristic _dataCharacteristic;
 
         public BluetoothService(IBluetoothLE bluetoothLE)
         {
@@ -99,13 +101,15 @@ namespace TrackSense.Services.Bluetooth
             IService completedRideService = await connectedDevice.GetServiceAsync(completedRideServiceUID);
 
             //ICharacteristic isStatsReadyCharac = await completedRideService.GetCharacteristicAsync(isStatsReadyCharacUID);
-            ICharacteristic rideStatsCharac = await completedRideService.GetCharacteristicAsync(rideStatsUID);
-            ICharacteristic rideNotificationCharac = await completedRideService.GetCharacteristicAsync(rideNotificationUID);
+            //ICharacteristic rideStatsCharac = await completedRideService.GetCharacteristicAsync(rideStatsUID);
+            //ICharacteristic rideNotificationCharac = await completedRideService.GetCharacteristicAsync(rideNotificationUID);
+            _dataCharacteristic = await completedRideService.GetCharacteristicAsync(rideStatsUID);
+            _notificationCharacteristic = await completedRideService.GetCharacteristicAsync(rideNotificationUID);
             //ICharacteristic pointNumberCharac = await completedRideService.GetCharacteristicAsync(pointNumberDataUID);
             //ICharacteristic pointDataCharac = await completedRideService.GetCharacteristicAsync(pointDataUID);
 
 
-            rideNotificationCharac.ValueUpdated += async (sender, args) =>
+            _notificationCharacteristic.ValueUpdated += async (sender, args) =>
             {
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
@@ -116,7 +120,7 @@ namespace TrackSense.Services.Bluetooth
                         if (statusString == "sending" && !isBusy)
                         {
                             isBusy = true;
-                            byte[] rideBytes = await rideStatsCharac.ReadAsync();
+                            byte[] rideBytes = await _dataCharacteristic.ReadAsync();
                             string rideMessage = Encoding.UTF8.GetString(rideBytes);
 
                             if (_completedRideDTO is null)
@@ -150,7 +154,7 @@ namespace TrackSense.Services.Bluetooth
                     }
                 });
             };
-            await rideNotificationCharac.StartUpdatesAsync();
+            await _notificationCharacteristic.StartUpdatesAsync();
         }
 
         public IDevice GetConnectedDevice()
@@ -175,21 +179,22 @@ namespace TrackSense.Services.Bluetooth
         }
         internal async Task ConfirmRideStatsReception()
         {
-            IDevice connectedDevice = this.GetConnectedDevice();
+            //IDevice connectedDevice = this.GetConnectedDevice();
             Guid completedRideServiceUID = new Guid("62ffab64-3646-4fb9-88d8-541deb961192");
             //Guid characteristicIsReadyUID = new Guid("9456444a-4b5f-11ee-be56-0242ac120002");
             Guid rideNotificationUID = new Guid("61656aa8-b795-427f-a96c-c4b6c57430dd");
             byte[] confirmationString = Encoding.UTF8.GetBytes("ok");
 
-            IService completedRideService = await connectedDevice.GetServiceAsync(completedRideServiceUID);
+            //IService completedRideService = await connectedDevice.GetServiceAsync(completedRideServiceUID);
             try
             {
-                ICharacteristic notificationCharacteristic = await completedRideService.GetCharacteristicAsync(rideNotificationUID);
+                //ICharacteristic notificationCharacteristic = await completedRideService.GetCharacteristicAsync(rideNotificationUID);
 
                 if (MainThread.IsMainThread)
                 {
                     // You are on the main thread, so it's safe to perform your operation here
-                    await notificationCharacteristic.WriteAsync(confirmationString);
+                    //await notificationCharacteristic.WriteAsync(confirmationString);
+                    await _notificationCharacteristic.WriteAsync(confirmationString);
                 }
                 else
                 {
@@ -197,7 +202,8 @@ namespace TrackSense.Services.Bluetooth
                     MainThread.BeginInvokeOnMainThread(async () =>
                     {
                         // Perform your operation here, it will run on the main thread
-                        await notificationCharacteristic.WriteAsync(confirmationString);
+                        //await notificationCharacteristic.WriteAsync(confirmationString);
+                        await _notificationCharacteristic.WriteAsync(confirmationString);
                     });
                 }
 
