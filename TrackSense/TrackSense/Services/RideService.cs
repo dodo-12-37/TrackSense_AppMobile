@@ -115,14 +115,14 @@ public class RideService
 
         string url = $"https://localhost:7044/api/completedRides/{completedRideId}";
 
-        var response = httpClient.GetAsync(url).Result;
+        var response = await httpClient.GetAsync(url);
 
         CompletedRide completedRide = null;
 
         if (response.IsSuccessStatusCode)
         {
             API.APIDTO.CompletedRideDTO completedRideSummaryDTO = await response.Content.ReadFromJsonAsync<API.APIDTO.CompletedRideDTO>();
-            completedRide = completedRideSummaryDTO.ToEntity();
+            completedRide =  completedRideSummaryDTO.ToEntity();
         }
 
         return completedRide;
