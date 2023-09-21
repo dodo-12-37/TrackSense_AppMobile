@@ -16,7 +16,7 @@ namespace TrackSense.ViewModels
 
         public CompletedRideViewModel()
         {
-            Title = "Completed Ride";
+            Title = "Statistiques";
         }
     }
 }
