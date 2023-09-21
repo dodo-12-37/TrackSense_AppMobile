@@ -7,6 +7,9 @@ using TrackSense.Services;
 using TrackSense.Data;
 using TrackSense.Entities;
 using TrackSense.Services.Bluetooth;
+using CommunityToolkit.Maui.Maps;
+using System.Reflection;
+using Microsoft.Extensions.Configuration;
 
 namespace TrackSense
 {
@@ -14,9 +17,21 @@ namespace TrackSense
     {
         public static MauiApp CreateMauiApp()
         {
+            var a = Assembly.GetExecutingAssembly();
+            using var stream = a.GetManifestResourceStream("TrackSense.appsettings.json");
+
+            IConfiguration config = new ConfigurationBuilder()
+                .AddJsonStream(stream)
+                .Build();
+
             var builder = MauiApp.CreateBuilder();
+            //builder.Configuration.AddConfiguration(config);
+            var settings = config.GetRequiredSection("Settings").Get<Settings>();
+            string APIKey = settings.BingApiKey;
             builder
                 .UseMauiApp<App>()
+                .UseMauiMaps()
+                .UseMauiCommunityToolkitMaps(APIKey)
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
