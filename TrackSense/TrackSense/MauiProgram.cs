@@ -39,10 +39,12 @@ namespace TrackSense
             builder.Services.AddSingleton<TrackSenseDevicesViewModel>();
             builder.Services.AddSingleton<MainPageViewModel>();
             builder.Services.AddSingleton<CompletedRideViewModel>();
+            builder.Services.AddSingleton<SettingsViewModel>();
 
             builder.Services.AddSingleton<MainPage>();
             builder.Services.AddTransient<TrackSenseDevicesPage>();
             builder.Services.AddTransient<CompletedRidePage>();
+            builder.Services.AddTransient<SettingsPage>();
             return builder.Build();
         }
     }

@@ -4,7 +4,7 @@
              x:Class="TrackSense.Views.MainPage"
              xmlns:model="clr-namespace:TrackSense.Models"
              xmlns:viewmodel="clr-namespace:TrackSense.ViewModels"
-             Title="Accueil"
+             Title="{Binding Title}"
              x:DataType="viewmodel:MainPageViewModel">
 
     <ContentPage.ToolbarItems>
@@ -13,7 +13,8 @@
                      Command="{Binding GoToTrackSenseDevicesCommand}"/>
         <ToolbarItem Text="Paramètres"
                      Order="Primary"
-                     IconImageSource="settings.svg"/>
+                     IconImageSource="settings_light.svg"
+                     Command="{Binding GoToSettingsCommand}"/>
     </ContentPage.ToolbarItems>
     <Grid RowDefinitions="Auto,*"
           Padding="10">

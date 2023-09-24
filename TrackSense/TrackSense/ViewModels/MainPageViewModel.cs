@@ -41,6 +41,7 @@ public partial class MainPageViewModel : BaseViewModel
                         break;
                     case BluetoothEventType.DECONNECTION:
                         isConnected = false;
+                        this._rideService.InterruptReception();
                         break;
                     case BluetoothEventType.SENDING_RIDE_STATS:
                         isReceivingData = true;
@@ -84,6 +85,12 @@ public partial class MainPageViewModel : BaseViewModel
     }
 
     [RelayCommand]
+    async Task GoToSettingsAsync()
+    {
+        await Shell.Current.GoToAsync(nameof(SettingsPage));
+    }
+
+    [RelayCommand]
     async Task GoToTrackSenseDevices()
     {
         if (!IsConnected)
@@ -101,9 +108,75 @@ public partial class MainPageViewModel : BaseViewModel
         }
 
         //Entities.CompletedRide completedRide = await _rideService.GetCompletedRide(rideSummary.CompletedRideId);
-        Entities.CompletedRide completedRide = new Entities.CompletedRide()
+        Entities.CompletedRide completedRide = GenerateFakeCompletedRide();
+
+        //Référence le shell, donc pas bonne pratique, il faudrait une interface.
+        await Shell.Current.GoToAsync($"{nameof(CompletedRidePage)}", true,
+            new Dictionary<string, object>
+            {
+                    {"CompletedRide", new Models.CompletedRide(completedRide) }
+            });
+    }
+
+    [RelayCommand]
+    async Task GetCompletedRidesAsync()
+    {
+        if (IsBusy)
         {
-            CompletedRideId = rideSummary.CompletedRideId,
+            return;
+        }
+
+        try
+        {
+            IsBusy = true;
+            IsRefreshing = true;
+
+            //List<TrackSense.Entities.CompletedRideSummary> completedRides = await _rideService.GetUserCompletedRides();
+            List<TrackSense.Entities.CompletedRideSummary> completedRides = _rideService.GetCompletedRideSummariesFromLocalStorage();
+
+
+            if (CompletedRideSummaries.Count != 0)
+            {
+                CompletedRideSummaries.Clear();
+            }
+
+            foreach (TrackSense.Entities.CompletedRideSummary ride in completedRides)
+            {
+                CompletedRideSummaries.Add(new CompletedRideSummary(ride)); // si on a trop de données, ne pas utiliser cette méthode car lève un évenement pour chaque ajout
+                // si on a trop de données, créer une nouvelle liste ou une nouvelle ObservableCollection et l'assigner à CompletedRides ou trouver des
+                //library helpers qui ont des observableRange collections qui feront de l'ajout de batch
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            await Shell.Current.DisplayAlert("Erreur", $"Une erreur est survenue lors de la récupération des trajets: {ex.Message}", "Ok");
+        }
+        finally
+        {
+            IsBusy = false;
+            IsRefreshing = false;
+        }
+    }
+
+    [RelayCommand]
+    async Task SimulateRideReceptionAsync()
+    {
+        this._bluetoothService.SimulateRideReception();
+    }
+
+    [RelayCommand]
+    async Task SimulatePointsReceptionAsync()
+    {
+        this._bluetoothService.SimulatePointsReception();
+    }
+
+    #region DEBUG
+    private Entities.CompletedRide GenerateFakeCompletedRide()
+    {
+        return new Entities.CompletedRide()
+        {
+            CompletedRideId = Guid.NewGuid(),
             PlannedRideId = Guid.NewGuid(),
             CompletedRidePoints = new List<Entities.CompletedRidePoint>()
             {
@@ -247,70 +320,13 @@ public partial class MainPageViewModel : BaseViewModel
             {
                 AverageSpeed = 14.56,
                 MaximumSpeed = 27.34,
-                Distance = 10.56,
+                Distance = 10560,
                 Duration = TimeSpan.FromMinutes(10),
                 NumberOfPoints = 9,
                 Calories = 100,
                 Falls = 0
             }
         };
-
-        //Référence le shell, donc pas bonne pratique, il faudrait une interface.
-        await Shell.Current.GoToAsync($"{nameof(CompletedRidePage)}", true,
-            new Dictionary<string, object>
-            {
-                    {"CompletedRide", new Models.CompletedRide(completedRide) }
-            });
     }
-
-    [RelayCommand]
-    async Task GetCompletedRidesAsync()
-    {
-        if (IsBusy)
-        {
-            return;
-        }
-
-        try
-        {
-            IsBusy = true;
-            IsRefreshing = true;
-
-            List<TrackSense.Entities.CompletedRideSummary> completedRides = await _rideService.GetUserCompletedRides();
-
-            if (CompletedRideSummaries.Count != 0)
-            {
-                CompletedRideSummaries.Clear();
-            }
-
-            foreach (TrackSense.Entities.CompletedRideSummary ride in completedRides)
-            {
-                CompletedRideSummaries.Add(new CompletedRideSummary(ride)); // si on a trop de données, ne pas utiliser cette méthode car lève un évenement pour chaque ajout
-                // si on a trop de données, créer une nouvelle liste ou une nouvelle ObservableCollection et l'assigner à CompletedRides ou trouver des
-                //library helpers qui ont des observableRange collections qui feront de l'ajout de batch
-            }
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine(ex.Message);
-            await Shell.Current.DisplayAlert("Erreur", $"Une erreur est survenue lors de la récupération des trajets: {ex.Message}", "Ok");
-        }
-        finally
-        {
-            IsBusy = false;
-            IsRefreshing = false;
-        }
-    }
-
-    [RelayCommand]
-    async Task SimulateRideReceptionAsync()
-    {
-        this._bluetoothService.SimulateRideReception();
-    }
-
-    [RelayCommand]
-    async Task SimulatePointsReceptionAsync()
-    {
-        this._bluetoothService.SimulatePointsReception();
-    }
+    #endregion
 }
