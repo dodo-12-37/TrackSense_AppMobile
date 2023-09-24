@@ -32,12 +32,6 @@ public class RideService
             throw new ArgumentNullException(nameof(rideData));
         }
 
-        List<CompletedRide> storedRide = this._rideData.ListCompletedRides();
-        if (storedRide.Count > 0)
-        {
-            this._rideData.DeleteAllCompletedRides();
-        }
-
         this._currentRide = rideData;
 
         return await this._bluetoothService.ConfirmRideStatsReception(0);
@@ -115,17 +109,25 @@ public class RideService
         return _completedRides;
     }
 
-    //public List<CompletedRideSummary> GetCompletedRideSummariesFromLocalStorage()
-    //{
-    //    List<CompletedRide> rides = this._rideData.ListCompletedRides();
-    //    List<CompletedRideSummary> summaries = new();
+    public List<CompletedRideSummary> GetCompletedRideSummariesFromLocalStorage()
+    {
+        List<CompletedRide> rides = this._rideData.ListCompletedRides();
+        List<CompletedRideSummary> summaries = new();
 
-    //    foreach (CompletedRide ride in rides)
-    //    {
+        foreach (CompletedRide ride in rides)
+        {
+            summaries.Add(new CompletedRideSummary()
+            {
+                CompletedRideId = ride.CompletedRideId,
+                PlannedRideName = "None",
+                StartedAt = ride.CompletedRidePoints.First().Location.Timestamp.DateTime,
+                Duration = ride.Statistics.Duration,
+                Distance = ride.Statistics.Distance
+            });
+        }
 
-    //    }
-
-    //}
+        return summaries;
+    }
 
     private void PostCurrentRide()
     {
@@ -155,5 +157,15 @@ public class RideService
         }
 
         return completedRide;
+    }
+
+    internal void DeleteRidesFromLocalStorage()
+    {
+        this._rideData.DeleteAllCompletedRides();
+    }
+
+    public void InterruptReception()
+    {
+        this._currentRide = null;
     }
 }
