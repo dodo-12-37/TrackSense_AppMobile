@@ -20,14 +20,7 @@ namespace TrackSense.Services.API.APIDTO
             ;
         }
 
-        public CompletedRideSummaryDTO(CompletedRideSummary entite)
-        {
-            CompletedRideId = entite.CompletedRideId.ToString();
-            PlannedRideName = entite.PlannedRideName;
-            StartedAt = entite.StartedAt;
-            Duration = entite.Duration;
-            Distance = entite.Distance;
-        }
+      
 
         public CompletedRideSummary ToEntity()
         {

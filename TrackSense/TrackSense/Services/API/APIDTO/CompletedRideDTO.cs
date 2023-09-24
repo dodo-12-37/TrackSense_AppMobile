@@ -4,40 +4,58 @@ namespace TrackSense.Services.API.APIDTO;
 
 public class CompletedRideDTO
 {
-    public Guid CompletedRideId { get; set; }
-    public Guid PlannedRideId { get; set; }
-    public List<CompletedRidePointDTO> CompletedRidePoints { get; set; }
-    public CompletedRideStatisticsDTO Statistics { get; set; }
-
+    public string CompletedRideId { get; set; }
+    public string UserLogin { get; set; }
+    public string PlannedRideId { get; set; }
+    public virtual IEnumerable<CompletedRidePointDTO> CompletedRidePoints { get; set; }
+    public virtual CompletedRideStatisticsDTO CompletedRideStatistic { get; set; }
     public CompletedRideDTO()
     {
         ;
     }
 
-    public CompletedRideDTO(CompletedRide entite)
+    public CompletedRideDTO(Entities.CompletedRide p_completedRide)
     {
-        if (entite is null)
+        if (p_completedRide == null)
         {
-            throw new ArgumentNullException(nameof(entite));
+            throw new NullReferenceException(nameof(p_completedRide));
+        }
+        if (p_completedRide.UserLogin == null)
+        {
+            throw new NullReferenceException(nameof(p_completedRide.UserLogin));
+        }
+        if (p_completedRide.CompletedRideId == Guid.Empty)
+        {
+            throw new InvalidOperationException("Id du CompletedRide ne doit pas être null ni vide");
         }
 
-        CompletedRideId = entite.CompletedRideId;
-        PlannedRideId = entite.PlannedRideId;
-        CompletedRidePoints = entite.CompletedRidePoints.Select(entite => new CompletedRidePointDTO(entite)).ToList();
-        Statistics = new CompletedRideStatisticsDTO(entite.Statistics);
+        this.UserLogin = p_completedRide.UserLogin;
+        this.CompletedRideId = p_completedRide.CompletedRideId.ToString();
+        if (p_completedRide.PlannedRideId != Guid.Empty)
+        {
+
+            this.PlannedRideId = p_completedRide.PlannedRideId.ToString();
+        }
+
+        this.CompletedRidePoints = p_completedRide.CompletedRidePoints.Select(entite => new CompletedRidePointDTO(entite) 
+                                                                                            { CompletedRideId = this.CompletedRideId});
+
+        this.CompletedRideStatistic = new CompletedRideStatisticsDTO(p_completedRide.Statistics);
+        this.CompletedRideStatistic.CompletedRideId = this.CompletedRideId;
+
     }
 
-    public CompletedRide ToEntity()
+    public Entities.CompletedRide ToEntity()
     {
-        List<CompletedRidePoint> listPoints = CompletedRidePoints.Select(pointDTO
-            => pointDTO.ToEntity()).ToList();
-
         return new CompletedRide()
         {
-            CompletedRideId = CompletedRideId,
-            PlannedRideId = PlannedRideId,
-            CompletedRidePoints = listPoints,
-            Statistics = Statistics.ToEntity()
+            CompletedRideId = new Guid(this.CompletedRideId!),
+            CompletedRidePoints = this.CompletedRidePoints.Select(p => p.ToEntity()).ToList(),
+            UserLogin = this.UserLogin,
+            PlannedRideId = this.PlannedRideId == null ?
+                            Guid.Empty
+                            :new Guid(this.PlannedRideId),
+            Statistics = this.CompletedRideStatistic?.ToEntity(),
         };
     }
 

@@ -10,15 +10,11 @@ namespace TrackSense.Entities
 {
     public class CompletedRide
     {
-        //[DefaultValue("b0f07b65-3055-4f99-bc09-91829ca16fdb")]
         public string UserLogin { get; set; } = null!;
-        public Guid CompletedRideId { get; set; }
+        public Guid CompletedRideId { get; set; } = Guid.Empty!;
         public Guid PlannedRideId { get; set; }
         public List<CompletedRidePoint> CompletedRidePoints { get; set; }
-
-        public List<CompletedRidePoint> CompletedRidePoints { get; set; } = new List<CompletedRidePointModel>();
-        public CompletedRideStatistics Statistics { get; set; }
-
         public CompletedRideStatistics Statistics { get; set; } = null;
+      
     }
 }

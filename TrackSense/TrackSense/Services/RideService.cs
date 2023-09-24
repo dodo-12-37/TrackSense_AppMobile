@@ -82,10 +82,10 @@ public class RideService
         {
             return _completedRides;
         }
+       
+        string userLogin = "admin";
 
-        string userLogin = "test";
-
-        string url = $"https://localhost:7044/api/users/{userLogin}/completedRides";
+        string url = $"http://binhnguyen05-001-site1.atempurl.com/api/users/{userLogin}/completedRides";
 
         var response = await httpClient.GetAsync(url);
 
@@ -94,7 +94,7 @@ public class RideService
             List<API.APIDTO.CompletedRideSummaryDTO> completedRides = await response.Content.ReadFromJsonAsync<List<API.APIDTO.CompletedRideSummaryDTO>>();
             _completedRides.AddRange(completedRides.Select(ride => ride.ToEntity()));
         }
-
+       
         return _completedRides;
     }
 
