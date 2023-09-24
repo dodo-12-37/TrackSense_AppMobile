@@ -65,7 +65,7 @@ public partial class MainPageViewModel : BaseViewModel
         TrackSense.Entities.CompletedRideSummary ride = new TrackSense.Entities.CompletedRideSummary()
         {
             CompletedRideId = Guid.NewGuid(),
-            PlannedRideName = "Ride1",
+            PlannedRideName = "Faux trajet",
             StartedAt = DateTime.Now,
             Distance = 13,
             Duration = TimeSpan.FromMinutes(48),
@@ -74,7 +74,7 @@ public partial class MainPageViewModel : BaseViewModel
         TrackSense.Entities.CompletedRideSummary ride2 = new TrackSense.Entities.CompletedRideSummary()
         {
             CompletedRideId = Guid.NewGuid(),
-            PlannedRideName = null,
+            PlannedRideName = "Faux trajet",
             StartedAt = DateTime.Now,
             Distance = 23,
             Duration = TimeSpan.FromMinutes(63),
