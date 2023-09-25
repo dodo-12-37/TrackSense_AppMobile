@@ -1,14 +1,17 @@
-﻿using TrackSense.Entities;
+﻿using Newtonsoft.Json;
+using TrackSense.Entities;
 
 namespace TrackSense.Services.API.APIDTO;
 
 public class CompletedRideDTO
 {
-    public string CompletedRideId { get; set; }
     public string UserLogin { get; set; }
-    public string PlannedRideId { get; set; }
-    public virtual IEnumerable<CompletedRidePointDTO> CompletedRidePoints { get; set; }
-    public virtual CompletedRideStatisticsDTO CompletedRideStatistic { get; set; }
+    public string CompletedRideId { get; set; }
+
+    [JsonIgnore]
+    public PlannedRideDTO PlannedRide {get;set ;}
+    public  IEnumerable<CompletedRidePointDTO> CompletedRidePoints { get; set; }
+    public  CompletedRideStatisticsDTO CompletedRideStatistic { get; set; }
     public CompletedRideDTO()
     {
         ;
@@ -31,12 +34,7 @@ public class CompletedRideDTO
 
         this.UserLogin = p_completedRide.UserLogin;
         this.CompletedRideId = p_completedRide.CompletedRideId.ToString();
-        if (p_completedRide.PlannedRideId != Guid.Empty)
-        {
-
-            this.PlannedRideId = p_completedRide.PlannedRideId.ToString();
-        }
-
+       
         this.CompletedRidePoints = p_completedRide.CompletedRidePoints.Select(entite => new CompletedRidePointDTO(entite) 
                                                                                             { CompletedRideId = this.CompletedRideId});
 
@@ -52,9 +50,6 @@ public class CompletedRideDTO
             CompletedRideId = new Guid(this.CompletedRideId!),
             CompletedRidePoints = this.CompletedRidePoints.Select(p => p.ToEntity()).ToList(),
             UserLogin = this.UserLogin,
-            PlannedRideId = this.PlannedRideId == null ?
-                            Guid.Empty
-                            :new Guid(this.PlannedRideId),
             Statistics = this.CompletedRideStatistic?.ToEntity(),
         };
     }

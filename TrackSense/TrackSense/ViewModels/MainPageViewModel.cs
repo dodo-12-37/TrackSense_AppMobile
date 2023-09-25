@@ -104,8 +104,8 @@ public partial class MainPageViewModel : BaseViewModel
             return;
         }
 
-        //Entities.CompletedRide completedRide = await _rideService.GetCompletedRide(rideSummary.CompletedRideId);
-        Entities.CompletedRide completedRide = new Entities.CompletedRide()
+        Entities.CompletedRide completedRide = await _rideService.GetCompletedRide(rideSummary.CompletedRideId);
+   /*     Entities.CompletedRide completedRide = new Entities.CompletedRide()
         {
             CompletedRideId = rideSummary.CompletedRideId,
             PlannedRideId = Guid.NewGuid(),
@@ -143,7 +143,7 @@ public partial class MainPageViewModel : BaseViewModel
                 }
             }
         };
-
+*/
         //Référence le shell, donc pas bonne pratique, il faudrait une interface.
         await Shell.Current.GoToAsync($"{nameof(CompletedRidePage)}", true,
             new Dictionary<string, object>

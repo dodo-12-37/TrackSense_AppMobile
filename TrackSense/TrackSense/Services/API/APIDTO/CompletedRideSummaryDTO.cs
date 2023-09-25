@@ -20,13 +20,12 @@ namespace TrackSense.Services.API.APIDTO
             ;
         }
 
-      
 
         public CompletedRideSummary ToEntity()
         {
             return new CompletedRideSummary()
             {
-                CompletedRideId = Guid.Parse(this.CompletedRideId),
+                CompletedRideId = new Guid(this.CompletedRideId),
                 PlannedRideName = this.PlannedRideName,
                 StartedAt = this.StartedAt,
                 Duration = this.Duration,
