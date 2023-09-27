@@ -34,6 +34,10 @@ public partial class CompletedRidePage : ContentPage
 
         double boxSize = lineStringLayer.Extent!.Width > lineStringLayer.Extent.Height ? lineStringLayer.Extent.Width : lineStringLayer.Extent.Height;
         double resolution = boxSize / 256;
+        if (resolution < 1)
+        {
+            resolution = 1;
+        }
         mapControl.Map.Home = n => n.CenterOnAndZoomTo(lineStringLayer.Extent!.Centroid, resolution);
 
         mapControl.Map.Navigator.RotationLock = true;
