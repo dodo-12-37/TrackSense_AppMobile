@@ -168,4 +168,9 @@ public class RideService
     {
         this._currentRide = null;
     }
+
+    internal CompletedRide GetCompletedRideFromLocalStorage(Guid completedRideId)
+    {
+        return this._rideData.GetCompletedRideById(completedRideId);
+    }
 }

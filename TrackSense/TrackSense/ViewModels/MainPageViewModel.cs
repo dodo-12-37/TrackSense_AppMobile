@@ -108,7 +108,8 @@ public partial class MainPageViewModel : BaseViewModel
         }
 
         //Entities.CompletedRide completedRide = await _rideService.GetCompletedRide(rideSummary.CompletedRideId);
-        Entities.CompletedRide completedRide = GenerateFakeCompletedRide();
+        //Entities.CompletedRide completedRide = GenerateFakeCompletedRide();
+        Entities.CompletedRide completedRide = _rideService.GetCompletedRideFromLocalStorage(rideSummary.CompletedRideId);
 
         //Référence le shell, donc pas bonne pratique, il faudrait une interface.
         await Shell.Current.GoToAsync($"{nameof(CompletedRidePage)}", true,
