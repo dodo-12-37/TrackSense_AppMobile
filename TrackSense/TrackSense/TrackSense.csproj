@@ -49,6 +49,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiImage Remove="Resources\Images\end_icon.svg" />
+	  <MauiImage Remove="Resources\Images\nodatayeti.png" />
+	  <MauiImage Remove="Resources\Images\start_icon.svg" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Resources\Images\end_icon.svg" />
+	  <EmbeddedResource Include="Resources\Images\nodatayeti.png" />
+	  <EmbeddedResource Include="Resources\Images\start_icon.svg" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
 		<PackageReference Include="Mapsui.Maui" Version="4.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />

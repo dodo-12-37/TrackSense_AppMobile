@@ -1,3 +1,5 @@
+using Mapsui;
+using Mapsui.Extensions;
 using Mapsui.Layers;
 using Mapsui.Nts;
 using Mapsui.Nts.Extensions;
@@ -27,12 +29,42 @@ public partial class CompletedRidePage : ContentPage
         ILayer lineStringLayer = CreateLineStringLayer(points, CreateLineStringStyle());
         mapControl.Map.Layers.Add(lineStringLayer);
 
+        ILayer iconsLayer = CreateIconsLayer(points.First().Location, points.Last().Location);
+        mapControl.Map.Layers.Add(iconsLayer);
+
         double boxSize = lineStringLayer.Extent!.Width > lineStringLayer.Extent.Height ? lineStringLayer.Extent.Width : lineStringLayer.Extent.Height;
         double resolution = boxSize / 256;
         mapControl.Map.Home = n => n.CenterOnAndZoomTo(lineStringLayer.Extent!.Centroid, resolution);
 
         mapControl.Map.Navigator.RotationLock = true;
         mapContainer.Children.Add(mapControl);
+    }
+
+    private ILayer CreateIconsLayer(Microsoft.Maui.Devices.Sensors.Location start, Microsoft.Maui.Devices.Sensors.Location end)
+    {
+        IFeature startFeature = new PointFeature(SphericalMercator.FromLonLat(start.Longitude, start.Latitude).ToMPoint());
+        IFeature endFeature = new PointFeature(SphericalMercator.FromLonLat(end.Longitude, end.Latitude).ToMPoint());
+        int bitMapIdStart = typeof(App).LoadBitmapId("Resources.Images.start_icon.svg");
+        int bitMapIdEnd = typeof(App).LoadBitmapId("Resources.Images.end_icon.svg");
+        var bitmapHeight = 176;
+        SymbolStyle symboleStyleStart = new SymbolStyle { BitmapId = bitMapIdStart, SymbolScale = 0.20, SymbolOffset = new Offset(0, bitmapHeight * 0.5)};
+        SymbolStyle symboleStyleEnd = new SymbolStyle { BitmapId = bitMapIdEnd, SymbolScale = 0.20, SymbolOffset = new Offset(0, bitmapHeight * 0.5) };
+        startFeature.Styles.Add(symboleStyleStart);
+        endFeature.Styles.Add(symboleStyleEnd);
+
+        List<IFeature> features = new List<IFeature>()
+        {
+            startFeature,
+            endFeature
+        };
+
+        return new MemoryLayer
+        {
+            Name = "Icons layer",
+            Features = features,
+            Style = null,
+            IsMapInfoLayer = true
+        };
     }
 
     private ILayer CreateLineStringLayer(List<CompletedRidePoint> points, IStyle? style = null)
