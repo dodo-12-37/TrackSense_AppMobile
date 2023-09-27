@@ -44,15 +44,11 @@ public partial class MainPageViewModel : BaseViewModel
                         break;
                     case BluetoothEventType.SENDING_RIDE_STATS:
                         isReceivingData = true;
-                        this._rideService.ReceiveRideData(value.RideData);
-                        if (value.RideData is Entities.CompletedRide ride)
-                        {
-                            await Shell.Current.DisplayAlert("Ajout", $"Le trajet {ride.CompletedRideId} est reçu!", "Ok");
-                        }
+                        await this._rideService.ReceiveRideDataFromDevice(value.RideData);
                         break;
                     case BluetoothEventType.SENDING_RIDE_POINT:
                         isReceivingData = true;
-                        this._rideService.ReceivePoint(value.RidePoint);
+                        await this._rideService.ReceivePointDataFromDevice(value.RidePoint);
                         isReceivingData = false;
                         break;
                     default:
@@ -70,17 +66,17 @@ public partial class MainPageViewModel : BaseViewModel
             CompletedRideId = Guid.NewGuid(),
             PlannedRideName = "Ride1",
             StartedAt = DateTime.Now,
-            Distance = 10,
-            Duration = TimeSpan.FromMinutes(10),
+            Distance = 13,
+            Duration = TimeSpan.FromMinutes(48),
         };
 
         TrackSense.Entities.CompletedRideSummary ride2 = new TrackSense.Entities.CompletedRideSummary()
         {
             CompletedRideId = Guid.NewGuid(),
-            PlannedRideName = "Ride2",
+            PlannedRideName = null,
             StartedAt = DateTime.Now,
-            Distance = 10,
-            Duration = TimeSpan.FromMinutes(10),
+            Distance = 23,
+            Duration = TimeSpan.FromMinutes(63),
         };
 
         CompletedRideSummaries.Add(new CompletedRideSummary(ride));
@@ -141,6 +137,16 @@ public partial class MainPageViewModel : BaseViewModel
                     Temperature = 23.5,
                     EffectiveTime = TimeSpan.FromMinutes(1)
                 }
+            },
+            Statistics = new Entities.CompletedRideStatistics()
+            {
+                AverageSpeed = 10,
+                MaximumSpeed = 12,
+                Distance = 10,
+                Duration = TimeSpan.FromMinutes(10),
+                NumberOfPoints = 2,
+                Calories = 100,
+                Falls = 0
             }
         };
 */
@@ -148,7 +154,7 @@ public partial class MainPageViewModel : BaseViewModel
         await Shell.Current.GoToAsync($"{nameof(CompletedRidePage)}", true,
             new Dictionary<string, object>
             {
-                    {"Ride", completedRide }
+                    {"CompletedRide", new Models.CompletedRide(completedRide) }
             });
     }
 

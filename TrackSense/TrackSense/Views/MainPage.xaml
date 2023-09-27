@@ -15,8 +15,14 @@
                      Order="Primary"
                      IconImageSource="settings.svg"/>
     </ContentPage.ToolbarItems>
-    <Grid RowDefinitions="*,Auto">
-        <RefreshView Grid.ColumnSpan="2"
+    <Grid RowDefinitions="Auto,*"
+          Padding="10">
+        <Label Grid.Row="0"
+               Text="Trajets effectués"
+               FontSize="Title"
+               FontAttributes="Bold"/>
+        <RefreshView Grid.Row="1"
+                     Grid.ColumnSpan="2"
                      Command="{Binding GetCompletedRidesCommand}"
                      IsRefreshing="{Binding IsRefreshing}">
             <CollectionView ItemsSource="{Binding CompletedRideSummaries}">
@@ -34,31 +40,42 @@
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="model:CompletedRideSummary">
-                        <Grid Padding="10">
-                            <Frame HeightRequest="100"
-                                   Padding="0">
+                        <VerticalStackLayout Padding="5">
+                            <Frame HeightRequest="100">
                                 <Frame.GestureRecognizers>
                                     <TapGestureRecognizer CommandParameter="{Binding .}"
                                                           Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainPageViewModel}}, Path=GoToDetailsCommand}" />
                                 </Frame.GestureRecognizers>
-                                <VerticalStackLayout>
-                                    <Label Text="{Binding StartedAt}" />
-                                </VerticalStackLayout>
+                                <Grid ColumnDefinitions="*,auto">
+                                    <VerticalStackLayout HorizontalOptions="Start">
+                                        <Label Text="{Binding StartedAtDate}"
+                                               FontAttributes="Bold"/>
+                                        <Label Text="{Binding StartedAtTime}"/>
+                                        <Label Text="{Binding Distance, StringFormat='{0:0.00} km'}"
+                                               Margin="0,5,0,0"/>
+                                    </VerticalStackLayout>
+                                    <Label Text="{Binding PlannedRideName}"
+                                           Grid.Column="1"
+                                           />
+                                </Grid>
+                                <!--<HorizontalStackLayout>
+                                    <VerticalStackLayout HorizontalOptions="Start" BackgroundColor="Red">
+                                                <Label Text="{Binding StartedAtDate}"
+                                                       FontAttributes="Bold"
+                                                       />
+                                                <Label Text="{Binding StartedAtTime}"/>
+                                                <Label Text="{Binding Distance, StringFormat='{0:0.00} km'}"
+                                                        Margin="0,5,0,0"/>
+                                    </VerticalStackLayout>
+                                    <Label Text="{Binding PlannedRideName}"
+                                            BackgroundColor="BlueViolet"/>
+                                </HorizontalStackLayout>-->
                             </Frame>
-                        </Grid>
+                        </VerticalStackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </RefreshView>
-        <Grid Grid.Row="1"
-              ColumnDefinitions="*,*">
-            <Button Text="Simuler trajet"
-                    Command="{Binding SimulateRideReceptionCommand}"/>
-            <Button Grid.Column="1"
-                    Text="Simuler points"
-                    Command="{Binding SimulatePointsReceptionCommand}"
-                    BackgroundColor="Green"/>
-        </Grid>
     </Grid>
 
 </ContentPage>
