@@ -31,7 +31,6 @@ namespace TrackSense.ViewModels
         {
             this.Title = "Ajout TrackSense";
             this._bluetoothService = p_bluetoothService;
-            this.ScanForBluetoothDevicesAsync();
         }
 
         async Task RequestBluetooth()
@@ -54,7 +53,7 @@ namespace TrackSense.ViewModels
         }
 
         [RelayCommand]
-        async Task ScanForBluetoothDevicesAsync()
+        public async Task ScanForBluetoothDevicesAsync()
         {
             if (IsBusy)
             {

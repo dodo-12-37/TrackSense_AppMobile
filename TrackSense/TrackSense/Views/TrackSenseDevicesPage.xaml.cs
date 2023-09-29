@@ -9,4 +9,13 @@ public partial class TrackSenseDevicesPage : ContentPage
 		InitializeComponent();
 		BindingContext = viewModel;
 	}
+
+	protected async override void OnAppearing()
+	{
+        base.OnAppearing();
+		if (BindingContext is TrackSenseDevicesViewModel TSViewModel)
+		{
+			  await TSViewModel.ScanForBluetoothDevicesAsync();
+		}
+    }
 }
