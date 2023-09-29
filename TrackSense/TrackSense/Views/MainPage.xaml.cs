@@ -19,6 +19,5 @@ namespace TrackSense.Views
                 await mainPageViewModel.GetCompletedRidesAsync();
             }
         }
-
     }
 }
