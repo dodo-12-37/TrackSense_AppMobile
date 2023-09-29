@@ -57,7 +57,7 @@ public partial class MainPageViewModel : BaseViewModel
                 }
             });
 
-        SimulateGetRideFromAPI();
+        //SimulateGetRideFromAPI();
     }
 
     private void SimulateGetRideFromAPI()
@@ -120,7 +120,7 @@ public partial class MainPageViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    async Task GetCompletedRidesAsync()
+    public async Task GetCompletedRidesAsync()
     {
         if (IsBusy)
         {
