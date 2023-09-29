@@ -93,7 +93,9 @@ public partial class MainPageViewModel : BaseViewModel
     [RelayCommand]
     async Task GoToTrackSenseDevices()
     {
-        if (!IsConnected)
+        this.IsConnected = this._bluetoothService.GetConnectedDevice() is not null;
+
+        if (!this.IsConnected)
         {
             await Shell.Current.GoToAsync(nameof(TrackSenseDevicesPage));
         }
