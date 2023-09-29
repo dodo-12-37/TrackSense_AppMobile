@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations.Schema;
 using TrackSense.Entities;
 
 namespace TrackSense.Services.API.APIDTO;
@@ -11,7 +12,7 @@ public class CompletedRideDTO
     [JsonIgnore]
     public PlannedRideDTO PlannedRide {get;set ;}
     public  IEnumerable<CompletedRidePointDTO> CompletedRidePoints { get; set; }
-    public  CompletedRideStatisticsDTO CompletedRideStatistic { get; set; }
+    public  CompletedRideStatisticsDTO Statistics { get; set; }
     public CompletedRideDTO()
     {
         ;
@@ -38,8 +39,8 @@ public class CompletedRideDTO
         this.CompletedRidePoints = p_completedRide.CompletedRidePoints.Select(entite => new CompletedRidePointDTO(entite) 
                                                                                             { CompletedRideId = this.CompletedRideId});
 
-        this.CompletedRideStatistic = new CompletedRideStatisticsDTO(p_completedRide.Statistics);
-        this.CompletedRideStatistic.CompletedRideId = this.CompletedRideId;
+        this.Statistics = new CompletedRideStatisticsDTO(p_completedRide.Statistics);
+        this.Statistics.CompletedRideId = this.CompletedRideId;
 
     }
 
@@ -50,7 +51,7 @@ public class CompletedRideDTO
             CompletedRideId = new Guid(this.CompletedRideId!),
             CompletedRidePoints = this.CompletedRidePoints.Select(p => p.ToEntity()).ToList(),
             UserLogin = this.UserLogin,
-            Statistics = this.CompletedRideStatistic?.ToEntity(),
+            Statistics = this.Statistics?.ToEntity(),
         };
     }
 
