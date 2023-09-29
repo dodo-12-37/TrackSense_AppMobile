@@ -41,6 +41,7 @@ public partial class MainPageViewModel : BaseViewModel
                         break;
                     case BluetoothEventType.DECONNECTION:
                         isConnected = false;
+                        this._rideService.InterruptReception();
                         break;
                     case BluetoothEventType.SENDING_RIDE_STATS:
                         isReceivingData = true;
@@ -64,7 +65,7 @@ public partial class MainPageViewModel : BaseViewModel
         TrackSense.Entities.CompletedRideSummary ride = new TrackSense.Entities.CompletedRideSummary()
         {
             CompletedRideId = Guid.NewGuid(),
-            PlannedRideName = "Ride1",
+            PlannedRideName = "Faux trajet",
             StartedAt = DateTime.Now,
             Distance = 13,
             Duration = TimeSpan.FromMinutes(48),
@@ -73,7 +74,7 @@ public partial class MainPageViewModel : BaseViewModel
         TrackSense.Entities.CompletedRideSummary ride2 = new TrackSense.Entities.CompletedRideSummary()
         {
             CompletedRideId = Guid.NewGuid(),
-            PlannedRideName = null,
+            PlannedRideName = "Faux trajet",
             StartedAt = DateTime.Now,
             Distance = 23,
             Duration = TimeSpan.FromMinutes(63),
@@ -81,6 +82,12 @@ public partial class MainPageViewModel : BaseViewModel
 
         CompletedRideSummaries.Add(new CompletedRideSummary(ride));
         CompletedRideSummaries.Add(new CompletedRideSummary(ride2));
+    }
+
+    [RelayCommand]
+    async Task GoToSettingsAsync()
+    {
+        await Shell.Current.GoToAsync(nameof(SettingsPage));
     }
 
     [RelayCommand]
@@ -101,55 +108,9 @@ public partial class MainPageViewModel : BaseViewModel
         }
 
         Entities.CompletedRide completedRide = await _rideService.GetCompletedRide(rideSummary.CompletedRideId);
-   /*     Entities.CompletedRide completedRide = new Entities.CompletedRide()
-        {
-            CompletedRideId = rideSummary.CompletedRideId,
-            PlannedRideId = Guid.NewGuid(),
-            CompletedRidePoints = new List<Entities.CompletedRidePoint>()
-            {
-                new Entities.CompletedRidePoint()
-                {
-                    RideStep = 1,
-                    Location = new Location()
-                    {
-                        Latitude = 30.12,
-                        Longitude = 18.65,
-                        Altitude = 0,
-                        Speed = 0,
-                        Accuracy = 0,
-                        Timestamp = DateTime.Now
-                    },
-                    Temperature = 23.4,
-                    EffectiveTime = TimeSpan.FromMinutes(1)
-                },
-                new Entities.CompletedRidePoint()
-                {
-                    RideStep = 2,
-                    Location = new Location()
-                    {
-                        Latitude = 30.14,
-                        Longitude = 18.60,
-                        Altitude = 12,
-                        Speed = 0,
-                        Accuracy = 0,
-                        Timestamp = DateTime.Now
-                    },
-                    Temperature = 23.5,
-                    EffectiveTime = TimeSpan.FromMinutes(1)
-                }
-            },
-            Statistics = new Entities.CompletedRideStatistics()
-            {
-                AverageSpeed = 10,
-                MaximumSpeed = 12,
-                Distance = 10,
-                Duration = TimeSpan.FromMinutes(10),
-                NumberOfPoints = 2,
-                Calories = 100,
-                Falls = 0
-            }
-        };
-*/
+        //Entities.CompletedRide completedRide = GenerateFakeCompletedRide();
+        //Entities.CompletedRide completedRide = _rideService.GetCompletedRideFromLocalStorage(rideSummary.CompletedRideId);
+
         //Référence le shell, donc pas bonne pratique, il faudrait une interface.
         await Shell.Current.GoToAsync($"{nameof(CompletedRidePage)}", true,
             new Dictionary<string, object>
@@ -172,6 +133,8 @@ public partial class MainPageViewModel : BaseViewModel
             IsRefreshing = true;
 
             List<TrackSense.Entities.CompletedRideSummary> completedRides = await _rideService.GetUserCompletedRides();
+            //List<TrackSense.Entities.CompletedRideSummary> completedRides = _rideService.GetCompletedRideSummariesFromLocalStorage();
+
 
             if (CompletedRideSummaries.Count != 0)
             {
@@ -208,4 +171,163 @@ public partial class MainPageViewModel : BaseViewModel
     {
         this._bluetoothService.SimulatePointsReception();
     }
+
+    #region DEBUG
+    private Entities.CompletedRide GenerateFakeCompletedRide()
+    {
+        return new Entities.CompletedRide()
+        {
+            CompletedRideId = Guid.NewGuid(),
+            PlannedRideId = Guid.NewGuid(),
+            CompletedRidePoints = new List<Entities.CompletedRidePoint>()
+            {
+                new Entities.CompletedRidePoint()
+                {
+                    RideStep = 1,
+                    Location = new Location()
+                    {
+                        Latitude = 46.785014,
+                        Longitude = -71.286721,
+                        Altitude = 0,
+                        Speed = 0,
+                        Accuracy = 0,
+                        Timestamp = DateTime.Now
+                    },
+                    Temperature = 23.4,
+                    EffectiveTime = TimeSpan.FromMinutes(1)
+                },
+                new Entities.CompletedRidePoint()
+                {
+                    RideStep = 2,
+                    Location = new Location()
+                    {
+                        Latitude = 46.785474,
+                        Longitude = -71.285702,
+                        Altitude = 12,
+                        Speed = 0,
+                        Accuracy = 0,
+                        Timestamp = DateTime.Now
+                    },
+                    Temperature = 23.5,
+                    EffectiveTime = TimeSpan.FromMinutes(1)
+                },
+                new Entities.CompletedRidePoint()
+                {
+                    RideStep = 3,
+                    Location = new Location()
+                    {
+                        Latitude = 46.785506,
+                        Longitude = -71.284882,
+                        Altitude = 12,
+                        Speed = 0,
+                        Accuracy = 0,
+                        Timestamp = DateTime.Now
+                    },
+                    Temperature = 23.5,
+                    EffectiveTime = TimeSpan.FromMinutes(1)
+                },
+                                new Entities.CompletedRidePoint()
+                {
+                    RideStep = 4,
+                    Location = new Location()
+                    {
+                        Latitude = 46.785222,
+                        Longitude = -71.284562,
+                        Altitude = 0,
+                        Speed = 0,
+                        Accuracy = 0,
+                        Timestamp = DateTime.Now
+                    },
+                    Temperature = 23.4,
+                    EffectiveTime = TimeSpan.FromMinutes(1)
+                },
+                new Entities.CompletedRidePoint()
+                {
+                    RideStep = 5,
+                    Location = new Location()
+                    {
+                        Latitude = 46.785855,
+                        Longitude = -71.282086,
+                        Altitude = 12,
+                        Speed = 0,
+                        Accuracy = 0,
+                        Timestamp = DateTime.Now
+                    },
+                    Temperature = 23.5,
+                    EffectiveTime = TimeSpan.FromMinutes(1)
+                },
+                new Entities.CompletedRidePoint()
+                {
+                    RideStep = 6,
+                    Location = new Location()
+                    {
+                        Latitude = 46.785722,
+                        Longitude = -71.281048,
+                        Altitude = 12,
+                        Speed = 0,
+                        Accuracy = 0,
+                        Timestamp = DateTime.Now
+                    },
+                    Temperature = 23.5,
+                    EffectiveTime = TimeSpan.FromMinutes(1)
+                },
+                                new Entities.CompletedRidePoint()
+                {
+                    RideStep = 7,
+                    Location = new Location()
+                    {
+                        Latitude = 46.786405,
+                        Longitude = -71.279496,
+                        Altitude = 0,
+                        Speed = 0,
+                        Accuracy = 0,
+                        Timestamp = DateTime.Now
+                    },
+                    Temperature = 23.4,
+                    EffectiveTime = TimeSpan.FromMinutes(1)
+                },
+                new Entities.CompletedRidePoint()
+                {
+                    RideStep = 8,
+                    Location = new Location()
+                    {
+                        Latitude = 46.786886,
+                        Longitude = -71.277390,
+                        Altitude = 12,
+                        Speed = 0,
+                        Accuracy = 0,
+                        Timestamp = DateTime.Now
+                    },
+                    Temperature = 23.5,
+                    EffectiveTime = TimeSpan.FromMinutes(1)
+                },
+                new Entities.CompletedRidePoint()
+                {
+                    RideStep = 9,
+                    Location = new Location()
+                    {
+                        Latitude = 46.785694,
+                        Longitude = -71.276348,
+                        Altitude = 12,
+                        Speed = 0,
+                        Accuracy = 0,
+                        Timestamp = DateTime.Now
+                    },
+                    Temperature = 23.5,
+                    EffectiveTime = TimeSpan.FromMinutes(1)
+                }
+            },
+            Statistics = new Entities.CompletedRideStatistics()
+            {
+                AverageSpeed = 14.56,
+                MaximumSpeed = 27.34,
+                Distance = 10560,
+                Duration = TimeSpan.FromMinutes(10),
+                NumberOfPoints = 9,
+                Calories = 100,
+                Falls = 0
+            }
+        };
+    }
+    #endregion
 }

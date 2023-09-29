@@ -12,6 +12,6 @@ namespace TrackSense.Entities
         public string PlannedRideName { get; set; }
         public DateTime StartedAt { get; set; }
         public TimeSpan Duration { get; set; }
-        public int Distance { get; set; }
+        public double Distance { get; set; }
     }
 }

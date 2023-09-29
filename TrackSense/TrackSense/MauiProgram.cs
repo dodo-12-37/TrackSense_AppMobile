@@ -7,6 +7,7 @@ using TrackSense.Services;
 using TrackSense.Data;
 using TrackSense.Entities;
 using TrackSense.Services.Bluetooth;
+using SkiaSharp.Views.Maui.Controls.Hosting;
 
 namespace TrackSense
 {
@@ -17,6 +18,7 @@ namespace TrackSense
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseSkiaSharp(true)
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -37,10 +39,12 @@ namespace TrackSense
             builder.Services.AddSingleton<TrackSenseDevicesViewModel>();
             builder.Services.AddSingleton<MainPageViewModel>();
             builder.Services.AddSingleton<CompletedRideViewModel>();
+            builder.Services.AddSingleton<SettingsViewModel>();
 
             builder.Services.AddSingleton<MainPage>();
             builder.Services.AddTransient<TrackSenseDevicesPage>();
             builder.Services.AddTransient<CompletedRidePage>();
+            builder.Services.AddTransient<SettingsPage>();
             return builder.Build();
         }
     }

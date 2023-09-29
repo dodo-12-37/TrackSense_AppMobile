@@ -6,11 +6,16 @@
              xmlns:viewmodel="clr-namespace:TrackSense.ViewModels"
              x:DataType="viewmodel:CompletedRideViewModel"
              Title="{Binding Title}">
-    <VerticalStackLayout>
+    <Grid RowDefinitions="*,auto,*">
+        <Grid x:Name="mapContainer"
+              Grid.Row="0"
+              Padding="10">
+        </Grid>
         <Grid ColumnDefinitions="*,*"
               RowDefinitions="*,*,*"
               Padding="5"
-              RowSpacing="7">
+              RowSpacing="7"
+              Grid.Row="1">
             <Label Text="Distance"
                    Grid.Row="0"
                    Grid.Column="0"
@@ -33,13 +38,13 @@
                    Grid.Row="2"
                    Grid.Column="1"/>
         </Grid>
-    </VerticalStackLayout>
+    </Grid>
     <!--<maps:Map x:Name="itineraryMap"
                       MapType="Street"
                       IsShowingUser="true"
                       Grid.Row="1"
                       Margin="10"
-                      --><!--ItemsSource="{Binding Ride.Itinerary}"--><!--
+                      ItemsSource="{Binding Ride.Itinerary}"
                 >
             </maps:Map>-->
 </ContentPage>

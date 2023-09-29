@@ -19,6 +19,7 @@ namespace TrackSense.Services.Bluetooth
         private List<IObserver<BluetoothEvent>> observers = new();
         CompletedRideDTO _completedRideDTO;
         bool isBusy = false;
+        public bool IsReceiving { get; private set; }
         ICharacteristic _notificationCharacteristic;
         ICharacteristic _dataCharacteristic;
 
@@ -72,7 +73,7 @@ namespace TrackSense.Services.Bluetooth
                 {
                     await bluetoothLE.Adapter.ConnectToDeviceAsync(device);
 
-                    SetNotifications(p_id);
+                    SetNotifications();
                     BluetoothEvent BTEventConnection = new BluetoothEvent(BluetoothEventType.CONNECTION, true);
                     observers.ForEach(o => o.OnNext(BTEventConnection));
                 }
@@ -87,27 +88,17 @@ namespace TrackSense.Services.Bluetooth
             }
         }
 
-        private async void SetNotifications(Guid p_id)
+        private async void SetNotifications()
         {
 
             IDevice connectedDevice = bluetoothLE.Adapter.ConnectedDevices.SingleOrDefault();
             Guid completedRideServiceUID = new Guid("62ffab64-3646-4fb9-88d8-541deb961192");
-            //Guid isStatsReadyCharacUID = new Guid("9456444a-4b5f-11ee-be56-0242ac120002");
             Guid rideStatsUID = new Guid("51656aa8-b795-427f-a96c-c4b6c57430dd");
             Guid rideNotificationUID = new Guid("61656aa8-b795-427f-a96c-c4b6c57430dd");
-            //Guid pointNumberDataUID = new Guid("c5799499-9053-4a9e-a2d5-b8814c5ff12b");
-            //Guid pointDataUID = new Guid("42154deb-5828-4876-8d4f-eaec38fa1ea7");
 
             IService completedRideService = await connectedDevice.GetServiceAsync(completedRideServiceUID);
-
-            //ICharacteristic isStatsReadyCharac = await completedRideService.GetCharacteristicAsync(isStatsReadyCharacUID);
-            //ICharacteristic rideStatsCharac = await completedRideService.GetCharacteristicAsync(rideStatsUID);
-            //ICharacteristic rideNotificationCharac = await completedRideService.GetCharacteristicAsync(rideNotificationUID);
             _dataCharacteristic = await completedRideService.GetCharacteristicAsync(rideStatsUID);
             _notificationCharacteristic = await completedRideService.GetCharacteristicAsync(rideNotificationUID);
-            //ICharacteristic pointNumberCharac = await completedRideService.GetCharacteristicAsync(pointNumberDataUID);
-            //ICharacteristic pointDataCharac = await completedRideService.GetCharacteristicAsync(pointDataUID);
-
 
             _notificationCharacteristic.ValueUpdated += async (sender, args) =>
             {
@@ -125,6 +116,7 @@ namespace TrackSense.Services.Bluetooth
 
                             if (_completedRideDTO is null)
                             {
+                                IsReceiving = true;
                                 CompletedRideDTO completedRideDTO = new CompletedRideDTO(rideMessage);
 
                                 BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_STATS, true, completedRideDTO.ToEntity());
@@ -140,6 +132,11 @@ namespace TrackSense.Services.Bluetooth
                                 BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_POINT, true, completedRidePoint);
                                 observers.ForEach(o => o.OnNext(BTEventSendData));
                                 Debug.WriteLine("Point ajouté : " + pointDTO.RideStep);
+                                if (pointDTO.RideStep == _completedRideDTO.Statistics.NumberOfPoints)
+                                {
+                                    _completedRideDTO = null;
+                                    IsReceiving = false;
+                                }
                             }
                         }
                     }
@@ -178,46 +175,20 @@ namespace TrackSense.Services.Bluetooth
         }
         internal async Task<bool> ConfirmRideStatsReception(int number)
         {
-            //IDevice connectedDevice = this.GetConnectedDevice();
-            Guid completedRideServiceUID = new Guid("62ffab64-3646-4fb9-88d8-541deb961192");
-            //Guid characteristicIsReadyUID = new Guid("9456444a-4b5f-11ee-be56-0242ac120002");
-            Guid rideNotificationUID = new Guid("61656aa8-b795-427f-a96c-c4b6c57430dd");
             byte[] confirmationString = Encoding.UTF8.GetBytes(number.ToString());
 
-            //IService completedRideService = await connectedDevice.GetServiceAsync(completedRideServiceUID);
             try
             {
-                //ICharacteristic notificationCharacteristic = await completedRideService.GetCharacteristicAsync(rideNotificationUID);
-                //await notificationCharacteristic.WriteAsync(confirmationString);
                 Debug.WriteLine("Confirmation réception point #" + number);
                 bool result = await _notificationCharacteristic.WriteAsync(confirmationString);
                 return result;
 
             }
-            //catch (TargetInvocationException ex)
-            //{
-            //    Exception innerException = ex.InnerException;
-            //    Debug.WriteLine("Erreur : " + innerException.Message);
-            //    //throw ex;
-            //}
             catch (Exception e)
             {
                 Debug.WriteLine("Erreur ConfirmRideStatsReception : " + e.Message);
                 throw e;
             }
-        }
-
-        internal async Task<bool> ConfirmPointReception()
-        {
-            IDevice connectedDevice = this.GetConnectedDevice();
-            Guid completedRideServiceUID = new Guid("62ffab64-3646-4fb9-88d8-541deb961192");
-            Guid completedRidePointUID = new Guid("42154deb-5828-4876-8d4f-eaec38fa1ea7");
-
-            IService completedRideService = await connectedDevice.GetServiceAsync(completedRideServiceUID);
-            ICharacteristic completedRidePointCharac = await completedRideService.GetCharacteristicAsync(completedRidePointUID);
-            byte[] dataFalse = Encoding.UTF8.GetBytes("ok");
-
-            return await completedRidePointCharac.WriteAsync(dataFalse);
         }
 
         #region DEBUG
@@ -246,6 +217,19 @@ namespace TrackSense.Services.Bluetooth
             CompletedRidePointDTO pointDTO2 = new CompletedRidePointDTO(ridePoint2);
             BluetoothEvent BTEventSendData2 = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_POINT, true, pointDTO2.ToEntity());
             observers.ForEach(o => o.OnNext(BTEventSendData2));
+        }
+
+        public async void DisconnectDevice()
+        {
+            if (this.GetConnectedDevice() is not null)
+            {
+                await bluetoothLE.Adapter.DisconnectDeviceAsync(bluetoothLE.Adapter.ConnectedDevices.SingleOrDefault());
+                BluetoothEvent BTEventConnection = new BluetoothEvent(BluetoothEventType.DECONNECTION, false);
+                observers.ForEach(o => o.OnNext(BTEventConnection));
+                this._dataCharacteristic = null;
+                this._notificationCharacteristic = null;
+                this._completedRideDTO = null;
+            }
         }
 
         #endregion
