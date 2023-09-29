@@ -39,8 +39,7 @@
                                     <VerticalStackLayout Grid.Column="1"
                                                          Padding="10"
                                                          VerticalOptions="Center">
-                                        <Label Text="{Binding Name}"
-                                               Style="{StaticResource LargeLabel}"/>
+                                        <Label Text="{Binding Name}"/>
                                     </VerticalStackLayout>
                                 </Grid>
                             </Frame>

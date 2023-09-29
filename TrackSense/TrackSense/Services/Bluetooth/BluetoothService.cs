@@ -52,13 +52,16 @@ namespace TrackSense.Services.Bluetooth
 
             foreach (IDevice device in bluetoothDevices)
             {
-                TrackSenseDevice bleDevice = new TrackSenseDevice()
+                if(!String.IsNullOrWhiteSpace(device.Name) && device.Name.Contains("TrackSense"))
                 {
-                    Name = device.Name,
-                    isConnected = device.State == DeviceState.Connected,
-                    Id = device.Id
-                };
-                devicesList.Add(bleDevice);
+                    TrackSenseDevice bleDevice = new TrackSenseDevice()
+                    {
+                        Name = device.Name,
+                        isConnected = device.State == DeviceState.Connected,
+                        Id = device.Id
+                    };
+                    devicesList.Add(bleDevice);
+                }
             }
 
             return devicesList;
