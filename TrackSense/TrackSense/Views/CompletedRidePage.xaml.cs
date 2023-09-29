@@ -26,22 +26,53 @@ public partial class CompletedRidePage : ContentPage
         MapControl mapControl = new Mapsui.UI.Maui.MapControl();
         mapControl.Map?.Layers.Add(Mapsui.Tiling.OpenStreetMap.CreateTileLayer());
 
-        ILayer lineStringLayer = CreateLineStringLayer(points, CreateLineStringStyle());
-        mapControl.Map.Layers.Add(lineStringLayer);
-
-        ILayer iconsLayer = CreateIconsLayer(points.First().Location, points.Last().Location);
-        mapControl.Map.Layers.Add(iconsLayer);
-
-        double boxSize = lineStringLayer.Extent!.Width > lineStringLayer.Extent.Height ? lineStringLayer.Extent.Width : lineStringLayer.Extent.Height;
-        double resolution = boxSize / 256;
-        if (resolution < 1)
+        if (points.Count > 1)
         {
-            resolution = 1;
+            ILayer lineStringLayer = CreateLineStringLayer(points, CreateLineStringStyle());
+            mapControl.Map.Layers.Add(lineStringLayer);
+
+            ILayer iconsLayer = CreateIconsLayer(points.First().Location, points.Last().Location);
+            mapControl.Map.Layers.Add(iconsLayer);
+            double boxSize = lineStringLayer.Extent!.Width > lineStringLayer.Extent.Height ? lineStringLayer.Extent.Width : lineStringLayer.Extent.Height;
+            double resolution = boxSize / 256;
+            if (resolution < 1)
+            {
+                resolution = 1;
+            }
+            mapControl.Map.Home = n => n.CenterOnAndZoomTo(lineStringLayer.Extent!.Centroid, resolution);
         }
-        mapControl.Map.Home = n => n.CenterOnAndZoomTo(lineStringLayer.Extent!.Centroid, resolution);
+        else
+        {
+            MPoint point = new MPoint(points.SingleOrDefault().Location.Longitude, points.SingleOrDefault().Location.Latitude);
+            mapControl.Map.Home = n => n.CenterOnAndZoomTo(SphericalMercator.FromLonLat(point.X, point.Y).ToMPoint(), 2);
+            ILayer iconLayer = CreateSingleIconLayer(points.SingleOrDefault().Location);
+            mapControl.Map.Layers.Add(iconLayer);
+        }
 
         mapControl.Map.Navigator.RotationLock = true;
         mapContainer.Children.Add(mapControl);
+    }
+
+    private ILayer CreateSingleIconLayer(Microsoft.Maui.Devices.Sensors.Location location)
+    {
+        IFeature startFeature = new PointFeature(SphericalMercator.FromLonLat(location.Longitude, location.Latitude).ToMPoint());
+        int bitMapIdStart = typeof(App).LoadBitmapId("Resources.Images.start_icon.svg");
+        var bitmapHeight = 176;
+        SymbolStyle symboleStyleStart = new SymbolStyle { BitmapId = bitMapIdStart, SymbolScale = 0.20, SymbolOffset = new Offset(0, bitmapHeight * 0.5) };
+        startFeature.Styles.Add(symboleStyleStart);
+
+        List<IFeature> features = new List<IFeature>()
+        {
+            startFeature,
+        };
+
+        return new MemoryLayer
+        {
+            Name = "Icons layer",
+            Features = features,
+            Style = null,
+            IsMapInfoLayer = true
+        };
     }
 
     private ILayer CreateIconsLayer(Microsoft.Maui.Devices.Sensors.Location start, Microsoft.Maui.Devices.Sensors.Location end)
@@ -102,7 +133,10 @@ public partial class CompletedRidePage : ContentPage
         if (BindingContext is CompletedRideViewModel viewModel)
         {
             CompletedRide rideToDisplay = viewModel.CompletedRide;
-            DisplayMap(rideToDisplay.CompletedRidePoints);
+            if (rideToDisplay.CompletedRidePoints.Count > 0)
+            {
+                DisplayMap(rideToDisplay.CompletedRidePoints);
+            }
         }
     }
 }

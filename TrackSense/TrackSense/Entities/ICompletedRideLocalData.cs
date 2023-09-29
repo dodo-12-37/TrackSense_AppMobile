@@ -13,5 +13,6 @@ namespace TrackSense.Entities
         CompletedRide GetCompletedRideById(Guid completedRideId);
         void DeleteCompletedRideById(Guid completedRideId);
         void DeleteAllCompletedRides();
+
     }
 }

@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TrackSense.Models;
 
 namespace TrackSense.Entities
 {
     public class CompletedRide
     {
-        public Guid CompletedRideId { get; set; }
+        public string UserLogin { get; set; } = null!;
+        public Guid CompletedRideId { get; set; } = Guid.Empty!;
         public Guid PlannedRideId { get; set; }
         public List<CompletedRidePoint> CompletedRidePoints { get; set; }
-        public CompletedRideStatistics Statistics { get; set; }
+        public CompletedRideStatistics Statistics { get; set; } = null;
+      
     }
 }

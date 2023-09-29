@@ -93,10 +93,10 @@ public class RideService
         {
             return _completedRides;
         }
+       
+        string userLogin = "admin";
 
-        string userLogin = "test";
-
-        string url = $"https://localhost:7044/api/users/{userLogin}/completedRides";
+        string url = $"https://binhnguyen05-001-site1.atempurl.com/api/users/{userLogin}/completedRides";
 
         var response = await httpClient.GetAsync(url);
 
@@ -105,7 +105,7 @@ public class RideService
             List<API.APIDTO.CompletedRideSummaryDTO> completedRides = await response.Content.ReadFromJsonAsync<List<API.APIDTO.CompletedRideSummaryDTO>>();
             _completedRides.AddRange(completedRides.Select(ride => ride.ToEntity()));
         }
-
+       
         return _completedRides;
     }
 
@@ -144,16 +144,16 @@ public class RideService
             throw new ArgumentNullException(nameof(completedRideId));
         }
 
-        string url = $"https://localhost:7044/api/completedRides/{completedRideId}";
+        string url = $"https://binhnguyen05-001-site1.atempurl.com/api/CompletedRides/{completedRideId}";
 
-        var response = httpClient.GetAsync(url).Result;
+        var response = await httpClient.GetAsync(url);
 
         CompletedRide completedRide = null;
 
         if (response.IsSuccessStatusCode)
         {
-            API.APIDTO.CompletedRideDTO completedRideSummaryDTO = await response.Content.ReadFromJsonAsync<API.APIDTO.CompletedRideDTO>();
-            completedRide = completedRideSummaryDTO.ToEntity();
+            API.APIDTO.CompletedRideDTO completedRideDTO = await response.Content.ReadFromJsonAsync<API.APIDTO.CompletedRideDTO>();
+            completedRide =  completedRideDTO.ToEntity();
         }
 
         return completedRide;

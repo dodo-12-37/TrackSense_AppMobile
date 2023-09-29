@@ -107,9 +107,9 @@ public partial class MainPageViewModel : BaseViewModel
             return;
         }
 
-        //Entities.CompletedRide completedRide = await _rideService.GetCompletedRide(rideSummary.CompletedRideId);
+        Entities.CompletedRide completedRide = await _rideService.GetCompletedRide(rideSummary.CompletedRideId);
         //Entities.CompletedRide completedRide = GenerateFakeCompletedRide();
-        Entities.CompletedRide completedRide = _rideService.GetCompletedRideFromLocalStorage(rideSummary.CompletedRideId);
+        //Entities.CompletedRide completedRide = _rideService.GetCompletedRideFromLocalStorage(rideSummary.CompletedRideId);
 
         //Référence le shell, donc pas bonne pratique, il faudrait une interface.
         await Shell.Current.GoToAsync($"{nameof(CompletedRidePage)}", true,
@@ -132,8 +132,8 @@ public partial class MainPageViewModel : BaseViewModel
             IsBusy = true;
             IsRefreshing = true;
 
-            //List<TrackSense.Entities.CompletedRideSummary> completedRides = await _rideService.GetUserCompletedRides();
-            List<TrackSense.Entities.CompletedRideSummary> completedRides = _rideService.GetCompletedRideSummariesFromLocalStorage();
+            List<TrackSense.Entities.CompletedRideSummary> completedRides = await _rideService.GetUserCompletedRides();
+            //List<TrackSense.Entities.CompletedRideSummary> completedRides = _rideService.GetCompletedRideSummariesFromLocalStorage();
 
 
             if (CompletedRideSummaries.Count != 0)
