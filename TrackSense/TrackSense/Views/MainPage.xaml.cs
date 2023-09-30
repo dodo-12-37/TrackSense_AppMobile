@@ -11,5 +11,13 @@ namespace TrackSense.Views
             BindingContext = viewModel;
         }
 
+        protected async override void OnAppearing()
+        {
+            base.OnAppearing();
+            if (BindingContext is MainPageViewModel mainPageViewModel)
+            {
+                await mainPageViewModel.GetCompletedRidesAsync();
+            }
+        }
     }
 }

@@ -16,13 +16,20 @@
                      IconImageSource="settings_light.svg"
                      Command="{Binding GoToSettingsCommand}"/>
     </ContentPage.ToolbarItems>
-    <Grid RowDefinitions="Auto,*"
+    <Grid RowDefinitions="Auto,Auto,*"
           Padding="10">
         <Label Grid.Row="0"
+               Text="Transmission en cours..."
+               IsVisible="{Binding IsReceivingData}"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"
+               FontSize="Title"
+               FontAttributes="Bold"/>
+        <Label Grid.Row="1"
                Text="Trajets effectués"
                FontSize="Title"
                FontAttributes="Bold"/>
-        <RefreshView Grid.Row="1"
+        <RefreshView Grid.Row="2"
                      Grid.ColumnSpan="2"
                      Command="{Binding GetCompletedRidesCommand}"
                      IsRefreshing="{Binding IsRefreshing}">
