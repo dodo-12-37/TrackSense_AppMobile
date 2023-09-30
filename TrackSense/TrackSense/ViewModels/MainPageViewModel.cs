@@ -37,20 +37,19 @@ public partial class MainPageViewModel : BaseViewModel
                 switch (value.Type)
                 {
                     case BluetoothEventType.CONNECTION:
-                        isConnected = true;
+                        IsConnected = true;
                         break;
                     case BluetoothEventType.DECONNECTION:
-                        isConnected = false;
+                        IsConnected = false;
                         this._rideService.InterruptReception();
                         break;
                     case BluetoothEventType.SENDING_RIDE_STATS:
-                        isReceivingData = true;
                         await this._rideService.ReceiveRideDataFromDevice(value.RideData);
+                        IsReceivingData = this._bluetoothService.IsReceiving;
                         break;
                     case BluetoothEventType.SENDING_RIDE_POINT:
-                        isReceivingData = true;
                         await this._rideService.ReceivePointDataFromDevice(value.RidePoint);
-                        isReceivingData = false;
+                        IsReceivingData = this._bluetoothService.IsReceiving;
                         break;
                     default:
                         break;
@@ -93,7 +92,9 @@ public partial class MainPageViewModel : BaseViewModel
     [RelayCommand]
     async Task GoToTrackSenseDevices()
     {
-        if (!IsConnected)
+        this.IsConnected = this._bluetoothService.GetConnectedDevice() is not null;
+
+        if (!this.IsConnected)
         {
             await Shell.Current.GoToAsync(nameof(TrackSenseDevicesPage));
         }
