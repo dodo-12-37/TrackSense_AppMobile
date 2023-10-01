@@ -30,6 +30,7 @@ namespace TrackSense
 #endif
             builder.Services.AddSingleton<IBluetoothLE>(CrossBluetoothLE.Current);
             builder.Services.AddSingleton<IAdapter>(CrossBluetoothLE.Current.Adapter);
+            builder.Services.AddSingleton<IConnectivity>(Connectivity.Current);
 
             builder.Services.AddSingleton<ICompletedRideLocalData, RideData>();
 
