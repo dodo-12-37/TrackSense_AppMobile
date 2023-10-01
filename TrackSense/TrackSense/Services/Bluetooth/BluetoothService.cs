@@ -144,6 +144,10 @@ namespace TrackSense.Services.Bluetooth
                             }
                         }
                     }
+                    catch(ArgumentNullException e)
+                    {
+                        Debug.WriteLine("Le format du trajet reçu n'est pas valide : " + e.Message);
+                    }
                     catch (Exception e)
                     {
                         Debug.WriteLine("Erreur callback : " + e.Message);
