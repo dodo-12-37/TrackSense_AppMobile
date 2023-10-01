@@ -39,8 +39,6 @@ public class CompletedRideDTO
         this.CompletedRidePoints = p_completedRide.CompletedRidePoints.Select(entite => new CompletedRidePointDTO(entite) 
                                                                                             { CompletedRideId = this.CompletedRideId});
 
-        this.Statistics = new CompletedRideStatisticsDTO(p_completedRide.Statistics);
-        this.Statistics.CompletedRideId = this.CompletedRideId;
 
     }
 

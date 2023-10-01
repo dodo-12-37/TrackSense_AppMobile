@@ -177,8 +177,8 @@ public partial class MainPageViewModel : BaseViewModel
     {
         return new Entities.CompletedRide()
         {
+            UserLogin = "debug",
             CompletedRideId = Guid.NewGuid(),
-            PlannedRideId = Guid.NewGuid(),
             CompletedRidePoints = new List<Entities.CompletedRidePoint>()
             {
                 new Entities.CompletedRidePoint()
@@ -189,9 +189,9 @@ public partial class MainPageViewModel : BaseViewModel
                         Latitude = 46.785014,
                         Longitude = -71.286721,
                         Altitude = 0,
-                        Speed = 0,
-                        Accuracy = 0,
-                        Timestamp = DateTime.Now
+                        Speed = 16,
+
+                        Timestamp = DateTime.Now.AddSeconds(3)
                     },
                     Temperature = 23.4,
                     EffectiveTime = TimeSpan.FromMinutes(1)
@@ -204,9 +204,9 @@ public partial class MainPageViewModel : BaseViewModel
                         Latitude = 46.785474,
                         Longitude = -71.285702,
                         Altitude = 12,
-                        Speed = 0,
-                        Accuracy = 0,
-                        Timestamp = DateTime.Now
+                        Speed = 6,
+                        
+                        Timestamp = DateTime.Now.AddSeconds(6)
                     },
                     Temperature = 23.5,
                     EffectiveTime = TimeSpan.FromMinutes(1)
@@ -219,14 +219,14 @@ public partial class MainPageViewModel : BaseViewModel
                         Latitude = 46.785506,
                         Longitude = -71.284882,
                         Altitude = 12,
-                        Speed = 0,
-                        Accuracy = 0,
-                        Timestamp = DateTime.Now
+                        Speed = 10,
+                        
+                        Timestamp = DateTime.Now.AddSeconds(9)
                     },
                     Temperature = 23.5,
                     EffectiveTime = TimeSpan.FromMinutes(1)
                 },
-                                new Entities.CompletedRidePoint()
+                new Entities.CompletedRidePoint()
                 {
                     RideStep = 4,
                     Location = new Location()
@@ -234,9 +234,9 @@ public partial class MainPageViewModel : BaseViewModel
                         Latitude = 46.785222,
                         Longitude = -71.284562,
                         Altitude = 0,
-                        Speed = 0,
-                        Accuracy = 0,
-                        Timestamp = DateTime.Now
+                        Speed = 12,
+                        
+                        Timestamp = DateTime.Now.AddSeconds(12)
                     },
                     Temperature = 23.4,
                     EffectiveTime = TimeSpan.FromMinutes(1)
@@ -249,9 +249,9 @@ public partial class MainPageViewModel : BaseViewModel
                         Latitude = 46.785855,
                         Longitude = -71.282086,
                         Altitude = 12,
-                        Speed = 0,
-                        Accuracy = 0,
-                        Timestamp = DateTime.Now
+                        Speed = 15,
+                        
+                        Timestamp = DateTime.Now.AddSeconds(16)
                     },
                     Temperature = 23.5,
                     EffectiveTime = TimeSpan.FromMinutes(1)
@@ -264,14 +264,14 @@ public partial class MainPageViewModel : BaseViewModel
                         Latitude = 46.785722,
                         Longitude = -71.281048,
                         Altitude = 12,
-                        Speed = 0,
-                        Accuracy = 0,
-                        Timestamp = DateTime.Now
+                        Speed = 17,
+                        
+                        Timestamp = DateTime.Now.AddSeconds(19)
                     },
                     Temperature = 23.5,
                     EffectiveTime = TimeSpan.FromMinutes(1)
                 },
-                                new Entities.CompletedRidePoint()
+                new Entities.CompletedRidePoint()
                 {
                     RideStep = 7,
                     Location = new Location()
@@ -279,9 +279,9 @@ public partial class MainPageViewModel : BaseViewModel
                         Latitude = 46.786405,
                         Longitude = -71.279496,
                         Altitude = 0,
-                        Speed = 0,
+                        Speed = 5,
                         Accuracy = 0,
-                        Timestamp = DateTime.Now
+                        Timestamp = DateTime.Now.AddSeconds(23)
                     },
                     Temperature = 23.4,
                     EffectiveTime = TimeSpan.FromMinutes(1)
@@ -294,9 +294,9 @@ public partial class MainPageViewModel : BaseViewModel
                         Latitude = 46.786886,
                         Longitude = -71.277390,
                         Altitude = 12,
-                        Speed = 0,
-                        Accuracy = 0,
-                        Timestamp = DateTime.Now
+                        Speed = 13,
+                        
+                        Timestamp = DateTime.Now.AddSeconds(27)
                     },
                     Temperature = 23.5,
                     EffectiveTime = TimeSpan.FromMinutes(1)
@@ -309,24 +309,14 @@ public partial class MainPageViewModel : BaseViewModel
                         Latitude = 46.785694,
                         Longitude = -71.276348,
                         Altitude = 12,
-                        Speed = 0,
-                        Accuracy = 0,
-                        Timestamp = DateTime.Now
+                        Speed = 12,
+                        Timestamp = DateTime.Now.AddSeconds(30)
                     },
                     Temperature = 23.5,
                     EffectiveTime = TimeSpan.FromMinutes(1)
                 }
-            },
-            Statistics = new Entities.CompletedRideStatistics()
-            {
-                AverageSpeed = 14.56,
-                MaximumSpeed = 27.34,
-                Distance = 10560,
-                Duration = TimeSpan.FromMinutes(10),
-                NumberOfPoints = 9,
-                Calories = 100,
-                Falls = 0
             }
+           
         };
     }
     #endregion

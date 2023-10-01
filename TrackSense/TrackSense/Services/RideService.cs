@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Newtonsoft.Json;
 using Plugin.BLE.Abstractions.Contracts;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Net.Http.Json;
 using System.Text;
 using TrackSense.Entities;
 using TrackSense.Services.Bluetooth;
+using TrackSense.Services.API.APIDTO;
 
 namespace TrackSense.Services;
 
@@ -82,7 +84,7 @@ public class RideService
         if (ridePoint.RideStep == totalNumberOfPoints)
         {
             _rideData.AddCompletedRide(this._currentRide);
-            this.PostCurrentRide();
+            await this.PostCurrentRide();
             _currentRide = null;
         }
     }
@@ -129,13 +131,38 @@ public class RideService
         return summaries;
     }
 
-    private void PostCurrentRide()
+    
+    internal async Task<HttpResponseMessage> PostCurrentRide()
     {
+
         //Vérifier la connectivité du cellulaire
 
         //Envoyer les données au serveur
+        try
+        {
+            if (_currentRide == null)
+            {
+                throw new ArgumentNullException(nameof(_currentRide));
+            }
+            CompletedRideDTO completedRideDTO = new CompletedRideDTO(_currentRide);
 
+            string url = "https://binhnguyen05-001-site1.atempurl.com/api/CompletedRides";
+
+            var content = new StringContent(JsonConvert.SerializeObject(completedRideDTO), Encoding.UTF8, "application/json");
+
+            var response = await httpClient.PostAsync(url, content);
+
+            return response;
+        }
+        catch (Exception ex)
+        {
+
+            Console.WriteLine($"An error occurred: {ex.Message}");
+            throw;
+        }
+      
     }
+
 
     internal async Task<Entities.CompletedRide> GetCompletedRide(Guid completedRideId)
     {

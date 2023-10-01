@@ -15,15 +15,14 @@ namespace TrackSense.Services.API.APIDTO
         public int RideStep { get; set; }
         public LocationDTO Location { get; set; }
         public double Temperature { get; set; }
-        public TimeSpan EffectiveTime { get; set; }
         public DateTime Date { get; set; }
         public CompletedRidePointDTO(CompletedRidePoint entite)
         {
+            CompletedRideId = string.Empty;
             RideStep = entite.RideStep;
             Location = new LocationDTO( entite.Location);
             Date = entite.Location.Timestamp.DateTime;
             Temperature = entite.Temperature;
-            EffectiveTime = entite.EffectiveTime;
         }
 
         public CompletedRidePointDTO()
@@ -35,7 +34,6 @@ namespace TrackSense.Services.API.APIDTO
         {
             return new CompletedRidePoint()
             {
-                EffectiveTime = this.EffectiveTime,
                 Location = this.Location.ToEntity(),
                 RideStep= this.RideStep,
                 Temperature = this.Temperature,
