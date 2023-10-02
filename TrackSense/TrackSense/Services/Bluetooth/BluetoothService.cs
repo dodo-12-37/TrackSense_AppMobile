@@ -58,7 +58,8 @@ namespace TrackSense.Services.Bluetooth
                     {
                         Name = device.Name,
                         isConnected = device.State == DeviceState.Connected,
-                        Id = device.Id
+                        Id = device.Id,
+                        Address = device.NativeDevice.ToString()
                     };
                     devicesList.Add(bleDevice);
                 }
