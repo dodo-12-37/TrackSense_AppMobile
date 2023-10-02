@@ -58,7 +58,7 @@ public partial class MainPageViewModel : BaseViewModel
             });
 
         ////SimulateGetRideFromAPI();
-        this.SimulatePostRideToAPI();
+        //this.SimulatePostRideToAPI();
     }
 
     private void SimulateGetRideFromAPI()
