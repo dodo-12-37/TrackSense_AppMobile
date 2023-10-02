@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Newtonsoft.Json;
 using Plugin.BLE.Abstractions.Contracts;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Net.Http.Json;
 using System.Text;
 using TrackSense.Entities;
 using TrackSense.Services.Bluetooth;
+using TrackSense.Services.API.APIDTO;
 
 namespace TrackSense.Services;
 
@@ -86,7 +88,10 @@ public class RideService
             _currentRide = null;
         }
     }
-
+    public void PostCurrentRide()
+    {
+        throw new NotImplementedException();
+    }
     public async Task<List<CompletedRideSummary>> GetUserCompletedRides()
     {
         if (_completedRides?.Count > 0)
@@ -129,13 +134,45 @@ public class RideService
         return summaries;
     }
 
-    private void PostCurrentRide()
+
+    internal async Task<HttpResponseMessage> PostCompletedRideAsync(CompletedRide p_completedRide)
     {
-        //Vérifier la connectivité du cellulaire
+        try
+        {
+            if (p_completedRide == null)
+            {
+                throw new ArgumentNullException(nameof(p_completedRide));
+            }
 
-        //Envoyer les données au serveur
+            CompletedRideDTO completedRideDTO = new CompletedRideDTO(p_completedRide);
 
+            string url = "https://binhnguyen05-001-site1.atempurl.com/api/CompletedRides";
+
+            var content = new StringContent(JsonConvert.SerializeObject(completedRideDTO), Encoding.UTF8, "application/json");
+
+            var response = await httpClient.PostAsync(url, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                // Request was successful, you can handle it accordingly
+                return response;
+            }
+            else
+            {
+                // Handle different HTTP status codes here, e.g., client errors or server errors
+                // You can throw specific exceptions or log messages based on the status code
+                Console.WriteLine($"HTTP Error: {response.StatusCode}");
+                throw new HttpRequestException($"HTTP Error: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            // Handle exceptions (e.g., serialization errors) here
+            Console.WriteLine($"An error occurred: {ex.Message}");
+            throw;
+        }
     }
+
 
     internal async Task<Entities.CompletedRide> GetCompletedRide(Guid completedRideId)
     {
