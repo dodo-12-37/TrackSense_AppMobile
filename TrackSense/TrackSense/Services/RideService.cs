@@ -97,9 +97,14 @@ public class RideService
     }
     public async Task<List<CompletedRideSummary>> GetUserCompletedRides()
     {
-        if (_completedRides?.Count > 0)
+        //if (_completedRides?.Count > 0)
+        //{
+        //    return _completedRides;
+        //}
+
+        if (_completedRides.Count != 0)
         {
-            return _completedRides;
+            _completedRides.Clear();
         }
 
         string url = $"https://binhnguyen05-001-site1.atempurl.com/api/users/{this._userLogin}/completedRides";
