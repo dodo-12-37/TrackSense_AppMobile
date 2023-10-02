@@ -19,12 +19,14 @@ public class RideService
     CompletedRide _currentRide;
     List<CompletedRideSummary> _completedRides = new();
     HttpClient httpClient;
+    string _userLogin;
 
     public RideService(ICompletedRideLocalData rideData, BluetoothService bluetoothService)
     {
         _rideData = rideData;
         _bluetoothService = bluetoothService;
         httpClient = new HttpClient();
+        _userLogin = "admin";
     }
 
     internal async Task<bool> ReceiveRideDataFromDevice(CompletedRide rideData)
@@ -35,6 +37,7 @@ public class RideService
         }
 
         this._currentRide = rideData;
+        this._currentRide.UserLogin = _userLogin;
 
         return await this._bluetoothService.ConfirmRideStatsReception(0);
     }
@@ -84,7 +87,7 @@ public class RideService
         if (ridePoint.RideStep == totalNumberOfPoints)
         {
             _rideData.AddCompletedRide(this._currentRide);
-            this.PostCurrentRide();
+            await this.PostCompletedRideAsync(this._currentRide);
             _currentRide = null;
         }
     }
@@ -98,10 +101,8 @@ public class RideService
         {
             return _completedRides;
         }
-       
-        string userLogin = "admin";
 
-        string url = $"https://binhnguyen05-001-site1.atempurl.com/api/users/{userLogin}/completedRides";
+        string url = $"https://binhnguyen05-001-site1.atempurl.com/api/users/{this._userLogin}/completedRides";
 
         var response = await httpClient.GetAsync(url);
 
