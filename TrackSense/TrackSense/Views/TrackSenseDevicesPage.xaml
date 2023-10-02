@@ -40,6 +40,7 @@
                                                          Padding="10"
                                                          VerticalOptions="Center">
                                         <Label Text="{Binding Name}"/>
+                                        <Label Text="{Binding Address}"/>
                                     </VerticalStackLayout>
                                 </Grid>
                             </Frame>
