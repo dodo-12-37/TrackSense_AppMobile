@@ -10,19 +10,17 @@ namespace TrackSense.Services.API.APIDTO
 {
     public class CompletedRidePointDTO
     {
-        public string CompletedRideId { get; set; }
-        public string LocationId { get; set; }
-        public int RideStep { get; set; }
-        public LocationDTO Location { get; set; }
-        public double Temperature { get; set; }
-        public DateTime Date { get; set; }
+        public string CompletedRideId { get; set; }=string.Empty!;
+        public LocationDTO Location { get; set; } = null!;
+        public int RideStep { get; set; } =0;
+        public double Temperature { get; set; } = 0;
+        public DateTime DateTime { get; set; }
         public CompletedRidePointDTO(CompletedRidePoint entite)
         {
-            CompletedRideId = string.Empty;
             RideStep = entite.RideStep;
             Location = new LocationDTO( entite.Location);
-            Date = entite.Location.Timestamp.DateTime;
             Temperature = entite.Temperature;
+            DateTime = entite.Location.Timestamp.DateTime;
         }
 
         public CompletedRidePointDTO()

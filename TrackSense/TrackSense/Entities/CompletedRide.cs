@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -13,8 +14,10 @@ namespace TrackSense.Entities
         public string UserLogin { get; set; } = null!;
         public Guid CompletedRideId { get; set; } = Guid.Empty!;
         public Guid PlannedRideId { get; set; }
-        public List<CompletedRidePoint> CompletedRidePoints { get; set; }
-        public CompletedRideStatistics Statistics { get; set; } = null;
+        [JsonIgnore]
+        public PlannedRide? PlannedRide { get; set; } = null;
+        public List<CompletedRidePoint> CompletedRidePoints { get; set; } = null!;
+        public CompletedRideStatistics ?Statistics { get; set; } = null;
       
     }
 }

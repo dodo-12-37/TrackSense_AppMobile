@@ -57,7 +57,8 @@ public partial class MainPageViewModel : BaseViewModel
                 }
             });
 
-        SimulateGetRideFromAPI();
+        //SimulateGetRideFromAPI();
+        this.SimulatePostRideToAPI();
     }
 
     private void SimulateGetRideFromAPI()
@@ -82,6 +83,50 @@ public partial class MainPageViewModel : BaseViewModel
 
         CompletedRideSummaries.Add(new CompletedRideSummary(ride));
         CompletedRideSummaries.Add(new CompletedRideSummary(ride2));
+    }
+
+    async private void SimulatePostRideToAPI()
+    {
+        Entities.CompletedRide completedRide = this.GenerateFakeCompletedRide();
+        await this.PostCompletedRideAsync(completedRide);
+
+    }
+    [RelayCommand]
+    async Task PostCompletedRideAsync(Entities.CompletedRide p_completedRide)
+    {
+        if (IsBusy)
+        {
+            return;
+        }
+
+        try
+        {
+            IsBusy = true;
+
+            var result = await _rideService.PostCompletedRideAsync(p_completedRide);
+
+            if (result.IsSuccessStatusCode)
+            {
+                // Handle success, e.g., show a success message to the user
+                await Shell.Current.DisplayAlert("Success", "Completed ride posted successfully.", "Ok");
+            }
+            else
+            {
+                // Handle failure, e.g., show an error message to the user
+                await Shell.Current.DisplayAlert("Error", "Failed to post completed ride.", "Ok");
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+
+            // Handle and display the exception to the user
+            await Shell.Current.DisplayAlert("Error", $"An error occurred while posting the completed ride: {ex.Message}", "Ok");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     [RelayCommand]
@@ -175,10 +220,11 @@ public partial class MainPageViewModel : BaseViewModel
     #region DEBUG
     private Entities.CompletedRide GenerateFakeCompletedRide()
     {
+        var rideId = Guid.NewGuid();
         return new Entities.CompletedRide()
         {
             UserLogin = "debug",
-            CompletedRideId = Guid.NewGuid(),
+            CompletedRideId = rideId,
             CompletedRidePoints = new List<Entities.CompletedRidePoint>()
             {
                 new Entities.CompletedRidePoint()
@@ -195,7 +241,7 @@ public partial class MainPageViewModel : BaseViewModel
                     },
                     Temperature = 23.4,
                     EffectiveTime = TimeSpan.FromMinutes(1)
-                },
+                }/*,
                 new Entities.CompletedRidePoint()
                 {
                     RideStep = 2,
@@ -205,7 +251,7 @@ public partial class MainPageViewModel : BaseViewModel
                         Longitude = -71.285702,
                         Altitude = 12,
                         Speed = 6,
-                        
+
                         Timestamp = DateTime.Now.AddSeconds(6)
                     },
                     Temperature = 23.5,
@@ -220,7 +266,7 @@ public partial class MainPageViewModel : BaseViewModel
                         Longitude = -71.284882,
                         Altitude = 12,
                         Speed = 10,
-                        
+
                         Timestamp = DateTime.Now.AddSeconds(9)
                     },
                     Temperature = 23.5,
@@ -235,7 +281,7 @@ public partial class MainPageViewModel : BaseViewModel
                         Longitude = -71.284562,
                         Altitude = 0,
                         Speed = 12,
-                        
+
                         Timestamp = DateTime.Now.AddSeconds(12)
                     },
                     Temperature = 23.4,
@@ -250,7 +296,7 @@ public partial class MainPageViewModel : BaseViewModel
                         Longitude = -71.282086,
                         Altitude = 12,
                         Speed = 15,
-                        
+
                         Timestamp = DateTime.Now.AddSeconds(16)
                     },
                     Temperature = 23.5,
@@ -265,7 +311,7 @@ public partial class MainPageViewModel : BaseViewModel
                         Longitude = -71.281048,
                         Altitude = 12,
                         Speed = 17,
-                        
+
                         Timestamp = DateTime.Now.AddSeconds(19)
                     },
                     Temperature = 23.5,
@@ -295,7 +341,7 @@ public partial class MainPageViewModel : BaseViewModel
                         Longitude = -71.277390,
                         Altitude = 12,
                         Speed = 13,
-                        
+
                         Timestamp = DateTime.Now.AddSeconds(27)
                     },
                     Temperature = 23.5,
@@ -314,7 +360,7 @@ public partial class MainPageViewModel : BaseViewModel
                     },
                     Temperature = 23.5,
                     EffectiveTime = TimeSpan.FromMinutes(1)
-                }
+                }*/
             }
            
         };

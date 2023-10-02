@@ -84,11 +84,14 @@ public class RideService
         if (ridePoint.RideStep == totalNumberOfPoints)
         {
             _rideData.AddCompletedRide(this._currentRide);
-            await this.PostCurrentRide();
+            this.PostCurrentRide();
             _currentRide = null;
         }
     }
-
+    public void PostCurrentRide()
+    {
+        throw new NotImplementedException();
+    }
     public async Task<List<CompletedRideSummary>> GetUserCompletedRides()
     {
         if (_completedRides?.Count > 0)
@@ -131,20 +134,17 @@ public class RideService
         return summaries;
     }
 
-    
-    internal async Task<HttpResponseMessage> PostCurrentRide()
+
+    internal async Task<HttpResponseMessage> PostCompletedRideAsync(CompletedRide p_completedRide)
     {
-
-        //Vérifier la connectivité du cellulaire
-
-        //Envoyer les données au serveur
         try
         {
-            if (_currentRide == null)
+            if (p_completedRide == null)
             {
-                throw new ArgumentNullException(nameof(_currentRide));
+                throw new ArgumentNullException(nameof(p_completedRide));
             }
-            CompletedRideDTO completedRideDTO = new CompletedRideDTO(_currentRide);
+
+            CompletedRideDTO completedRideDTO = new CompletedRideDTO(p_completedRide);
 
             string url = "https://binhnguyen05-001-site1.atempurl.com/api/CompletedRides";
 
@@ -152,15 +152,25 @@ public class RideService
 
             var response = await httpClient.PostAsync(url, content);
 
-            return response;
+            if (response.IsSuccessStatusCode)
+            {
+                // Request was successful, you can handle it accordingly
+                return response;
+            }
+            else
+            {
+                // Handle different HTTP status codes here, e.g., client errors or server errors
+                // You can throw specific exceptions or log messages based on the status code
+                Console.WriteLine($"HTTP Error: {response.StatusCode}");
+                throw new HttpRequestException($"HTTP Error: {response.StatusCode}");
+            }
         }
         catch (Exception ex)
         {
-
+            // Handle exceptions (e.g., serialization errors) here
             Console.WriteLine($"An error occurred: {ex.Message}");
             throw;
         }
-      
     }
 
 

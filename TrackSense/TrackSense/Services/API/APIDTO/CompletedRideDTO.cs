@@ -8,11 +8,10 @@ public class CompletedRideDTO
 {
     public string UserLogin { get; set; }
     public string CompletedRideId { get; set; }
-
     [JsonIgnore]
     public PlannedRideDTO PlannedRide {get;set ;}
-    public  IEnumerable<CompletedRidePointDTO> CompletedRidePoints { get; set; }
-    public  CompletedRideStatisticsDTO Statistics { get; set; }
+    public  List<CompletedRidePointDTO> CompletedRidePoints { get; set; }
+    public CompletedRideStatisticsDTO? Statistics { get;} = null;
     public CompletedRideDTO()
     {
         ;
@@ -36,10 +35,12 @@ public class CompletedRideDTO
         this.UserLogin = p_completedRide.UserLogin;
         this.CompletedRideId = p_completedRide.CompletedRideId.ToString();
        
-        this.CompletedRidePoints = p_completedRide.CompletedRidePoints.Select(entite => new CompletedRidePointDTO(entite) 
-                                                                                            { CompletedRideId = this.CompletedRideId});
-
-
+        this.CompletedRidePoints = p_completedRide.CompletedRidePoints.Select(entite => 
+                                                                                new CompletedRidePointDTO(entite) 
+                                                                                { 
+                                                                                    CompletedRideId =this.CompletedRideId
+                                                                                })
+                                                                       .ToList();
     }
 
     public Entities.CompletedRide ToEntity()
