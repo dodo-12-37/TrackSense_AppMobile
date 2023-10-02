@@ -12,8 +12,8 @@
               Padding="10">
         </Grid>
         <Grid ColumnDefinitions="*,*"
-              RowDefinitions="*,*,*"
-              Padding="5"
+              RowDefinitions="*,*,*,*"
+              Padding="10,0"
               RowSpacing="7"
               Grid.Row="1">
             <Label Text="Distance"
@@ -23,28 +23,27 @@
             <Label Text="{Binding CompletedRide.Statistics.Distance, StringFormat='{0:0.00} km'}"
                    Grid.Row="0"
                    Grid.Column="1"/>
-            <Label Text="Vitesse moyenne"
+            <Label Text="Durée"
                    Grid.Row="1"
+                   Grid.Column="0"
+                   FontAttributes="Bold"/>
+            <Label Text="{Binding CompletedRide.Statistics.Duration, StringFormat='{0:0.00}'}"
+                   Grid.Row="1"
+                   Grid.Column="1"/>
+            <Label Text="Vitesse moyenne"
+                   Grid.Row="2"
                    Grid.Column="0"
                    FontAttributes="Bold"/>
             <Label Text="{Binding CompletedRide.Statistics.AverageSpeed, StringFormat='{0:0.00} km/h'}"
-                   Grid.Row="1"
+                   Grid.Row="2"
                    Grid.Column="1"/>
             <Label Text="Vitesse max"
-                   Grid.Row="2"
+                   Grid.Row="3"
                    Grid.Column="0"
                    FontAttributes="Bold"/>
             <Label Text="{Binding CompletedRide.Statistics.MaximumSpeed, StringFormat='{0:0.00} km/h'}"
-                   Grid.Row="2"
+                   Grid.Row="3"
                    Grid.Column="1"/>
         </Grid>
     </Grid>
-    <!--<maps:Map x:Name="itineraryMap"
-                      MapType="Street"
-                      IsShowingUser="true"
-                      Grid.Row="1"
-                      Margin="10"
-                      ItemsSource="{Binding Ride.Itinerary}"
-                >
-            </maps:Map>-->
 </ContentPage>
