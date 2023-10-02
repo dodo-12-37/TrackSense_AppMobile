@@ -52,13 +52,16 @@ namespace TrackSense.Services.Bluetooth
 
             foreach (IDevice device in bluetoothDevices)
             {
-                TrackSenseDevice bleDevice = new TrackSenseDevice()
+                if(!String.IsNullOrWhiteSpace(device.Name) && device.Name.Contains("TrackSense"))
                 {
-                    Name = device.Name,
-                    isConnected = device.State == DeviceState.Connected,
-                    Id = device.Id
-                };
-                devicesList.Add(bleDevice);
+                    TrackSenseDevice bleDevice = new TrackSenseDevice()
+                    {
+                        Name = device.Name,
+                        isConnected = device.State == DeviceState.Connected,
+                        Id = device.Id
+                    };
+                    devicesList.Add(bleDevice);
+                }
             }
 
             return devicesList;
@@ -119,7 +122,7 @@ namespace TrackSense.Services.Bluetooth
                                 IsReceiving = true;
                                 CompletedRideDTO completedRideDTO = new CompletedRideDTO(rideMessage);
 
-                                BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_STATS, true, completedRideDTO.ToEntity());
+                                BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_STATS, completedRideDTO.ToEntity());
                                 observers.ForEach(o => o.OnNext(BTEventSendData));
                                 this._completedRideDTO = completedRideDTO;
                                 Debug.WriteLine("Ride ajouté : " + completedRideDTO.CompletedRideId);
@@ -128,17 +131,22 @@ namespace TrackSense.Services.Bluetooth
                             {
                                 CompletedRidePointDTO pointDTO = new CompletedRidePointDTO(rideMessage);
                                 Entities.CompletedRidePoint completedRidePoint = pointDTO.ToEntity();
-
-                                BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_POINT, true, completedRidePoint);
+                                BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_POINT, completedRidePoint);
                                 observers.ForEach(o => o.OnNext(BTEventSendData));
                                 Debug.WriteLine("Point ajouté : " + pointDTO.RideStep);
-                                if (pointDTO.RideStep == _completedRideDTO.Statistics.NumberOfPoints)
+
+                                bool isLastPoint = pointDTO.RideStep == _completedRideDTO.Statistics.NumberOfPoints;
+                                if (isLastPoint)
                                 {
                                     _completedRideDTO = null;
                                     IsReceiving = false;
                                 }
                             }
                         }
+                    }
+                    catch(ArgumentNullException e)
+                    {
+                        Debug.WriteLine("Le format du trajet reçu n'est pas valide : " + e.Message);
                     }
                     catch (Exception e)
                     {
@@ -200,7 +208,7 @@ namespace TrackSense.Services.Bluetooth
             string rideMessage = $"{randomGuid};{plannedRideID};30.12;18.65;2023-09-03T14:30:00;2023-09-03T16:30:00;00:45:00;32;2;0";
             CompletedRideDTO completedRideDTO = new CompletedRideDTO(rideMessage);
 
-            BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_STATS, true, completedRideDTO.ToEntity());
+            BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_STATS, completedRideDTO.ToEntity());
             observers.ForEach(o => o.OnNext(BTEventSendData));
         }
 
@@ -211,11 +219,11 @@ namespace TrackSense.Services.Bluetooth
             string ridePoint2 = "2;72.8393483920;82.293029273720;72;21.22;19.22;2023-09-03T14:35:00;00:05:00";
 
             CompletedRidePointDTO pointDTO1 = new CompletedRidePointDTO(ridePoint1);
-            BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_POINT, true, pointDTO1.ToEntity());
+            BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_POINT, pointDTO1.ToEntity());
             observers.ForEach(o => o.OnNext(BTEventSendData));
 
             CompletedRidePointDTO pointDTO2 = new CompletedRidePointDTO(ridePoint2);
-            BluetoothEvent BTEventSendData2 = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_POINT, true, pointDTO2.ToEntity());
+            BluetoothEvent BTEventSendData2 = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_POINT, pointDTO2.ToEntity());
             observers.ForEach(o => o.OnNext(BTEventSendData2));
         }
 

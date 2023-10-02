@@ -32,7 +32,7 @@ namespace TrackSense.Services.Bluetooth.BluetoothDTO
             DateTime dateBegin = DateTime.Parse(values[4]);
             DateTime dateEnd = DateTime.Parse(values[5]);
             TimeSpan duration = TimeSpan.FromSeconds(double.Parse(values[6]));
-            double distance = double.Parse(values[7]);
+            double distance = double.Parse(values[7]) / 1000;
             int nbOfPoints = int.Parse(values[8]);
             int nbOfFalls = int.Parse(values[9]);
             int calories = 0;

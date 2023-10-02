@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using TrackSense.Entities.Exceptions;
 using TrackSense.Models;
 using TrackSense.Services;
 using TrackSense.Services.Bluetooth;
@@ -14,6 +13,7 @@ public partial class MainPageViewModel : BaseViewModel
 {
     BluetoothService _bluetoothService;
     RideService _rideService;
+    IConnectivity _connectivity;
     public ObservableCollection<CompletedRideSummary> CompletedRideSummaries { get; } = new();
 
     [ObservableProperty]
@@ -25,11 +25,12 @@ public partial class MainPageViewModel : BaseViewModel
     [ObservableProperty]
     bool isRefreshing;
 
-    public MainPageViewModel(BluetoothService btService, RideService rideService)
+    public MainPageViewModel(BluetoothService btService, RideService rideService, IConnectivity connectivity)
     {
         Title = "Accueil";
         _bluetoothService = btService;
         _rideService = rideService;
+        _connectivity = connectivity;
 
         BluetoothObserver bluetoothObserver = new BluetoothObserver(this._bluetoothService,
             async (value) =>
@@ -37,20 +38,19 @@ public partial class MainPageViewModel : BaseViewModel
                 switch (value.Type)
                 {
                     case BluetoothEventType.CONNECTION:
-                        isConnected = true;
+                        IsConnected = true;
                         break;
                     case BluetoothEventType.DECONNECTION:
-                        isConnected = false;
+                        IsConnected = false;
                         this._rideService.InterruptReception();
                         break;
                     case BluetoothEventType.SENDING_RIDE_STATS:
-                        isReceivingData = true;
                         await this._rideService.ReceiveRideDataFromDevice(value.RideData);
+                        IsReceivingData = this._bluetoothService.IsReceiving;
                         break;
                     case BluetoothEventType.SENDING_RIDE_POINT:
-                        isReceivingData = true;
                         await this._rideService.ReceivePointDataFromDevice(value.RidePoint);
-                        isReceivingData = false;
+                        IsReceivingData = this._bluetoothService.IsReceiving;
                         break;
                     default:
                         break;
@@ -58,7 +58,6 @@ public partial class MainPageViewModel : BaseViewModel
             });
 
         //SimulateGetRideFromAPI();
-        this.SimulatePostRideToAPI();
     }
 
     private void SimulateGetRideFromAPI()
@@ -138,7 +137,9 @@ public partial class MainPageViewModel : BaseViewModel
     [RelayCommand]
     async Task GoToTrackSenseDevices()
     {
-        if (!IsConnected)
+        this.IsConnected = this._bluetoothService.GetConnectedDevice() is not null;
+
+        if (!this.IsConnected)
         {
             await Shell.Current.GoToAsync(nameof(TrackSenseDevicesPage));
         }
@@ -152,20 +153,32 @@ public partial class MainPageViewModel : BaseViewModel
             return;
         }
 
-        Entities.CompletedRide completedRide = await _rideService.GetCompletedRide(rideSummary.CompletedRideId);
-        //Entities.CompletedRide completedRide = GenerateFakeCompletedRide();
-        //Entities.CompletedRide completedRide = _rideService.GetCompletedRideFromLocalStorage(rideSummary.CompletedRideId);
-
-        //Référence le shell, donc pas bonne pratique, il faudrait une interface.
-        await Shell.Current.GoToAsync($"{nameof(CompletedRidePage)}", true,
-            new Dictionary<string, object>
+        try
+        {
+            if (await CheckInternetConnexion())
             {
-                    {"CompletedRide", new Models.CompletedRide(completedRide) }
-            });
+                Entities.CompletedRide completedRide = await _rideService.GetCompletedRide(rideSummary.CompletedRideId);
+                //Entities.CompletedRide completedRide = GenerateFakeCompletedRide();
+                //Entities.CompletedRide completedRide = _rideService.GetCompletedRideFromLocalStorage(rideSummary.CompletedRideId
+
+                //Référence le shell, donc pas bonne pratique, il faudrait une interface.
+                await Shell.Current.GoToAsync($"{nameof(CompletedRidePage)}", true,
+                    new Dictionary<string, object>
+                    {
+                            {"CompletedRide", new Models.CompletedRide(completedRide) }
+                    });
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine(e.Message);
+            await Shell.Current.DisplayAlert("Oups", "Une erreur est survenue lors de la récupération du trajet", "Ok");
+        }
+
     }
 
     [RelayCommand]
-    async Task GetCompletedRidesAsync()
+    public async Task GetCompletedRidesAsync()
     {
         if (IsBusy)
         {
@@ -174,24 +187,29 @@ public partial class MainPageViewModel : BaseViewModel
 
         try
         {
-            IsBusy = true;
-            IsRefreshing = true;
 
-            List<TrackSense.Entities.CompletedRideSummary> completedRides = await _rideService.GetUserCompletedRides();
-            //List<TrackSense.Entities.CompletedRideSummary> completedRides = _rideService.GetCompletedRideSummariesFromLocalStorage();
-
-
-            if (CompletedRideSummaries.Count != 0)
+            if (await CheckInternetConnexion())
             {
-                CompletedRideSummaries.Clear();
+                IsBusy = true;
+                IsRefreshing = true;
+
+                List<TrackSense.Entities.CompletedRideSummary> completedRides = await _rideService.GetUserCompletedRides();
+                //List<TrackSense.Entities.CompletedRideSummary> completedRides = _rideService.GetCompletedRideSummariesFromLocalStorage();
+
+
+                if (CompletedRideSummaries.Count != 0)
+                {
+                    CompletedRideSummaries.Clear();
+                }
+
+                foreach (TrackSense.Entities.CompletedRideSummary ride in completedRides)
+                {
+                    CompletedRideSummaries.Add(new CompletedRideSummary(ride)); // si on a trop de données, ne pas utiliser cette méthode car lève un évenement pour chaque ajout
+                    // si on a trop de données, créer une nouvelle liste ou une nouvelle ObservableCollection et l'assigner à CompletedRides ou trouver des
+                    //library helpers qui ont des observableRange collections qui feront de l'ajout de batch
+                }
             }
 
-            foreach (TrackSense.Entities.CompletedRideSummary ride in completedRides)
-            {
-                CompletedRideSummaries.Add(new CompletedRideSummary(ride)); // si on a trop de données, ne pas utiliser cette méthode car lève un évenement pour chaque ajout
-                // si on a trop de données, créer une nouvelle liste ou une nouvelle ObservableCollection et l'assigner à CompletedRides ou trouver des
-                //library helpers qui ont des observableRange collections qui feront de l'ajout de batch
-            }
         }
         catch (Exception ex)
         {
@@ -203,6 +221,18 @@ public partial class MainPageViewModel : BaseViewModel
             IsBusy = false;
             IsRefreshing = false;
         }
+    }
+
+    private async Task<bool> CheckInternetConnexion()
+    {
+        bool internetIsAvailable = _connectivity.NetworkAccess == NetworkAccess.Internet;
+
+        if (!internetIsAvailable)
+        {
+            await Shell.Current.DisplayAlert("Problème de connexion à internet", "Veuillez vérifier votre connexion à internet puis réessayer", "Ok");
+        }
+
+        return internetIsAvailable;
     }
 
     [RelayCommand]

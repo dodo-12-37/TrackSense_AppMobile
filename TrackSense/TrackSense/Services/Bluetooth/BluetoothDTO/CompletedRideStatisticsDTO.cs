@@ -11,7 +11,7 @@ namespace TrackSense.Services.Bluetooth.BluetoothDTO
     {
         public double MaximumSpeed { get; set; }
         public double AverageSpeed { get; set; }
-        public double Distance { get; set; }
+        public double DistanceKm { get; set; }
         public TimeSpan Duration { get; set; }
         public int NumberOfPoints { get; set; }
         public int Calories { get; set; }
@@ -21,7 +21,7 @@ namespace TrackSense.Services.Bluetooth.BluetoothDTO
         {
             MaximumSpeed = maximumSpeed;
             AverageSpeed = averageSpeed;
-            Distance = distance;
+            DistanceKm = distance;
             Duration = duration;
             NumberOfPoints = numberOfPoints;
             Calories = calories;
@@ -34,7 +34,7 @@ namespace TrackSense.Services.Bluetooth.BluetoothDTO
             {
                 MaximumSpeed = this.MaximumSpeed,
                 AverageSpeed = this.AverageSpeed,
-                Distance = this.Distance,
+                Distance = this.DistanceKm,
                 Duration = this.Duration,
                 NumberOfPoints = this.NumberOfPoints,
                 Calories = this.Calories,
