@@ -91,10 +91,7 @@ public class RideService
             _currentRide = null;
         }
     }
-    public void PostCurrentRide()
-    {
-        throw new NotImplementedException();
-    }
+
     public async Task<List<CompletedRideSummary>> GetUserCompletedRides()
     {
         //if (_completedRides?.Count > 0)
