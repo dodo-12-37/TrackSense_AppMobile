@@ -11,7 +11,7 @@ public class CompletedRideDTO
     [JsonIgnore]
     public PlannedRideDTO PlannedRide {get;set ;}
     public  List<CompletedRidePointDTO> CompletedRidePoints { get; set; }
-    public CompletedRideStatisticsDTO? Statistics { get;} = null;
+    public CompletedRideStatisticsDTO Statistics { get; set; }
     public CompletedRideDTO()
     {
         ;

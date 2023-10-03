@@ -57,8 +57,7 @@ public partial class MainPageViewModel : BaseViewModel
                 }
             });
 
-        ////SimulateGetRideFromAPI();
-        //this.SimulatePostRideToAPI();
+        //SimulateGetRideFromAPI();
     }
 
     private void SimulateGetRideFromAPI()
@@ -108,12 +107,12 @@ public partial class MainPageViewModel : BaseViewModel
             if (result.IsSuccessStatusCode)
             {
                 // Handle success, e.g., show a success message to the user
-                await Shell.Current.DisplayAlert("Success", "Completed ride posted successfully.", "Ok");
+                await Shell.Current.DisplayAlert("Success", "Trajet publié avec succès.", "Ok");
             }
             else
             {
                 // Handle failure, e.g., show an error message to the user
-                await Shell.Current.DisplayAlert("Error", "Failed to post completed ride.", "Ok");
+                await Shell.Current.DisplayAlert("Error", "Échec de la publication du trajet.", "Ok");
             }
         }
         catch (Exception ex)
