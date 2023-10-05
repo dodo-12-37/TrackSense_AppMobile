@@ -57,7 +57,12 @@ public partial class MainPageViewModel : BaseViewModel
                 }
             });
 
-        //SimulateGetRideFromAPI();
+        InitializeDisplay();
+    }
+
+    private async void InitializeDisplay()
+    {
+        await this.GetCompletedRidesAsync();
     }
 
     private void SimulateGetRideFromAPI()

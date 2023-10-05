@@ -213,4 +213,9 @@ public class RideService
     {
         return this._rideData.GetCompletedRideById(completedRideId);
     }
+
+    internal List<CompletedRide> GetAllCompletedRides()
+    {
+        return this._rideData.ListCompletedRides();
+    }
 }
