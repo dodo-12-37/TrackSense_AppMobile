@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TrackSense.Entities;
 using TrackSense.Services;
 using TrackSense.Services.Bluetooth;
 
@@ -24,7 +25,10 @@ namespace TrackSense.ViewModels
         [RelayCommand]
         async Task DeleteRidesFromStorageAsync()
         {
-            bool choice = await Shell.Current.DisplayAlert("Supprimer les trajets", "Cette action supprimera tous les trajets enregistrée dans la mémoire du téléphone. Êtes-vous sûr ?", "Oui", "Non");
+            List<CompletedRide> allRides = _rideService.GetAllCompletedRides();
+            int totalNumberOfRides = allRides.Count;
+
+            bool choice = await Shell.Current.DisplayAlert("Supprimer les trajets", $"Cette action supprimera {totalNumberOfRides} trajet(s) enregistré(s) dans la mémoire du téléphone. Êtes-vous sûr ?", "Oui", "Non");
             if (choice)
             {
                 _rideService.DeleteRidesFromLocalStorage();
