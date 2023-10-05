@@ -3,6 +3,8 @@ L'application mobile TrackSense permet de communiquer avec un objet connecté qu
 
 # Installer l'application mobile
 
+L'application mobile n'a pas encore été publiée sur le Google Play Store et sur l'app Store. Les liens seront disponibles ici quand elle sera disponible sur ces plateformes.
+
 Pour installer l'application mobile, vous pouvez scanner ce QR code à partir de votre téléphone ou cliquer sur ce lien à partir de votre téléphone : [https://github.com/DFC-Informatique-Cegep-de-Sainte-Foy/420-W57-SF_E23_4394_TrackSense_AppMobile/raw/main/Apk/com.companyname.tracksense.apk](url):
 
 ![TrackSenseAPK_QRcode](./Documentation/images/TrackSenseAPK_QRcode.png)
@@ -66,11 +68,6 @@ En appuyant sur un trajet depuis la page d'accueil on navigue vers la page **Sta
 La page **Paramètres** permet de configurer l'appareil TrackSense et l'application mobile
 
 ![Screenshot_20230930-181129](https://github.com/DFC-Informatique-Cegep-de-Sainte-Foy/420-W57-SF_E23_4394_TrackSense_AppMobile/assets/97980855/9b76068a-a0bb-4f3b-a8d7-8c8d94e9931e)
-
-# Installer l'application mobile
-L'application mobile n'a pas encore été publiée sur le Google Play Store et sur l'app Store. Les liens seront disponibles ici quand elle sera disponible sur ces plateformes.
-
-Vous pouvez quand même installer l'application sur votre cellulaire si vous avez activé les paramètres de développeur sur votre appareil mobile
 
 # Bibliothèques
 - Bluetooth: [dotnet-bluetooth-le](https://github.com/dotnet-bluetooth-le/dotnet-bluetooth-le/tree/master)
