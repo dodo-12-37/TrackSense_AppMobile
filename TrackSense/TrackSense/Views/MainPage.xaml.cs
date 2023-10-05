@@ -37,14 +37,5 @@ namespace TrackSense.Views
                 }
             }
         }
-
-        protected async override void OnAppearing()
-        {
-            base.OnAppearing();
-            if (BindingContext is MainPageViewModel mainPageViewModel)
-            {
-                await mainPageViewModel.GetCompletedRidesAsync();
-            }
-        }
     }
 }
