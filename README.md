@@ -4,9 +4,39 @@ L'application mobile TrackSense permet de communiquer avec un objet connecté qu
 # Installer l'application mobile
 
 Pour installer l'application mobile, vous pouvez scanner ce QR code à partir de votre téléphone :
-![TrackSenseAPK_QRcode](https://github.com/DFC-Informatique-Cegep-de-Sainte-Foy/420-W57-SF_E23_4394_TrackSense_AppMobile/assets/97980855/a397cdc8-2ba6-4b02-94c0-f044d1f3d545)
+
+![TrackSenseAPK_QRcode](./Documentation/images/TrackSenseAPK_QRcode.png)
+
+Après avoir scanné le QR code, votre navigateur vous proposera de télécharger le fichier apk de l'application TrackSense. Cliquez sur "Télécharger" :
+
+![avertissement](./Documentation/images/avertissement.jpg)
+
+Votre navigateur internet pourrait vous indiquer que vos paramètres ne vous permettent pas d'installer des application provenant d'une source inconnue. Vous devrez modifier les paramètres de votre téléphone pour autoriser cela.
+
+![blocageNavigateur](./Documentation/images/blocageNavigateur.jpg)
+
+Vous trouverez plus de détails sur ces paramètres ici : https://developer.android.com/studio/publish?hl=fr#publishing-unknown
+
+Une fois que vous avez autorisé l'installation d'applications inconnues, sélectionnez le fichier que vous venez de télécharger pour lancer l'installation de l'application.
+
+![fichierTelecharge](./Documentation/images/fichierTelecharge.jpg)
+
+
+cliquez sur "Installer" puis patientez :
+
+![installation](./Documentation/images/installation.jpg)
+![installationEnCours](./Documentation/images/installationEnCours.jpg)
+
+L'application Google Play Protect pourrait bloquer l'installation. Dans ce cas, cliquer sur "Plus de détails", puis sur "Installer quand même".
+
+![blocageGoogle](./Documentation/images/blocageGoogle.jpg)
+![blocageGoogleDetails](./Documentation/images/blocageGoogleDetails.jpg)
+![installationTerminee](./Documentation/images/installationTerminee.jpg)
+
 
 Vous pouvez également télécharger l'APK à partir de ce lien : [https://github.com/DFC-Informatique-Cegep-de-Sainte-Foy/420-W57-SF_E23_4394_TrackSense_AppMobile/raw/main/Apk/com.companyname.tracksense.apk](url)
+
+
 
 # Fonctionnement de l'application
 L'application mobile permet de récupérer un trajet à partir de l'application embarquée et d'envoyer ce trajet vers l'API pour qu'il soit sauvegardé dans la base de données. Enfin, elle permet de consulter les trajets effectués.
