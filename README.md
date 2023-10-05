@@ -1,6 +1,13 @@
 # 420-W57-SF_E23_4394_TrackSense_AppMobile
 L'application mobile TrackSense permet de communiquer avec un objet connecté qui mesure votre position GPS et d'autres données sur vos trajets à vélo ou à pied. Les données d'un trajet peuvent être envoyées à l'application mobile via Bluetooth. L'application mobile permet d'enregistrer ces données dans une base de données. Elle permet aussi de consulter les informations sur vos trajets, notamment votre parcours dessiné sur une carte et des statistiques sur votre parcours.
 
+# Installer l'application mobile
+
+Pour installer l'application mobile, vous pouvez scanner ce QR code à partir de votre téléphone :
+![TrackSenseAPK_QRcode](https://github.com/DFC-Informatique-Cegep-de-Sainte-Foy/420-W57-SF_E23_4394_TrackSense_AppMobile/assets/97980855/a397cdc8-2ba6-4b02-94c0-f044d1f3d545)
+
+Vous pouvez également télécharger l'APK à partir de ce lien : [https://github.com/DFC-Informatique-Cegep-de-Sainte-Foy/420-W57-SF_E23_4394_TrackSense_AppMobile/raw/main/Apk/com.companyname.tracksense.apk](url)
+
 # Fonctionnement de l'application
 L'application mobile permet de récupérer un trajet à partir de l'application embarquée et d'envoyer ce trajet vers l'API pour qu'il soit sauvegardé dans la base de données. Enfin, elle permet de consulter les trajets effectués.
 
