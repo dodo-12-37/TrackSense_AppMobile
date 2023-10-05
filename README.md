@@ -5,7 +5,7 @@ L'application mobile TrackSense permet de communiquer avec un objet connecté qu
 
 L'application mobile n'a pas encore été publiée sur le Google Play Store et sur l'app Store. Les liens seront disponibles ici quand elle sera disponible sur ces plateformes.
 
-Pour installer l'application mobile, vous pouvez scanner ce QR code à partir de votre téléphone ou cliquer sur ce lien à partir de votre téléphone : [https://github.com/DFC-Informatique-Cegep-de-Sainte-Foy/420-W57-SF_E23_4394_TrackSense_AppMobile/raw/main/Apk/com.companyname.tracksense.apk](url):
+Pour installer l'application mobile, vous pouvez scanner ce QR code à partir de votre téléphone ou cliquer sur ce lien à partir de votre téléphone : [https://github.com/DFC-Informatique-Cegep-de-Sainte-Foy/420-W57-SF_E23_4394_TrackSense_AppMobile/releases/download/v1.0/com.companyname.tracksense.apk](url):
 
 ![TrackSenseAPK_QRcode](./Documentation/images/TrackSenseAPK_QRcode.png)
 
