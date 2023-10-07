@@ -110,38 +110,58 @@ namespace TrackSense.Services.Bluetooth
                 {
                     try
                     {
+                        // read stats and points
                         byte[] status = args.Characteristic.Value;
                         string statusString = Encoding.UTF8.GetString(status);
                         if (statusString == "sending" && !isBusy)
                         {
                             isBusy = true;
+                            IsReceiving = true;
                             byte[] rideBytes = await _dataCharacteristic.ReadAsync();
                             string rideMessage = Encoding.UTF8.GetString(rideBytes);
 
                             if (_completedRideDTO is null)
                             {
-                                IsReceiving = true;
                                 CompletedRideDTO completedRideDTO = new CompletedRideDTO(rideMessage);
 
-                                BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_STATS, completedRideDTO.ToEntity());
-                                observers.ForEach(o => o.OnNext(BTEventSendData));
+                                BluetoothEvent BTEventReceiveStats = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_STATS, completedRideDTO.ToEntity());
+                                observers.ForEach(o => o.OnNext(BTEventReceiveStats));
                                 this._completedRideDTO = completedRideDTO;
                                 Debug.WriteLine("Ride ajouté : " + completedRideDTO.CompletedRideId);
-                            }
-                            else
-                            {
-                                CompletedRidePointDTO pointDTO = new CompletedRidePointDTO(rideMessage);
-                                Entities.CompletedRidePoint completedRidePoint = pointDTO.ToEntity();
-                                BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_POINT, completedRidePoint);
-                                observers.ForEach(o => o.OnNext(BTEventSendData));
-                                Debug.WriteLine("Point ajouté : " + pointDTO.RideStep);
 
-                                bool isLastPoint = pointDTO.RideStep == _completedRideDTO.Statistics.NumberOfPoints;
-                                if (isLastPoint)
+                                while (this._completedRideDTO.CompletedRidePoints.Count != this._completedRideDTO.Statistics.NumberOfPoints)
                                 {
-                                    _completedRideDTO = null;
-                                    IsReceiving = false;
+                                    try
+                                    {
+                                        Debug.WriteLine("ReadAsync() un point");
+                                        rideBytes = await _dataCharacteristic.ReadAsync();
+                                        rideMessage = Encoding.UTF8.GetString(rideBytes);
+                                        int rideStep;
+                                        bool success = int.TryParse(rideMessage.Split(';')[0], out rideStep);
+
+                                        if (success)
+                                        {
+                                            CompletedRidePointDTO pointDTO = new CompletedRidePointDTO(rideMessage); // !
+                                            if (pointDTO.RideStep == this._completedRideDTO.CompletedRidePoints.Count + 1)
+                                            {
+                                                Entities.CompletedRidePoint completedRidePoint = pointDTO.ToEntity();
+
+                                                BluetoothEvent BTEventReceivePoint = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_POINT, completedRidePoint);
+                                                observers.ForEach(o => o.OnNext(BTEventReceivePoint));
+
+                                                this._completedRideDTO.CompletedRidePoints.Add(pointDTO);
+                                                Debug.WriteLine("Point ajouté : " + pointDTO.RideStep);
+                                            }
+                                        }
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Debug.WriteLine("Erreur lecture point : " + e.Message);
+                                    }
                                 }
+                                _completedRideDTO = null;
+                                IsReceiving = false;
+                                isBusy = false;
                             }
                         }
                     }
@@ -151,11 +171,7 @@ namespace TrackSense.Services.Bluetooth
                     }
                     catch (Exception e)
                     {
-                        Debug.WriteLine("Erreur callback : " + e.Message);
-                    }
-                    finally
-                    {
-                        isBusy = false;
+                        Debug.WriteLine("Une erreur est survenue pendant la réception du trajet : " + e.Message);
                     }
                 });
             };
@@ -185,18 +201,23 @@ namespace TrackSense.Services.Bluetooth
         internal async Task<bool> ConfirmRideStatsReception(int number)
         {
             byte[] confirmationString = Encoding.UTF8.GetBytes(number.ToString());
+            bool result = false;
+            Debug.WriteLine("Confirmation réception point #" + number);
 
             try
             {
-                Debug.WriteLine("Confirmation réception point #" + number);
-                bool result = await _notificationCharacteristic.WriteAsync(confirmationString);
+                while (!result)
+                {
+                    result = await _notificationCharacteristic.WriteAsync(confirmationString);
+                }
                 return result;
 
             }
             catch (Exception e)
             {
                 Debug.WriteLine("Erreur ConfirmRideStatsReception : " + e.Message);
-                throw e;
+                return result;
+                //throw e;
             }
         }
 
