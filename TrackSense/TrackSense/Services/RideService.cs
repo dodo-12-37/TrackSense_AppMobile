@@ -29,7 +29,7 @@ public class RideService
         _userLogin = "admin";
     }
 
-    internal async Task<bool> ReceiveRideDataFromDevice(CompletedRide rideData)
+    internal async Task ReceiveRideDataFromDevice(CompletedRide rideData)
     {
         if (rideData is null)
         {
@@ -39,7 +39,11 @@ public class RideService
         this._currentRide = rideData;
         this._currentRide.UserLogin = _userLogin;
 
-        return await this._bluetoothService.ConfirmRideStatsReception(0);
+        bool isConfirmed = false;
+        while (!isConfirmed) // politique de réessai
+        {
+            isConfirmed = await this._bluetoothService.ConfirmRideStatsReception(0);
+        }
     }
 
     internal async Task ReceivePointDataFromDevice(CompletedRidePoint ridePoint)
@@ -56,11 +60,15 @@ public class RideService
         {
             try
             {
-                bool isConfirmed = await this._bluetoothService.ConfirmRideStatsReception(ridePoint.RideStep);
+                bool isConfirmed = false;
+                while (!isConfirmed) // politique de réessai
+                {
+                    isConfirmed = await this._bluetoothService.ConfirmRideStatsReception(ridePoint.RideStep);
+                }
                 Debug.Write(ridePoint.RideStep);
                 if (isConfirmed)
                 {
-                    Debug.Write("Conrimation : point #" + ridePoint.RideStep);
+                    Debug.Write("Confirmation : point #" + ridePoint.RideStep);
                     this._currentRide.CompletedRidePoints.Add(ridePoint);
                     Debug.Write("Ajout point #" + ridePoint.RideStep);
                 }
@@ -70,19 +78,19 @@ public class RideService
                 Debug.WriteLine("Erreur confirmation : " + e.Message);
             }
         }
-        else if (ridePoint.RideStep == numberOfPointsReceived)
-        {
-            try
-            {
-                bool isConfirmed = await this._bluetoothService.ConfirmRideStatsReception(ridePoint.RideStep);
-                Debug.Write("Deuxieme confirmation : point #" + ridePoint.RideStep);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine("Erreur confirmation : " + e.Message);
-            }
+        //else if (ridePoint.RideStep == numberOfPointsReceived)
+        //{
+        //    try
+        //    {
+        //        bool isConfirmed = await this._bluetoothService.ConfirmRideStatsReception(ridePoint.RideStep);
+        //        Debug.Write("Deuxieme confirmation : point #" + ridePoint.RideStep);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Debug.WriteLine("Erreur confirmation : " + e.Message);
+        //    }
 
-        }
+        //}
 
         if (ridePoint.RideStep == totalNumberOfPoints)
         {
