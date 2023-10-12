@@ -1,5 +1,7 @@
-# 420-W57-SF_E23_4394_TrackSense_AppMobile
+# Application mobile TrackSense
 L'application mobile TrackSense permet de communiquer avec un objet connecté qui mesure votre position GPS et d'autres données sur vos trajets à vélo ou à pied. Les données d'un trajet peuvent être envoyées à l'application mobile via Bluetooth. L'application mobile permet d'enregistrer ces données dans une base de données. Elle permet aussi de consulter les informations sur vos trajets, notamment votre parcours dessiné sur une carte et des statistiques sur votre parcours.
+
+Vous trouverez une procédure d'installation et des détails sur la conceptidon de l'application dans le [wiki](../../wiki/).
 
 ![TrackSenseAppDemo](./Documentation/images/trackSenseAppDemo.gif)
 
