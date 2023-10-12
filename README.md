@@ -3,40 +3,6 @@ L'application mobile TrackSense permet de communiquer avec un objet connecté qu
 
 ![TrackSenseAppDemo](./Documentation/images/trackSenseAppDemo.gif)
 
-
-# Installer l'application mobile
-
-L'application mobile n'a pas encore été publiée sur le Google Play Store et sur l'app Store. Les liens seront disponibles ici quand elle sera disponible sur ces plateformes.
-
-Pour installer l'application mobile, vous pouvez scanner ce QR code à partir de votre téléphone ou cliquer sur ce lien à partir de votre téléphone : [https://github.com/DFC-Informatique-Cegep-de-Sainte-Foy/420-W57-SF_E23_4394_TrackSense_AppMobile/releases/download/v1.0/com.companyname.tracksense.apk](url):
-
-![TrackSenseAPK_QRcode](./Documentation/images/TrackSenseAPK_QRcode.png)
-
-Après avoir scanné le QR code, votre navigateur vous proposera de télécharger le fichier apk de l'application TrackSense. Cliquez sur "Télécharger" :
-
-![avertissement](./Documentation/images/avertissement.jpg)
-
-Votre navigateur internet pourrait vous indiquer que vos paramètres ne vous permettent pas d'installer des application provenant d'une source inconnue. Vous devrez modifier les paramètres de votre téléphone pour autoriser cela.
-
-![blocageNavigateur](./Documentation/images/blocageNavigateur.jpg)
-
-Vous trouverez plus de détails sur ces paramètres ici : https://developer.android.com/studio/publish?hl=fr#publishing-unknown
-
-Une fois que vous avez autorisé l'installation d'applications inconnues, sélectionnez le fichier que vous venez de télécharger pour lancer l'installation de l'application.
-
-![fichierTelecharge](./Documentation/images/fichierTelecharge.jpg)
-
-
-cliquez sur "Installer" puis patientez :
-
-![installation](./Documentation/images/installation.jpg)
-
-L'application Google Play Protect pourrait bloquer l'installation. Dans ce cas, cliquer sur "Plus de détails", puis sur "Installer quand même".
-
-![blocageGoogleDetails](./Documentation/images/blocageGoogleDetails.jpg)
-
-Une fois ces étapes terminée, l'application sera installée et vous pourrez la lancer.
-
 # Fonctionnement de l'application
 L'application mobile permet de récupérer un trajet à partir de l'application embarquée et d'envoyer ce trajet vers l'API pour qu'il soit sauvegardé dans la base de données. Enfin, elle permet de consulter les trajets effectués.
 
