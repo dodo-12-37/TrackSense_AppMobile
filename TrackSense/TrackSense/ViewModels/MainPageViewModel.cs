@@ -65,36 +65,6 @@ public partial class MainPageViewModel : BaseViewModel
         await this.GetCompletedRidesAsync();
     }
 
-    private void SimulateGetRideFromAPI()
-    {
-        TrackSense.Entities.CompletedRideSummary ride = new TrackSense.Entities.CompletedRideSummary()
-        {
-            CompletedRideId = Guid.NewGuid(),
-            PlannedRideName = "Faux trajet",
-            StartedAt = DateTime.Now,
-            Distance = 13,
-            Duration = TimeSpan.FromMinutes(48),
-        };
-
-        TrackSense.Entities.CompletedRideSummary ride2 = new TrackSense.Entities.CompletedRideSummary()
-        {
-            CompletedRideId = Guid.NewGuid(),
-            PlannedRideName = "Faux trajet",
-            StartedAt = DateTime.Now,
-            Distance = 23,
-            Duration = TimeSpan.FromMinutes(63),
-        };
-
-        CompletedRideSummaries.Add(new CompletedRideSummary(ride));
-        CompletedRideSummaries.Add(new CompletedRideSummary(ride2));
-    }
-
-    async private void SimulatePostRideToAPI()
-    {
-        Entities.CompletedRide completedRide = this.GenerateFakeCompletedRide();
-        await this.PostCompletedRideAsync(completedRide);
-
-    }
     [RelayCommand]
     async Task PostCompletedRideAsync(Entities.CompletedRide p_completedRide)
     {
@@ -160,7 +130,7 @@ public partial class MainPageViewModel : BaseViewModel
 
         try
         {
-            if (await CheckInternetConnexion())
+            if (await CheckInternetConnection())
             {
                 Entities.CompletedRide completedRide = await _rideService.GetCompletedRide(rideSummary.CompletedRideId);
                 //Entities.CompletedRide completedRide = GenerateFakeCompletedRide();
@@ -193,7 +163,7 @@ public partial class MainPageViewModel : BaseViewModel
         try
         {
 
-            if (await CheckInternetConnexion())
+            if (await CheckInternetConnection())
             {
                 IsBusy = true;
                 IsRefreshing = true;
@@ -228,7 +198,7 @@ public partial class MainPageViewModel : BaseViewModel
         }
     }
 
-    private async Task<bool> CheckInternetConnexion()
+    private async Task<bool> CheckInternetConnection()
     {
         bool internetIsAvailable = _connectivity.NetworkAccess == NetworkAccess.Internet;
 
@@ -239,166 +209,4 @@ public partial class MainPageViewModel : BaseViewModel
 
         return internetIsAvailable;
     }
-
-    [RelayCommand]
-    async Task SimulateRideReceptionAsync()
-    {
-        this._bluetoothService.SimulateRideReception();
-    }
-
-    [RelayCommand]
-    async Task SimulatePointsReceptionAsync()
-    {
-        this._bluetoothService.SimulatePointsReception();
-    }
-
-    #region DEBUG
-    private Entities.CompletedRide GenerateFakeCompletedRide()
-    {
-        var rideId = Guid.NewGuid();
-        return new Entities.CompletedRide()
-        {
-            UserLogin = "debug",
-            CompletedRideId = rideId,
-            CompletedRidePoints = new List<Entities.CompletedRidePoint>()
-            {
-                new Entities.CompletedRidePoint()
-                {
-                    RideStep = 1,
-                    Location = new Location()
-                    {
-                        Latitude = 46.785014,
-                        Longitude = -71.286721,
-                        Altitude = 0,
-                        Speed = 16,
-
-                        Timestamp = DateTime.Now.AddSeconds(3)
-                    },
-                    Temperature = 23.4,
-                    EffectiveTime = TimeSpan.FromMinutes(1)
-                }/*,
-                new Entities.CompletedRidePoint()
-                {
-                    RideStep = 2,
-                    Location = new Location()
-                    {
-                        Latitude = 46.785474,
-                        Longitude = -71.285702,
-                        Altitude = 12,
-                        Speed = 6,
-
-                        Timestamp = DateTime.Now.AddSeconds(6)
-                    },
-                    Temperature = 23.5,
-                    EffectiveTime = TimeSpan.FromMinutes(1)
-                },
-                new Entities.CompletedRidePoint()
-                {
-                    RideStep = 3,
-                    Location = new Location()
-                    {
-                        Latitude = 46.785506,
-                        Longitude = -71.284882,
-                        Altitude = 12,
-                        Speed = 10,
-
-                        Timestamp = DateTime.Now.AddSeconds(9)
-                    },
-                    Temperature = 23.5,
-                    EffectiveTime = TimeSpan.FromMinutes(1)
-                },
-                new Entities.CompletedRidePoint()
-                {
-                    RideStep = 4,
-                    Location = new Location()
-                    {
-                        Latitude = 46.785222,
-                        Longitude = -71.284562,
-                        Altitude = 0,
-                        Speed = 12,
-
-                        Timestamp = DateTime.Now.AddSeconds(12)
-                    },
-                    Temperature = 23.4,
-                    EffectiveTime = TimeSpan.FromMinutes(1)
-                },
-                new Entities.CompletedRidePoint()
-                {
-                    RideStep = 5,
-                    Location = new Location()
-                    {
-                        Latitude = 46.785855,
-                        Longitude = -71.282086,
-                        Altitude = 12,
-                        Speed = 15,
-
-                        Timestamp = DateTime.Now.AddSeconds(16)
-                    },
-                    Temperature = 23.5,
-                    EffectiveTime = TimeSpan.FromMinutes(1)
-                },
-                new Entities.CompletedRidePoint()
-                {
-                    RideStep = 6,
-                    Location = new Location()
-                    {
-                        Latitude = 46.785722,
-                        Longitude = -71.281048,
-                        Altitude = 12,
-                        Speed = 17,
-
-                        Timestamp = DateTime.Now.AddSeconds(19)
-                    },
-                    Temperature = 23.5,
-                    EffectiveTime = TimeSpan.FromMinutes(1)
-                },
-                new Entities.CompletedRidePoint()
-                {
-                    RideStep = 7,
-                    Location = new Location()
-                    {
-                        Latitude = 46.786405,
-                        Longitude = -71.279496,
-                        Altitude = 0,
-                        Speed = 5,
-                        Accuracy = 0,
-                        Timestamp = DateTime.Now.AddSeconds(23)
-                    },
-                    Temperature = 23.4,
-                    EffectiveTime = TimeSpan.FromMinutes(1)
-                },
-                new Entities.CompletedRidePoint()
-                {
-                    RideStep = 8,
-                    Location = new Location()
-                    {
-                        Latitude = 46.786886,
-                        Longitude = -71.277390,
-                        Altitude = 12,
-                        Speed = 13,
-
-                        Timestamp = DateTime.Now.AddSeconds(27)
-                    },
-                    Temperature = 23.5,
-                    EffectiveTime = TimeSpan.FromMinutes(1)
-                },
-                new Entities.CompletedRidePoint()
-                {
-                    RideStep = 9,
-                    Location = new Location()
-                    {
-                        Latitude = 46.785694,
-                        Longitude = -71.276348,
-                        Altitude = 12,
-                        Speed = 12,
-                        Timestamp = DateTime.Now.AddSeconds(30)
-                    },
-                    Temperature = 23.5,
-                    EffectiveTime = TimeSpan.FromMinutes(1)
-                }*/
-            }
-           
-        };
-    }
-    #endregion
 }
