@@ -117,7 +117,7 @@ namespace TrackSense.ViewModels
                     this.ConnectedDevice = this.NearbyDevices.SingleOrDefault(d => d.Id == device.Id);
                     if (this.ConnectedDevice is not null)
                     {
-                        this.ConnectedDevice.isConnected = true;
+                        this.ConnectedDevice.IsConnected = true;
                     }
                 }
                 await Shell.Current.Navigation.PopAsync();

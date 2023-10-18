@@ -42,7 +42,7 @@ public class RideService
         bool isConfirmed = false;
         while (!isConfirmed) // politique de réessai
         {
-            isConfirmed = await this._bluetoothService.ConfirmRideStatsReception(0);
+            isConfirmed = await this._bluetoothService.ConfirmRideDataReception(0);
         }
     }
 
@@ -61,9 +61,9 @@ public class RideService
             try
             {
                 bool isConfirmed = false;
-                while (!isConfirmed) // politique de réessai
+                while (!isConfirmed) // politique de réessai à ajouter
                 {
-                    isConfirmed = await this._bluetoothService.ConfirmRideStatsReception(ridePoint.RideStep);
+                    isConfirmed = await this._bluetoothService.ConfirmRideDataReception(ridePoint.RideStep);
                 }
                 Debug.Write(ridePoint.RideStep);
                 if (isConfirmed)
@@ -78,35 +78,21 @@ public class RideService
                 Debug.WriteLine("Erreur confirmation : " + e.Message);
             }
         }
-        //else if (ridePoint.RideStep == numberOfPointsReceived)
-        //{
-        //    try
-        //    {
-        //        bool isConfirmed = await this._bluetoothService.ConfirmRideStatsReception(ridePoint.RideStep);
-        //        Debug.Write("Deuxieme confirmation : point #" + ridePoint.RideStep);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Debug.WriteLine("Erreur confirmation : " + e.Message);
-        //    }
-
-        //}
 
         if (ridePoint.RideStep == totalNumberOfPoints)
         {
-            _rideData.AddCompletedRide(this._currentRide);
-            await this.PostCompletedRideAsync(this._currentRide);
-            _currentRide = null;
+            this._rideData.AddCompletedRide(this._currentRide);
+            HttpResponseMessage result = await this.PostCompletedRideAsync(this._currentRide);
+            if (result.IsSuccessStatusCode)
+            {
+                this._rideData.DeleteCompletedRideById(this._currentRide.CompletedRideId);
+            }
+            this._currentRide = null;
         }
     }
 
     public async Task<List<CompletedRideSummary>> GetUserCompletedRides()
     {
-        //if (_completedRides?.Count > 0)
-        //{
-        //    return _completedRides;
-        //}
-
         if (_completedRides.Count != 0)
         {
             _completedRides.Clear();
@@ -145,7 +131,6 @@ public class RideService
         return summaries;
     }
 
-
     internal async Task<HttpResponseMessage> PostCompletedRideAsync(CompletedRide p_completedRide)
     {
         try
@@ -165,20 +150,16 @@ public class RideService
 
             if (response.IsSuccessStatusCode)
             {
-                // Request was successful, you can handle it accordingly
                 return response;
             }
             else
             {
-                // Handle different HTTP status codes here, e.g., client errors or server errors
-                // You can throw specific exceptions or log messages based on the status code
                 Console.WriteLine($"HTTP Error: {response.StatusCode}");
                 throw new HttpRequestException($"HTTP Error: {response.StatusCode}");
             }
         }
         catch (Exception ex)
         {
-            // Handle exceptions (e.g., serialization errors) here
             Console.WriteLine($"An error occurred: {ex.Message}");
             throw;
         }

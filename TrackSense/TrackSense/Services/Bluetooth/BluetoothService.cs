@@ -57,7 +57,7 @@ namespace TrackSense.Services.Bluetooth
                     TrackSenseDevice bleDevice = new TrackSenseDevice()
                     {
                         Name = device.Name,
-                        isConnected = device.State == DeviceState.Connected,
+                        IsConnected = device.State == DeviceState.Connected,
                         Id = device.Id,
                         Address = device.NativeDevice.ToString()
                     };
@@ -198,11 +198,12 @@ namespace TrackSense.Services.Bluetooth
             observers.Add(observer);
             return new UnsubscriberBluetooth(observers, observer);
         }
-        internal async Task<bool> ConfirmRideStatsReception(int number)
+
+        internal async Task<bool> ConfirmRideDataReception(int rideStepNumber)
         {
-            byte[] confirmationString = Encoding.UTF8.GetBytes(number.ToString());
+            byte[] confirmationString = Encoding.UTF8.GetBytes(rideStepNumber.ToString());
             bool result = false;
-            Debug.WriteLine("Confirmation réception point #" + number);
+            Debug.WriteLine("Confirmation réception point #" + rideStepNumber);
 
             try
             {
@@ -222,32 +223,6 @@ namespace TrackSense.Services.Bluetooth
         }
 
         #region DEBUG
-
-        public void SimulateRideReception()
-        {
-            Guid randomGuid = Guid.NewGuid();
-            Guid plannedRideID = new Guid("00000000-0000-0000-0000-000000000000");
-            string rideMessage = $"{randomGuid};{plannedRideID};30.12;18.65;2023-09-03T14:30:00;2023-09-03T16:30:00;00:45:00;32;2;0";
-            CompletedRideDTO completedRideDTO = new CompletedRideDTO(rideMessage);
-
-            BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_STATS, completedRideDTO.ToEntity());
-            observers.ForEach(o => o.OnNext(BTEventSendData));
-        }
-
-        public void SimulatePointsReception()
-        {
-            Shell.Current.DisplayAlert("Réception de points", "Les points vont arriver", "Ok");
-            string ridePoint1 = "1;71.8393483920;81.293029273720;71;21.23;19.28;2023-09-03T14:33:00;00:03:00";
-            string ridePoint2 = "2;72.8393483920;82.293029273720;72;21.22;19.22;2023-09-03T14:35:00;00:05:00";
-
-            CompletedRidePointDTO pointDTO1 = new CompletedRidePointDTO(ridePoint1);
-            BluetoothEvent BTEventSendData = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_POINT, pointDTO1.ToEntity());
-            observers.ForEach(o => o.OnNext(BTEventSendData));
-
-            CompletedRidePointDTO pointDTO2 = new CompletedRidePointDTO(ridePoint2);
-            BluetoothEvent BTEventSendData2 = new BluetoothEvent(BluetoothEventType.SENDING_RIDE_POINT, pointDTO2.ToEntity());
-            observers.ForEach(o => o.OnNext(BTEventSendData2));
-        }
 
         public async void DisconnectDevice()
         {
