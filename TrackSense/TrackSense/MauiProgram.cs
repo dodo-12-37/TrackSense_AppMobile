@@ -8,6 +8,8 @@ using TrackSense.Data;
 using TrackSense.Entities;
 using TrackSense.Services.Bluetooth;
 using SkiaSharp.Views.Maui.Controls.Hosting;
+using System.Reflection;
+using TrackSense.Configurations;
 
 namespace TrackSense
 {
@@ -31,6 +33,7 @@ namespace TrackSense
             builder.Services.AddSingleton<IBluetoothLE>(CrossBluetoothLE.Current);
             builder.Services.AddSingleton<IAdapter>(CrossBluetoothLE.Current.Adapter);
             builder.Services.AddSingleton<IConnectivity>(Connectivity.Current);
+            builder.Services.AddSingleton<IConfigurationManager, ConfigurationManager>();
 
             builder.Services.AddSingleton<ICompletedRideLocalData, RideData>();
 
