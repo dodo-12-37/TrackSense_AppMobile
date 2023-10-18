@@ -145,7 +145,8 @@ public class RideService
 
             CompletedRideDTO completedRideDTO = new CompletedRideDTO(p_completedRide);
 
-            string url = "https://binhnguyen05-001-site1.atempurl.com/api/CompletedRides";
+            Settings userSettings = _config.LoadSettings();
+            string url = $"{userSettings.ApiUrl}CompletedRides";
 
             var content = new StringContent(JsonConvert.SerializeObject(completedRideDTO), Encoding.UTF8, "application/json");
 
@@ -175,8 +176,8 @@ public class RideService
         {
             throw new ArgumentNullException(nameof(completedRideId));
         }
-
-        string url = $"https://binhnguyen05-001-site1.atempurl.com/api/CompletedRides/{completedRideId}";
+        Settings userSettings = _config.LoadSettings();
+        string url = $"{userSettings.ApiUrl}CompletedRides/{completedRideId}";
 
         var response = await httpClient.GetAsync(url);
 
