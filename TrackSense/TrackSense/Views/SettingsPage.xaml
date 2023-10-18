@@ -5,7 +5,7 @@
              xmlns:viewmodel="clr-namespace:TrackSense.ViewModels"
              Title="{Binding Title}">
     <VerticalStackLayout>
-        <Grid RowDefinitions="*,*"
+        <Grid RowDefinitions="*,*,*,*,*,*"
               RowSpacing="10"
               Padding="20">
             <Button 
@@ -14,6 +14,34 @@
             <Button Grid.Row="1"
                 Text="Déconnecter TrackSense"
                 Command="{Binding DisconnectFromDeviceCommand}" />
+            <Button Grid.Row="2"
+                    Text="Modifier URL d'API"
+                    Command="{Binding DisplayApiUrlOptionsCommand}" />
+            <Grid Grid.Row="3"
+                  x:Name="apiUrlOptions"
+                  ColumnDefinitions="*,auto"
+                  IsVisible="false">
+                <Editor Grid.Column="0"
+                        x:Name="apiUrlEditor"
+                        Placeholder="Saisissez votre URL d'API"/>
+                <Button Grid.Column="1"
+                        Text="Ok"
+                        Command="{Binding ChangeApiUrlCommand}" />
+            </Grid>
+            <Button Grid.Row="4"
+                    Text="Modifier nom d'utilisateur"
+                    Command="{Binding DisplayUsernameOptionsCommand}" />
+            <Grid Grid.Row="5"
+                  x:Name="usernameOptions"
+                  ColumnDefinitions="*,auto"
+                  IsVisible="false">
+                <Editor Grid.Column="0"
+                        x:Name="usernameEditor"
+                        Placeholder="Saisissez votre username"/>
+                <Button Grid.Column="1"
+                        Text="Ok"
+                        Command="{Binding ChangeUsernameCommand}" />
+            </Grid>
         </Grid>
     </VerticalStackLayout>
 </ContentPage>

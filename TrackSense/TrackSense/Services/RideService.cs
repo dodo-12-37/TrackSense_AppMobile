@@ -9,6 +9,7 @@ using System.Text;
 using TrackSense.Entities;
 using TrackSense.Services.Bluetooth;
 using TrackSense.Services.API.APIDTO;
+using TrackSense.Configurations;
 
 namespace TrackSense.Services;
 
@@ -20,13 +21,15 @@ public class RideService
     List<CompletedRideSummary> _completedRides = new();
     HttpClient httpClient;
     string _userLogin;
+    IConfigurationManager _config;
 
-    public RideService(ICompletedRideLocalData rideData, BluetoothService bluetoothService)
+    public RideService(ICompletedRideLocalData rideData, BluetoothService bluetoothService, IConfigurationManager config)
     {
         _rideData = rideData;
         _bluetoothService = bluetoothService;
         httpClient = new HttpClient();
         _userLogin = "admin";
+        _config = config;
     }
 
     internal async Task ReceiveRideDataFromDevice(CompletedRide rideData)
@@ -97,8 +100,8 @@ public class RideService
         {
             _completedRides.Clear();
         }
-
-        string url = $"https://binhnguyen05-001-site1.atempurl.com/api/users/{this._userLogin}/completedRides";
+        Settings userSettings = _config.LoadSettings();
+        string url = $"{userSettings.ApiUrl}users/{userSettings.Username}/completedRides";
 
         var response = await httpClient.GetAsync(url);
 

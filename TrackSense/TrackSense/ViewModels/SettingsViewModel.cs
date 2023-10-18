@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using TrackSense.Configurations;
 using TrackSense.Entities;
 using TrackSense.Services;
 using TrackSense.Services.Bluetooth;
@@ -14,12 +16,14 @@ namespace TrackSense.ViewModels
     {
         RideService _rideService;
         BluetoothService _bluetoothService;
+        IConfigurationManager _configuration;
 
-        public SettingsViewModel(RideService rideService, BluetoothService bluetoothService)
+        public SettingsViewModel(RideService rideService, BluetoothService bluetoothService, IConfigurationManager configurationManager)
         {
             Title = "Paramètres";
             _rideService = rideService;
             _bluetoothService = bluetoothService;
+            _configuration = configurationManager;
         }
 
         [RelayCommand]
@@ -39,6 +43,81 @@ namespace TrackSense.ViewModels
         async Task DisconnectFromDeviceAsync()
         {
             this._bluetoothService.DisconnectDevice();
+        }
+
+        [RelayCommand]
+        async Task DisplayApiUrlOptionsAsync()
+        {
+            Settings settings = _configuration.LoadSettings();
+            Shell.Current.CurrentPage.FindByName<Editor>("apiUrlEditor").Text = settings.ApiUrl;
+            Shell.Current.CurrentPage.FindByName<Grid>("apiUrlOptions").IsVisible = true;
+        }
+
+        [RelayCommand]
+        async Task ChangeApiUrlAsync()
+        {
+            string modifiedApiUrl = Shell.Current.CurrentPage.FindByName<Editor>("apiUrlEditor").Text;
+
+            Uri uriResult;
+            bool uriIsValid = Uri.TryCreate(modifiedApiUrl, UriKind.Absolute, out uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+            if (!uriIsValid)
+            {
+                await Shell.Current.DisplayAlert("Oups", "Le format de votre URL n'est pas valide", "Ok");
+                return;
+            }
+
+            Settings settings = _configuration.LoadSettings();
+
+            if (modifiedApiUrl != settings.ApiUrl)
+            {
+                settings.ApiUrl = modifiedApiUrl;
+
+                _configuration.SaveSettings(settings);
+
+                await Shell.Current.DisplayAlert("Modification URL", $"Modification de l'URL de l'API pour {modifiedApiUrl}", "Ok");
+            }
+
+
+            Shell.Current.CurrentPage.FindByName<Grid>("apiUrlOptions").IsVisible = false;
+
+        }
+
+        [RelayCommand]
+        async Task DisplayUsernameOptionsAsync()
+        {
+            Settings settings = _configuration.LoadSettings();
+            Shell.Current.CurrentPage.FindByName<Editor>("usernameEditor").Text = settings.Username;
+            Shell.Current.CurrentPage.FindByName<Grid>("usernameOptions").IsVisible = true;
+        }
+
+        [RelayCommand]
+        async Task ChangeUsernameAsync()
+        {
+            string modifiedUsername = Shell.Current.CurrentPage.FindByName<Editor>("usernameEditor").Text;
+
+            string pattern = @"[^a-zA-Z0-9à-ÿ_\-]"; // Allow letters, digits, underscores, hyphens, and accented characters
+
+            string sanitizedUsername = Regex.Replace(modifiedUsername, pattern, "");
+
+            if (String.IsNullOrWhiteSpace(sanitizedUsername))
+            {
+                await Shell.Current.DisplayAlert("Oups", "Le format de votre nom utilisateur n'est pas valide", "Ok");
+                return;
+            }
+
+            Settings settings = _configuration.LoadSettings();
+
+            if (sanitizedUsername != settings.Username)
+            {
+                settings.Username = sanitizedUsername;
+
+                _configuration.SaveSettings(settings);
+
+                await Shell.Current.DisplayAlert("Modification URL", $"Votre nom d'utilisateur a été modifié pour {sanitizedUsername}", "Ok");
+            }
+
+
+            Shell.Current.CurrentPage.FindByName<Grid>("usernameOptions").IsVisible = false;
         }
     }
 }
