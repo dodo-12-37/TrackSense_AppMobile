@@ -31,5 +31,23 @@ namespace TrackSense.Services
             return await httpClient.PostAsJsonAsync(url, userDTO);
         }
 
+        public async Task<bool> IsUserLoginAvailable(string userLogin)
+        {
+            Settings userSettings = _config.LoadSettings();
+            string url = $"{userSettings.ApiUrl}Users/availibityLogin/?p_userLogin={userLogin}";
+
+            var response = await httpClient.GetAsync(url);
+
+            if (response.IsSuccessStatusCode)
+            {
+                AvailabilityDTO availabilityDTO = response.Content.ReadFromJsonAsync<AvailabilityDTO>().Result;
+                return availabilityDTO.IsAvailable;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
     }
 }

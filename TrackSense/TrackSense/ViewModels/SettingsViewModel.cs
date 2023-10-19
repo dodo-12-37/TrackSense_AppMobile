@@ -161,6 +161,12 @@ namespace TrackSense.ViewModels
                 return;
             }
 
+            if (!await _userService.IsUserLoginAvailable(sanitizedUsername))
+            {
+                await Shell.Current.DisplayAlert("Oups", "Ce nom utilisateur existe déjà", "Ok");
+                return;
+            }
+
             User user = new User()
             {
                 UserLogin = sanitizedUsername,
