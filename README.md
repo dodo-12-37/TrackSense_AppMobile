@@ -9,41 +9,6 @@ Vous trouverez une procédure d'installation et des détails sur la conception d
 
 ![TrackSenseAppDemo](./Documentation/images/trackSenseAppDemo.gif)
 
-# Fonctionnement de l'application
-L'application mobile permet de récupérer un trajet à partir de l'application embarquée et d'envoyer ce trajet vers l'API pour qu'il soit sauvegardé dans la base de données. Enfin, elle permet de consulter les trajets effectués.
-
-## Page principale
-Les trajets enregistrés dans la base de données sont affichés sur la page d'accueil. Chaque trajet est affiché dans un rectangle contenant des informations sommaires sur le trajet (date, distance, nom du trajet planifié).
-
-Pour récupérer les trajets enregistrés dans la base de données, il suffit de tirer l'écran vers le bas.
-
-Si aucun trajet n'est présent dans la base de données ou si vous n'êtes pas connecté à internet, aucun trajet ne pourra s'afficher.
-
-![pageNoData](https://github.com/DFC-Informatique-Cegep-de-Sainte-Foy/420-W57-SF_E23_4394_TrackSense_AppMobile/assets/97980855/6f537e51-ce7b-48ac-888c-ecffccb31b45)
-
-
-Dans la barre d'outils, un bouton nommé TrackSense permet de passer à la page de connexion au TrackSense. Un autre bouton permet d'accéder aux paramètres de l'application.
-
-## Page de connexion Bluetooth
-Cette page est accessible en appuyant sur le bouton TrackSense de la page d'accueil. Dès la navigation, un scan d'une durée de une seconde est effectué, à l'issu duquel les appareil TrackSense à proximité sont affichés.
-
-En cliquant sur un appareil, on peut s'y connecter. Si la connexion est établie, l'application mobile retourne à la page d'accueil.
-
-Si un trajet a été effectué et est enregistré dans la mémoire du TrackSense, il sera envoyé automatiquement vers l'application mobile. Un bandeau s'affichera sur la page d'accueil le temps du transfert afin de demander à l'utilisateur de ne pas éteindre son TrackSense.
-
-![pullingConnexionBT](https://github.com/DFC-Informatique-Cegep-de-Sainte-Foy/420-W57-SF_E23_4394_TrackSense_AppMobile/assets/97980855/49d711a5-d710-4780-90c4-9dcaedf23c9d)
-
-
-## Détails d'un trajet
-En appuyant sur un trajet depuis la page d'accueil on navigue vers la page **Statistiques** qui permet de consulter des informations détaillées sur le trajet sélectionné.
-
-![pageDetailsTrajet](https://github.com/DFC-Informatique-Cegep-de-Sainte-Foy/420-W57-SF_E23_4394_TrackSense_AppMobile/assets/97980855/b32ff9aa-42a0-4898-90db-88ae2bc4d64b)
-
-## Paramètres
-La page **Paramètres** permet de configurer l'appareil TrackSense et l'application mobile
-
-![Screenshot_20230930-181129](https://github.com/DFC-Informatique-Cegep-de-Sainte-Foy/420-W57-SF_E23_4394_TrackSense_AppMobile/assets/97980855/9b76068a-a0bb-4f3b-a8d7-8c8d94e9931e)
-
 # Bibliothèques
 - Bluetooth: [dotnet-bluetooth-le](https://github.com/dotnet-bluetooth-le/dotnet-bluetooth-le/tree/master)
 - Carte: [Mapsui](http://mapsui.com/documentation/getting-started-maui.html)
