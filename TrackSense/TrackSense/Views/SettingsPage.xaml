@@ -5,7 +5,7 @@
              xmlns:viewmodel="clr-namespace:TrackSense.ViewModels"
              Title="{Binding Title}">
     <VerticalStackLayout>
-        <Grid RowDefinitions="*,*,*,*,*,*"
+        <Grid RowDefinitions="*,*,*,*,*,*,*,*"
               RowSpacing="10"
               Padding="20">
             <Button 
@@ -29,9 +29,23 @@
                         Command="{Binding ChangeApiUrlCommand}" />
             </Grid>
             <Button Grid.Row="4"
-                    Text="Modifier nom d'utilisateur"
-                    Command="{Binding DisplayUsernameOptionsCommand}" />
+                    Text="Créer un compte"
+                    Command="{Binding DisplayAccountOptionsCommand}" />
             <Grid Grid.Row="5"
+                  x:Name="accountOptions"
+                  ColumnDefinitions="*,auto"
+                  IsVisible="false">
+                <Editor Grid.Column="0"
+                        x:Name="accountEditor"
+                        Placeholder="Saisissez votre username"/>
+                <Button Grid.Column="1"
+                        Text="Ok"
+                        Command="{Binding CreateAccountCommand}" />
+            </Grid>
+            <Button Grid.Row="6"
+                    Text="Changer de compte"
+                    Command="{Binding DisplayUsernameOptionsCommand}" />
+            <Grid Grid.Row="7"
                   x:Name="usernameOptions"
                   ColumnDefinitions="*,auto"
                   IsVisible="false">

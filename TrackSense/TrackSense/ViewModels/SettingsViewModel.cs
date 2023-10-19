@@ -15,14 +15,16 @@ namespace TrackSense.ViewModels
     public partial class SettingsViewModel : BaseViewModel
     {
         RideService _rideService;
+        UserService _userService;
         BluetoothService _bluetoothService;
         IConfigurationManager _configuration;
 
-        public SettingsViewModel(RideService rideService, BluetoothService bluetoothService, IConfigurationManager configurationManager)
+        public SettingsViewModel(RideService rideService, BluetoothService bluetoothService, UserService userService, IConfigurationManager configurationManager)
         {
             Title = "Paramètres";
             _rideService = rideService;
             _bluetoothService = bluetoothService;
+            _userService = userService;
             _configuration = configurationManager;
         }
 
@@ -118,6 +120,54 @@ namespace TrackSense.ViewModels
 
 
             Shell.Current.CurrentPage.FindByName<Grid>("usernameOptions").IsVisible = false;
+        }
+
+        [RelayCommand]
+        async Task DisplayAccountOptionsAsync()
+        {
+            Settings settings = _configuration.LoadSettings();
+            Shell.Current.CurrentPage.FindByName<Grid>("accountOptions").IsVisible = true;
+        }
+
+        [RelayCommand]
+        async Task CreateAccountAsync()
+        {
+            string accountUsername = Shell.Current.CurrentPage.FindByName<Editor>("accountEditor").Text;
+
+            string pattern = @"[^a-zA-Z0-9à-ÿ_\-]"; // Allow letters, digits, underscores, hyphens, and accented characters
+
+            string sanitizedUsername = Regex.Replace(accountUsername, pattern, "");
+
+            if (String.IsNullOrWhiteSpace(sanitizedUsername))
+            {
+                await Shell.Current.DisplayAlert("Oups", "Le format de votre nom utilisateur n'est pas valide", "Ok");
+                return;
+            }
+
+            User user = new User()
+            {
+                UserLogin = sanitizedUsername,
+                Password = sanitizedUsername,
+                PasswordConfirmed = sanitizedUsername,
+                Email = "sanitizedUsername@email.com",
+                FirstName = "sanitizedUsername",
+                LastName = "sanitizedUsername"
+            };
+
+            HttpResponseMessage response = await _userService.CreateUser(user);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                await Shell.Current.DisplayAlert("Création de compte", $"Une erreur est survenue lors de la création de votre compte. Le nom d'utilisateur existe déjà ou le format n'est pas valide", "Ok");
+                return;
+            }
+
+            Settings userSettings = _configuration.LoadSettings();
+            userSettings.Username = sanitizedUsername;
+            _configuration.SaveSettings(userSettings);
+
+            await Shell.Current.DisplayAlert("Création de compte", $"Votre compte a été créé avec succès. Vous êtes connecté en tant que {sanitizedUsername}", "Ok");
+            Shell.Current.CurrentPage.FindByName<Grid>("accountOptions").IsVisible = false;
         }
     }
 }
