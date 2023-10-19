@@ -20,7 +20,6 @@ public class RideService
     CompletedRide _currentRide;
     List<CompletedRideSummary> _completedRides = new();
     HttpClient httpClient;
-    string _userLogin;
     IConfigurationManager _config;
 
     public RideService(ICompletedRideLocalData rideData, BluetoothService bluetoothService, IConfigurationManager config)
@@ -28,7 +27,6 @@ public class RideService
         _rideData = rideData;
         _bluetoothService = bluetoothService;
         httpClient = new HttpClient();
-        _userLogin = "admin";
         _config = config;
     }
 
@@ -40,7 +38,8 @@ public class RideService
         }
 
         this._currentRide = rideData;
-        this._currentRide.UserLogin = _userLogin;
+        Settings userSettings = _config.LoadSettings();
+        this._currentRide.UserLogin = userSettings.Username;
 
         bool isConfirmed = false;
         while (!isConfirmed) // politique de réessai
