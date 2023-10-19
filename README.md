@@ -2,12 +2,16 @@
 
 > Ce dépôt fait parti du projet [TrackSense](https://github.com/DFC-Informatique-Cegep-de-Sainte-Foy/TrackSense) développé par des étudiants du programme [Techniques de l'informatique - Programmation, bases de données et serveurs](https://dfc.csfoy.ca/retourner-aux-etudes/programmes-a-temps-plein/informatique/techniques-de-linformatique-programmation-bases-de-donnees-et-serveurs-dec-accelere/) du cégep de Ste-Foy, dans le cadre de leur projet de synthèse.
 
-
-L'application mobile TrackSense permet de communiquer avec un objet connecté qui mesure votre position GPS et d'autres données sur vos trajets à vélo ou à pied. Les données d'un trajet peuvent être envoyées à l'application mobile via Bluetooth. L'application mobile permet d'enregistrer ces données dans une base de données. Elle permet aussi de consulter les informations sur vos trajets, notamment votre parcours dessiné sur une carte et des statistiques sur votre parcours.
+<div style="display: flex; align-items: center;">
+  <div style="flex: 1; padding: 0 20px;">
+    L'application mobile TrackSense permet de communiquer avec un objet connecté qui mesure votre position GPS et d'autres données sur vos trajets à vélo ou à pied. Les données d'un trajet peuvent être envoyées à l'application mobile via Bluetooth. L'application mobile permet d'enregistrer ces données dans une base de données. Elle permet aussi de consulter les informations sur vos trajets, notamment votre parcours dessiné sur une carte et des statistiques sur votre parcours.<br><br>
 
 Vous trouverez une procédure d'installation et des détails sur la conception de l'application dans le [wiki](../../wiki/).
-
-![TrackSenseAppDemo](./Documentation/images/trackSenseAppDemo.gif)
+  </div>
+  <div style="flex: 1; text-align: center;">
+    <img src="./Documentation/images/trackSenseAppDemo.gif" alt="TrackSenseAppDemo" style="max-width: 60%; height: auto;">
+  </div>
+</div>
 
 # Bibliothèques
 - Bluetooth: [dotnet-bluetooth-le](https://github.com/dotnet-bluetooth-le/dotnet-bluetooth-le/tree/master)
