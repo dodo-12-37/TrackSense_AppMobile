@@ -21,8 +21,9 @@
                   x:Name="apiUrlOptions"
                   ColumnDefinitions="*,auto"
                   IsVisible="false">
-                <Editor Grid.Column="0"
-                        x:Name="apiUrlEditor"
+                <Entry Grid.Column="0"
+                        x:Name="apiUrlEntry"
+                        Keyboard="Url"
                         Placeholder="Saisissez votre URL d'API"/>
                 <Button Grid.Column="1"
                         Text="Ok"
@@ -35,8 +36,8 @@
                   x:Name="accountOptions"
                   ColumnDefinitions="*,auto"
                   IsVisible="false">
-                <Editor Grid.Column="0"
-                        x:Name="accountEditor"
+                <Entry Grid.Column="0"
+                        x:Name="accountEntry"
                         Placeholder="Saisissez votre username"/>
                 <Button Grid.Column="1"
                         Text="Ok"
@@ -49,8 +50,8 @@
                   x:Name="usernameOptions"
                   ColumnDefinitions="*,auto"
                   IsVisible="false">
-                <Editor Grid.Column="0"
-                        x:Name="usernameEditor"
+                <Entry Grid.Column="0"
+                        x:Name="usernameEntry"
                         Placeholder="Saisissez votre username"/>
                 <Button Grid.Column="1"
                         Text="Ok"

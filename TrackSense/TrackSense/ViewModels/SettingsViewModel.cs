@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Maui.Core.Platform;
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,14 +52,16 @@ namespace TrackSense.ViewModels
         async Task DisplayApiUrlOptionsAsync()
         {
             Settings settings = _configuration.LoadSettings();
-            Shell.Current.CurrentPage.FindByName<Editor>("apiUrlEditor").Text = settings.ApiUrl;
-            Shell.Current.CurrentPage.FindByName<Grid>("apiUrlOptions").IsVisible = true;
+            Grid apiUrlOptions = Shell.Current.CurrentPage.FindByName<Grid>("apiUrlOptions");
+            Shell.Current.CurrentPage.FindByName<Entry>("apiUrlEntry").Text = settings.ApiUrl;
+
+            apiUrlOptions.IsVisible = !apiUrlOptions.IsVisible;
         }
 
         [RelayCommand]
         async Task ChangeApiUrlAsync()
         {
-            string modifiedApiUrl = Shell.Current.CurrentPage.FindByName<Editor>("apiUrlEditor").Text;
+            string modifiedApiUrl = Shell.Current.CurrentPage.FindByName<Entry>("apiUrlEntry").Text;
 
             Uri uriResult;
             bool uriIsValid = Uri.TryCreate(modifiedApiUrl, UriKind.Absolute, out uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
@@ -79,6 +82,7 @@ namespace TrackSense.ViewModels
                 await Shell.Current.DisplayAlert("Modification URL", $"Modification de l'URL de l'API pour {modifiedApiUrl}", "Ok");
             }
 
+            await Shell.Current.CurrentPage.FindByName<Entry>("apiUrlEntry").HideKeyboardAsync(CancellationToken.None);
 
             Shell.Current.CurrentPage.FindByName<Grid>("apiUrlOptions").IsVisible = false;
 
@@ -88,14 +92,20 @@ namespace TrackSense.ViewModels
         async Task DisplayUsernameOptionsAsync()
         {
             Settings settings = _configuration.LoadSettings();
-            Shell.Current.CurrentPage.FindByName<Editor>("usernameEditor").Text = settings.Username;
-            Shell.Current.CurrentPage.FindByName<Grid>("usernameOptions").IsVisible = true;
+            Shell.Current.CurrentPage.FindByName<Entry>("usernameEntry").Text = settings.Username;
+            Grid usernameOptions = Shell.Current.CurrentPage.FindByName<Grid>("usernameOptions");
+            usernameOptions.IsVisible = !usernameOptions.IsVisible;
         }
 
         [RelayCommand]
         async Task ChangeUsernameAsync()
         {
-            string modifiedUsername = Shell.Current.CurrentPage.FindByName<Editor>("usernameEditor").Text;
+            string modifiedUsername = Shell.Current.CurrentPage.FindByName<Entry>("usernameEntry").Text;
+
+            if (String.IsNullOrWhiteSpace(modifiedUsername))
+            {
+                return;
+            }
 
             string pattern = @"[^a-zA-Z0-9à-ÿ_\-]"; // Allow letters, digits, underscores, hyphens, and accented characters
 
@@ -115,9 +125,10 @@ namespace TrackSense.ViewModels
 
                 _configuration.SaveSettings(settings);
 
-                await Shell.Current.DisplayAlert("Modification URL", $"Votre nom d'utilisateur a été modifié pour {sanitizedUsername}", "Ok");
+                await Shell.Current.DisplayAlert("Changement de compte", $"Vous êtes maintenant connecté en tant que {sanitizedUsername}", "Ok");
             }
 
+            await Shell.Current.CurrentPage.FindByName<Entry>("usernameEntry").HideKeyboardAsync(CancellationToken.None);
 
             Shell.Current.CurrentPage.FindByName<Grid>("usernameOptions").IsVisible = false;
         }
@@ -126,13 +137,19 @@ namespace TrackSense.ViewModels
         async Task DisplayAccountOptionsAsync()
         {
             Settings settings = _configuration.LoadSettings();
-            Shell.Current.CurrentPage.FindByName<Grid>("accountOptions").IsVisible = true;
+            Grid accountOptions = Shell.Current.CurrentPage.FindByName<Grid>("accountOptions");
+            accountOptions.IsVisible = !accountOptions.IsVisible;
         }
 
         [RelayCommand]
         async Task CreateAccountAsync()
         {
-            string accountUsername = Shell.Current.CurrentPage.FindByName<Editor>("accountEditor").Text;
+            string accountUsername = Shell.Current.CurrentPage.FindByName<Entry>("accountEntry").Text;
+
+            if (String.IsNullOrWhiteSpace(accountUsername))
+            {
+                return;
+            }
 
             string pattern = @"[^a-zA-Z0-9à-ÿ_\-]"; // Allow letters, digits, underscores, hyphens, and accented characters
 
@@ -167,6 +184,8 @@ namespace TrackSense.ViewModels
             _configuration.SaveSettings(userSettings);
 
             await Shell.Current.DisplayAlert("Création de compte", $"Votre compte a été créé avec succès. Vous êtes connecté en tant que {sanitizedUsername}", "Ok");
+            await Shell.Current.CurrentPage.FindByName<Entry>("accountEntry").HideKeyboardAsync(CancellationToken.None);
+
             Shell.Current.CurrentPage.FindByName<Grid>("accountOptions").IsVisible = false;
         }
     }
