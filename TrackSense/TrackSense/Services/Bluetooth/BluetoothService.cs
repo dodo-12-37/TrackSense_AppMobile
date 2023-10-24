@@ -20,6 +20,7 @@ namespace TrackSense.Services.Bluetooth
         CompletedRideDTO _completedRideDTO;
         bool isBusy = false;
         public bool IsReceiving { get; private set; }
+        int _screenRotation;
         ICharacteristic _notificationCharacteristic;
         ICharacteristic _dataCharacteristic;
 
@@ -45,7 +46,7 @@ namespace TrackSense.Services.Bluetooth
 
             List<TrackSenseDevice> devicesList = new List<TrackSenseDevice>();
 
-            bluetoothLE.Adapter.ScanTimeout = 1000;
+            bluetoothLE.Adapter.ScanTimeout = 2000;
             bluetoothLE.Adapter.ScanMode = ScanMode.Balanced;
 
             await bluetoothLE.Adapter.StartScanningForDevicesAsync();
@@ -234,6 +235,63 @@ namespace TrackSense.Services.Bluetooth
                 this._dataCharacteristic = null;
                 this._notificationCharacteristic = null;
                 this._completedRideDTO = null;
+            }
+        }
+
+        internal int GetScreenRotation()
+        {
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                IDevice connectedDevice = bluetoothLE.Adapter.ConnectedDevices.SingleOrDefault();
+
+                if (connectedDevice is not null)
+                {
+                    Guid screenServiceUUID = new Guid("68c50cff-e5ad-4cb8-9541-997d42925f27");
+                    Guid screenRotationCharacUUID = new Guid("65000b05-c1a9-4dfb-a173-bdaa4a029bf6");
+                    IService screenRotationService = await connectedDevice.GetServiceAsync(screenServiceUUID);
+                    ICharacteristic screenRotationCharac = await screenRotationService.GetCharacteristicAsync(screenRotationCharacUUID);
+
+                    try
+                    {
+                        byte[] screenRotationBytes = await screenRotationCharac.ReadAsync();
+                        string screenRotationString = Encoding.UTF8.GetString(screenRotationBytes);
+                        _screenRotation = int.Parse(screenRotationString);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine("Une erreur est survenue pendant la réception de la valeur de rotation de l'écran : " + e.Message);
+                    }
+                }
+            });
+
+
+            return _screenRotation;
+        }
+
+        internal async Task<bool> SetScreenRotation(int screenRotation)
+        {
+            IDevice connectedDevice = bluetoothLE.Adapter.ConnectedDevices.SingleOrDefault();
+            Guid screenServiceUUID = new Guid("68c50cff-e5ad-4cb8-9541-997d42925f27");
+            Guid screenRotationCharacUUID = new Guid("65000b05-c1a9-4dfb-a173-bdaa4a029bf6");
+            IService screenRotationService = await connectedDevice.GetServiceAsync(screenServiceUUID);
+            ICharacteristic screenRotationCharac = await screenRotationService.GetCharacteristicAsync(screenRotationCharacUUID);
+
+            byte[] screenRotationString = Encoding.UTF8.GetBytes(screenRotation.ToString());
+            bool result = false;
+
+            try
+            {
+                while (!result)
+                {
+                    result = await screenRotationCharac.WriteAsync(screenRotationString);
+                }
+                return result;
+
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Erreur envoi rotation : " + e.Message);
+                return result;
             }
         }
 

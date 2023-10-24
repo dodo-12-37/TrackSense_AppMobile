@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui.Core.Platform;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,10 @@ namespace TrackSense.ViewModels
         UserService _userService;
         BluetoothService _bluetoothService;
         IConfigurationManager _configuration;
+        Settings _userSettings;
+
+        [ObservableProperty]
+        int screenRotation;
 
         public SettingsViewModel(RideService rideService, BluetoothService bluetoothService, UserService userService, IConfigurationManager configurationManager)
         {
@@ -27,6 +32,24 @@ namespace TrackSense.ViewModels
             _bluetoothService = bluetoothService;
             _userService = userService;
             _configuration = configurationManager;
+            _userSettings = _configuration.LoadSettings();
+            bool isDeviceConnected = this.IsDeviceConnected();
+            ScreenRotation = _userSettings.ScreenRotation;
+
+            if (isDeviceConnected)
+            {
+                ScreenRotation = _bluetoothService.GetScreenRotation();
+                if (_userSettings.ScreenRotation != ScreenRotation)
+                {
+                    _userSettings.ScreenRotation = ScreenRotation;
+                    _configuration.SaveSettings(_userSettings);
+                }
+            }
+        }
+
+        internal bool IsDeviceConnected()
+        {
+            return _bluetoothService.GetConnectedDevice() != null;
         }
 
         [RelayCommand]
@@ -51,9 +74,8 @@ namespace TrackSense.ViewModels
         [RelayCommand]
         async Task DisplayApiUrlOptionsAsync()
         {
-            Settings settings = _configuration.LoadSettings();
             Grid apiUrlOptions = Shell.Current.CurrentPage.FindByName<Grid>("apiUrlOptions");
-            Shell.Current.CurrentPage.FindByName<Entry>("apiUrlEntry").Text = settings.ApiUrl;
+            Shell.Current.CurrentPage.FindByName<Entry>("apiUrlEntry").Text = _userSettings.ApiUrl;
 
             apiUrlOptions.IsVisible = !apiUrlOptions.IsVisible;
         }
@@ -71,13 +93,11 @@ namespace TrackSense.ViewModels
                 return;
             }
 
-            Settings settings = _configuration.LoadSettings();
-
-            if (modifiedApiUrl != settings.ApiUrl)
+            if (modifiedApiUrl != _userSettings.ApiUrl)
             {
-                settings.ApiUrl = modifiedApiUrl;
+                _userSettings.ApiUrl = modifiedApiUrl;
 
-                _configuration.SaveSettings(settings);
+                _configuration.SaveSettings(_userSettings);
 
                 await Shell.Current.DisplayAlert("Modification URL", $"Modification de l'URL de l'API pour {modifiedApiUrl}", "Ok");
             }
@@ -91,8 +111,7 @@ namespace TrackSense.ViewModels
         [RelayCommand]
         async Task DisplayUsernameOptionsAsync()
         {
-            Settings settings = _configuration.LoadSettings();
-            Shell.Current.CurrentPage.FindByName<Entry>("usernameEntry").Text = settings.Username;
+            Shell.Current.CurrentPage.FindByName<Entry>("usernameEntry").Text = _userSettings.Username;
             Grid usernameOptions = Shell.Current.CurrentPage.FindByName<Grid>("usernameOptions");
             usernameOptions.IsVisible = !usernameOptions.IsVisible;
         }
@@ -117,13 +136,11 @@ namespace TrackSense.ViewModels
                 return;
             }
 
-            Settings settings = _configuration.LoadSettings();
-
-            if (sanitizedUsername != settings.Username)
+            if (sanitizedUsername != _userSettings.Username)
             {
-                settings.Username = sanitizedUsername;
+                _userSettings.Username = sanitizedUsername;
 
-                _configuration.SaveSettings(settings);
+                _configuration.SaveSettings(_userSettings);
 
                 await Shell.Current.DisplayAlert("Changement de compte", $"Vous êtes maintenant connecté en tant que {sanitizedUsername}", "Ok");
             }
@@ -136,7 +153,6 @@ namespace TrackSense.ViewModels
         [RelayCommand]
         async Task DisplayAccountOptionsAsync()
         {
-            Settings settings = _configuration.LoadSettings();
             Grid accountOptions = Shell.Current.CurrentPage.FindByName<Grid>("accountOptions");
             accountOptions.IsVisible = !accountOptions.IsVisible;
         }
@@ -167,7 +183,7 @@ namespace TrackSense.ViewModels
                 return;
             }
 
-                User user = new User()
+            User user = new User()
             {
                 UserLogin = sanitizedUsername,
                 Password = sanitizedUsername,
@@ -185,14 +201,41 @@ namespace TrackSense.ViewModels
                 return;
             }
 
-            Settings userSettings = _configuration.LoadSettings();
-            userSettings.Username = sanitizedUsername;
-            _configuration.SaveSettings(userSettings);
+            _userSettings.Username = sanitizedUsername;
+            _configuration.SaveSettings(_userSettings);
 
             await Shell.Current.DisplayAlert("Création de compte", $"Votre compte a été créé avec succès. Vous êtes connecté en tant que {sanitizedUsername}", "Ok");
             await Shell.Current.CurrentPage.FindByName<Entry>("accountEntry").HideKeyboardAsync(CancellationToken.None);
 
             Shell.Current.CurrentPage.FindByName<Grid>("accountOptions").IsVisible = false;
+        }
+
+        [RelayCommand]
+        async Task ChangeScreenRotationAsync(string rotationId)
+        {
+            if (!_bluetoothService.BluetoothIsOn())
+            {
+                return;
+            }
+
+            if (_bluetoothService.GetConnectedDevice() is null)
+            {
+                return;
+            }
+
+            bool isConfirmed = false;   
+
+            while (!isConfirmed) // politique de réessai à ajouter
+            {
+                isConfirmed = await _bluetoothService.SetScreenRotation(int.Parse(rotationId));
+            }
+
+            if (isConfirmed)
+            {
+                ScreenRotation = int.Parse(rotationId);
+                _userSettings.ScreenRotation = ScreenRotation;
+                _configuration.SaveSettings(_userSettings);
+            }
         }
     }
 }

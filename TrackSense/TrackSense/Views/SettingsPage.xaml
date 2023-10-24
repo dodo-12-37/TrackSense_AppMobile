@@ -5,7 +5,7 @@
              xmlns:viewmodel="clr-namespace:TrackSense.ViewModels"
              Title="{Binding Title}">
     <VerticalStackLayout>
-        <Grid RowDefinitions="*,*,*,*,*,*,*,*"
+        <Grid RowDefinitions="*,*,*,*,*,*,*,*,*"
               RowSpacing="10"
               Padding="20">
             <Button 
@@ -56,6 +56,31 @@
                 <Button Grid.Column="1"
                         Text="Ok"
                         Command="{Binding ChangeUsernameCommand}" />
+            </Grid>
+            <Grid Grid.Row="8"
+                      x:Name="screenRotationGrid"
+                      ColumnDefinitions="*,*,*,*"
+                      ColumnSpacing="3">
+                <Button Grid.Column="0"
+                        x:Name="screenButton0"
+                        Text="0"
+                        Command="{Binding ChangeScreenRotationCommand}"
+                        CommandParameter="0" />
+                <Button Grid.Column="1"
+                        x:Name="screenButton1"
+                        Text="1"
+                        Command="{Binding ChangeScreenRotationCommand}"
+                        CommandParameter="1" />
+                <Button Grid.Column="2"
+                        x:Name="screenButton2"
+                        Text="2"
+                        Command="{Binding ChangeScreenRotationCommand}"
+                        CommandParameter="2" />
+                <Button Grid.Column="3"
+                        x:Name="screenButton3"
+                        Text="3"
+                        Command="{Binding ChangeScreenRotationCommand}"
+                        CommandParameter="3" />
             </Grid>
         </Grid>
     </VerticalStackLayout>
