@@ -24,7 +24,7 @@ namespace TrackSense.Services
         public async Task<HttpResponseMessage> CreateUser(User user)
         {
             Settings userSettings = _config.LoadSettings();
-            string url = $"{userSettings.ApiUrl}Authentication/SignUp";
+            string url = $"{userSettings.ApiUrl}/Authentication/SignUp";
 
             UserDTO userDTO = new UserDTO(user);
 
@@ -34,7 +34,7 @@ namespace TrackSense.Services
         public async Task<bool> IsUserLoginAvailable(string userLogin)
         {
             Settings userSettings = _config.LoadSettings();
-            string url = $"{userSettings.ApiUrl}Users/availibityLogin/?p_userLogin={userLogin}";
+            string url = $"{userSettings.ApiUrl}/Users/availibityLogin/?p_userLogin={userLogin}";
 
             var response = await httpClient.GetAsync(url);
 

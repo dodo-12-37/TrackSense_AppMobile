@@ -100,7 +100,7 @@ public class RideService
             _completedRides.Clear();
         }
         Settings userSettings = _config.LoadSettings();
-        string url = $"{userSettings.ApiUrl}users/{userSettings.Username}/completedRides";
+        string url = $"{userSettings.ApiUrl}/users/{userSettings.Username}/completedRides";
 
         var response = await httpClient.GetAsync(url);
 
@@ -145,7 +145,7 @@ public class RideService
             CompletedRideDTO completedRideDTO = new CompletedRideDTO(p_completedRide);
 
             Settings userSettings = _config.LoadSettings();
-            string url = $"{userSettings.ApiUrl}CompletedRides";
+            string url = $"{userSettings.ApiUrl}/CompletedRides";
 
             var content = new StringContent(JsonConvert.SerializeObject(completedRideDTO), Encoding.UTF8, "application/json");
 
@@ -176,7 +176,7 @@ public class RideService
             throw new ArgumentNullException(nameof(completedRideId));
         }
         Settings userSettings = _config.LoadSettings();
-        string url = $"{userSettings.ApiUrl}CompletedRides/{completedRideId}";
+        string url = $"{userSettings.ApiUrl}/CompletedRides/{completedRideId}";
 
         var response = await httpClient.GetAsync(url);
 
