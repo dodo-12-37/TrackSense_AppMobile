@@ -38,7 +38,7 @@ namespace TrackSense.ViewModels
 
             if (isDeviceConnected)
             {
-                ScreenRotation = _bluetoothService.GetScreenRotation();
+                ScreenRotation = _bluetoothService.ScreenRotation;
                 if (_userSettings.ScreenRotation != ScreenRotation)
                 {
                     _userSettings.ScreenRotation = ScreenRotation;
