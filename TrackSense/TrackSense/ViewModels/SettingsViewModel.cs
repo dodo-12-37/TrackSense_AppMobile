@@ -167,14 +167,14 @@ namespace TrackSense.ViewModels
                 return;
             }
 
-            User user = new User()
+                User user = new User()
             {
                 UserLogin = sanitizedUsername,
                 Password = sanitizedUsername,
                 PasswordConfirmed = sanitizedUsername,
-                Email = "sanitizedUsername@email.com",
-                FirstName = "sanitizedUsername",
-                LastName = "sanitizedUsername"
+                Email = $"{sanitizedUsername}@email.com",
+                FirstName = sanitizedUsername,
+                LastName = sanitizedUsername
             };
 
             HttpResponseMessage response = await _userService.CreateUser(user);
