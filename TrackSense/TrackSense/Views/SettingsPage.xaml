@@ -57,31 +57,47 @@
                         Text="Ok"
                         Command="{Binding ChangeUsernameCommand}" />
             </Grid>
-            <Grid Grid.Row="8"
-                      x:Name="screenRotationGrid"
-                      ColumnDefinitions="*,*,*,*"
+            <VerticalStackLayout Grid.Row="8"
+                                 x:Name="rotationVerticalStackLayout"
+                                 Spacing="15">
+                <Label Text="Orientation de l'écran"
+                       FontSize="Large"/>
+                <Grid ColumnDefinitions="*,*,*,*"
+                      RowDefinitions="*,*"
                       ColumnSpacing="3">
-                <Button Grid.Column="0"
-                        x:Name="screenButton0"
-                        Text="0"
-                        Command="{Binding ChangeScreenRotationCommand}"
-                        CommandParameter="0" />
-                <Button Grid.Column="1"
-                        x:Name="screenButton1"
-                        Text="1"
-                        Command="{Binding ChangeScreenRotationCommand}"
-                        CommandParameter="1" />
-                <Button Grid.Column="2"
-                        x:Name="screenButton2"
-                        Text="2"
-                        Command="{Binding ChangeScreenRotationCommand}"
-                        CommandParameter="2" />
-                <Button Grid.Column="3"
-                        x:Name="screenButton3"
-                        Text="3"
-                        Command="{Binding ChangeScreenRotationCommand}"
-                        CommandParameter="3" />
-            </Grid>
+                    <ImageButton Grid.Column="0"
+                                 Aspect="AspectFit"
+                                 Source="rotation.png"
+                                 Rotation="270"
+                                 x:Name="screenButton0"
+                                 Command="{Binding ChangeScreenRotationCommand}"
+                                 CommandParameter="0"
+                                 IsEnabled="False" />
+                    <ImageButton Grid.Column="1"
+                                 Aspect="AspectFit"
+                                 Source="rotation.png"
+                                 Rotation="180"
+                                 x:Name="screenButton1"
+                                 Command="{Binding ChangeScreenRotationCommand}"
+                                 CommandParameter="1"
+                                 IsEnabled="False" />
+                    <ImageButton Grid.Column="2"
+                                 Aspect="AspectFit"
+                                 Source="rotation.png"
+                                 Rotation="90"
+                                 x:Name="screenButton2"
+                                 Command="{Binding ChangeScreenRotationCommand}"
+                                 CommandParameter="2"
+                                 IsEnabled="False" />
+                    <ImageButton Grid.Column="3"
+                                 Aspect="AspectFit"
+                                 Source="rotation.png"
+                                 x:Name="screenButton3"
+                                 Command="{Binding ChangeScreenRotationCommand}"
+                                 CommandParameter="3"
+                                 IsEnabled="False" />
+                </Grid>
+            </VerticalStackLayout>
         </Grid>
     </VerticalStackLayout>
 </ContentPage>

@@ -17,7 +17,7 @@ public partial class SettingsPage : ContentPage
 
 		if (BindingContext is SettingsViewModel viewModel)
 		{
-            Shell.Current.CurrentPage.FindByName<Grid>("screenRotationGrid").IsVisible = viewModel.IsDeviceConnected();
+            Shell.Current.CurrentPage.FindByName<VerticalStackLayout>("rotationVerticalStackLayout").IsVisible = viewModel.IsDeviceConnected();
         }
-    }
+    }	
 }
